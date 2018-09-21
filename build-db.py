@@ -241,6 +241,41 @@ def construct_dbinfo(args, taxtree):
 				# All other lines are unnecessary
 
 
+def remove_dupl_dbinfo(args):  # removes duplicate entries in db_info
+	prev = ''  # keeps track of previous accession; if same as current, remove
+	with(open('db_info.txt', 'r')) as infile:
+		with(open('db_info-clean.txt', 'w')) as outfile:
+			for line in infile:
+				cur = line.split()[0]
+				if cur != prev:
+					outfile.write(line)
+				prev = cur
+	subprocess.Popen(['rm', 'db_info.txt']).wait()
+	subprocess.Popen(['mv', 'db_info-clean.txt', 'db_info.txt']).wait()
+
+
+def clean_refseq(args):
+	info_accessions = {}  # stores accessions from db_info
+	write = True  # whether to write out current accession info
+
+	with(open('db_info.txt', 'r')) as dbinfo:
+		dbinfo.next()
+		for line in dbinfo:
+			acc = line.split()[0]
+			info_accessions[acc] = 0
+
+	with(open('refseq.fasta', 'r')) as infile:
+		with(open('refseq-clean.fasta', 'w')) as outfile:
+			for line in infile:
+				if line.startswith('>'):
+					acc = line[1:].split()[0]
+					write = (acc in info_accessions)
+				if write:
+					outfile.write(line)
+	subprocess.Popen(['rm', 'refseq.fasta']).wait()
+	subprocess.Popen(['mv', 'refseq-clean.fasta', 'refseq.fasta']).wait()
+
+
 def main():
 	# Parse user arguments, set up working directory and logfile
 	args = parseargs()
@@ -252,20 +287,22 @@ def main():
 	open('logfile', 'w').close()  # clear the logfile
 
 	# Call the methods to construct refseq.fasta and db_info.txt
-	#if args.verbose:
-	#	echo('Downloading filepaths and taxonomy dump (short)...')
-	#download_info(args)
 	if args.verbose:
-		echo('Building taxonomic tree (short)...')
+		echo('Downloading filepaths and taxonomy dump (<5 mins)...')
+	download_info(args)
+	if args.verbose:
+		echo('Building taxonomic tree (<1 min)...')
 	taxtree = build_taxtree(args)
-	#if args.verbose:
-	#	echo('Downloading genomes and building database (long)...')
-	#download_genomes(args)
 	if args.verbose:
-		echo('Building database info file (somewhat long)...', prepend='\n')
+		echo('Downloading genomes and building database (very long)...')
+	download_genomes(args)
+	if args.verbose:
+		echo('Building database info file (~1 hour)...', prepend='\n')
 	construct_dbinfo(args, taxtree)
 	if args.verbose:
-		print('')
+		echo('Cleaning files (<1 hour)...', prepend='\n')
+	remove_dupl_dbinfo(args)
+	clean_refseq(args)
 
 	# Clear temporary files
 	subprocess.Popen(['rm', 'ftpfilepaths', 'ftpreportpaths',
