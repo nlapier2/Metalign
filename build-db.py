@@ -120,8 +120,10 @@ def build_taxtree(args):
 		for line in names:
 			if 'scientific name' not in line:
 				continue  # skip alternate names and other unnecessary info
-			splits = line.split()
-			taxtree[splits[0]] = [splits[2]]  # Key is TaxID, value is tax. name
+			#splits = line.split('|')[1].strip()
+			taxid = line.split()[0]
+			name = line.split('|')[1].strip()
+			taxtree[taxid] = [name]  # Key is TaxID, value is tax. name
 
 	with(open('nodes.dmp', 'r')) as nodes:
 		for line in nodes:
@@ -193,6 +195,18 @@ def trace_lineages(taxid, taxtree):
 	# Uses taxtree to find lineage of taxid in both taxonomic names and IDs
 	name_lineage, taxid_lineage = ['' for i in range(8)], ['' for i in range(8)]
 	cur_taxid = taxid
+
+	# Record lowest level taxonomic info if it's below species level
+	if cur_taxid in taxtree:
+		name, rank, parent = taxtree[cur_taxid]
+	else:
+		return 'NONE', 'NONE'
+	if rank not in CAMI_RANKS:  # strains are recorded as 'no rank' in nodes.dmp
+		name_lineage[-1] = name
+		taxid_lineage[-1] = cur_taxid
+		cur_taxid = parent  # traverse up to parent taxid
+
+	# Now traverse up the tree
 	while cur_taxid != '1':  # while we're not at the root
 		if cur_taxid in taxtree:
 			name, rank, parent = taxtree[cur_taxid]
@@ -214,7 +228,7 @@ def construct_dbinfo(args, taxtree):
 	taxid, accessions, name_lin, taxid_lin = '', [], '', ''
 
 	# number of downloads needed and how many are done, for progress tracking
-	done, num_dl = -1, int(subprocess.check_output(['grep', '-c',
+	done, num_dl = 0, int(subprocess.check_output(['grep', '-c',
 		'^# Taxid', 'reports.txt']).strip())
 
 	with(open('reports.txt', 'r')) as reports:
