@@ -17,12 +17,12 @@ def parseargs():  # handle user arguments
 		default='proportional', help='Method for assignming multimapped reads.')
 	parser.add_argument('--min_map', type=int, default=-1,
 		help='Minimum bases mapped to count a hit.')
-	parser.add_argument('--max_ed', type=int, default=-1,
+	parser.add_argument('--max_ed', type=int, default=999999999,
 		help='Maximum edit distance from a reference to count a hit.')
 	parser.add_argument('--no_len_normalization', action='store_true',
 		help='Do not normalize abundances by genome length.')
 	parser.add_argument('--no_rank_renormalization', action='store_true',
-		help='Do not renormalize abundances to 100% at each rank,\
+		help='Do not renormalize abundances to 100 percent at each rank,\
 				for instance if an organism has a species but not genus label.')
 	parser.add_argument('--output', default='abundances.txt',
 		help='Output abundances file. Default: abundances.txt')
@@ -60,7 +60,7 @@ def get_acc2info(args):
 			acc, acclen, taxid, namelin, taxlin = line.strip().split('\t')
 			acclen = int(acclen)
 			acc2info[acc] = [acclen, taxid, namelin, taxlin]
-			if taxid in taxidlens:
+			if taxid in taxid2info:
 				taxid2info[taxid][0] += acclen
 			else:
 				rank = get_taxid_rank(taxlin)
@@ -106,14 +106,14 @@ def parse_flag(flag, cigar):
 # for paired end reads, return read hits to references that both paired ends hit
 def intersect_read_hits(read_hits, pair1maps, pair2maps):
 	if pair1maps == 0 or pair2maps == 0:  # one end unmapped means no intersect
-		return []
+		return [], []
 	# gather all ref hits then partition into hits for each pair
 	all_ref_hits = [hit[2] for hit in read_hits]
 	pair1refs, pair2refs = all_ref_hits[:pair1maps], all_ref_hits[pair1maps:]
 	# now intersect the lists and return hits to references in the intersect
 	intersect = set([ref for ref in pair1refs if ref in pair2refs])
 	intersect_hits = [hit for hit in read_hits if hit[2] in intersect]
-	return intersect, intersect_hits
+	return [intersect, intersect_hits]
 
 
 # Given all hits for a read, decide whether to use it and whether multimapped
@@ -122,14 +122,14 @@ def process_read(read_hits, pair1, pair2, pair1maps, pair2maps):
 	if pair1 or pair2:  # paired read
 		if pair1maps + pair2maps == 1:
 			# if uniq mapped to one end and unmapped to other, count mapped end
-			return [], read_hits[0][2], int(read_hits[0][9])
+			return [], read_hits[0][2], int(len(read_hits[0][9]))
 
-		intersect, intersect_hits =
-			intersect_read_hits(read_hits, pair1maps, pair2maps)
+		intersect, intersect_hits = intersect_read_hits(
+											read_hits, pair1maps, pair2maps)
 		if len(intersect) == 0:  # one end unmapped, other multimapped
 			return [], 'Ambiguous', -1  # we consider this case too ambiguous
 		elif len(intersect) == 1:  # read pairs only agree on one taxid
-			hitlen = int(read_hits[0][9]) + int(read_hits[1][9])
+			hitlen = int(len(read_hits[0][9])) + int(len(read_hits[1][9]))
 			return [], read_hits[0][2], hitlen  # we consider this a uniq map
 		else:
 			return intersect_hits, '', 0  #both pairs multimapped, process later
@@ -138,7 +138,7 @@ def process_read(read_hits, pair1, pair2, pair1maps, pair2maps):
 		if pair1maps > 1:  # multimapped
 			return read_hits, '', 0  # multimapped, acc and hitlen not needed
 		else:
-			return False, read_hits[0][2], int(read_hits[0][9])
+			return False, read_hits[0][2], int(len(read_hits[0][9]))
 
 
 # Reads sam file -> returns a dict of taxids mapped to number of uniquely mapped
@@ -163,27 +163,27 @@ def process_samfile(args, samfile, acc2info, taxid2info):
 				continue  # filter read based on user specifications
 			# here we change accession to taxid since we want to
 			#  	profile by organisms, not accessions
-			splits[2] = acc2info[splits[2]][2]
+			splits[2] = acc2info[splits[2]][1]
 
 			read, ref = splits[0], splits[2]
 			if read != prev_read:
 				# get uniq hit taxid and hitlen, or multimapped hits intersect
-				intersect_hits, taxid, hitlen =
-					process_read(read_hits, pair1, pair2, pair1maps, pair2maps)
-				if not args.no_len_normalization:
-					hitlen /= taxid2info[taxid][1]  # normalize by genome length
-				if intersect_hits == [] and taxid != 'Ambiguous':
-					# a unique non-ambiguous hit (see process_read)
-					if taxid not in taxids2abs:
+				intersect_hits, taxid, hitlen = process_read(
+					read_hits, pair1, pair2, pair1maps, pair2maps)
+				# reset these read-specific variables
+				prev_read, read_hits, pair1maps, pair2maps = read, [splits], 0,0
+				if taxid == 'Ambiguous':  # ambiguous mapping (see process_read)
+					continue
+				if taxid != '' and not args.no_len_normalization:
+					hitlen /= taxid2info[taxid][0]  # normalize by genome length
+				if intersect_hits == []:  # unique hit
+					if taxid in taxids2abs:
 						taxids2abs[taxid][0] += 1  # reads hit
 						taxids2abs[taxid][1] += hitlen  # bases hit
 					else:  # also store lineage for taxid
 						taxids2abs[taxid] = [1, hitlen] + taxid2info[taxid]
-				elif taxid != 'Ambiguous':
-					# multimapped non-ambiguous, include whether paired end
-					multimapped.append([pair1 or pair2, read_hits])
-				# reset these read-specific variables
-				prev_read, read_hits, pair1maps, pair2maps = read, [splits], 0,0
+				else:  # multimapped hit
+					multimapped.append(intersect_hits)
 			else:
 				pair1maps += pair1 or not(pair1 or pair2)  # pair1 or single
 				pair2maps += pair2  # unchanged if pair2 false
@@ -207,7 +207,10 @@ def resolve_multi_prop(args, taxids2abs, multimapped, taxid2info):
 	to_add = {}
 	for read_hits in multimapped:
 		# get abundances of all taxids in read_hits
-		all_taxids = list(set([hit[2] for hit in read_hits]))
+		all_taxids = list(set(
+						[hit[2] for hit in read_hits if hit[2] in taxids2abs]))
+		if len(all_taxids) == 0:  # all hits were to taxids with no unique hits
+			continue
 		taxid_abs = [taxids2abs[tax][1] for tax in all_taxids]
 
 		# now get cumulative proportional abs. of taxids relative to each other
@@ -225,33 +228,34 @@ def resolve_multi_prop(args, taxids2abs, multimapped, taxid2info):
 		# set the amount to add to taxid abundances
 		hitlen = len(assigned_hits[0][9]) + len(assigned_hits[1][9])
 		if not args.no_len_normalization:
-			hitlen /= taxid2info[assigned_taxid][1]
+			hitlen /= taxid2info[assigned_taxid][0]
 		if assigned_taxid in to_add:
 			to_add[assigned_taxid] += hitlen
 		else:
 			to_add[assigned_taxid] = hitlen
 
 	for taxid in to_add:  # add in the multimapped portions
-		taxids2abs[taxid] += to_add[taxid]
+		taxids2abs[taxid][1] += to_add[taxid]
 	return taxids2abs
 
 
 # Renormalize each taxonomic rank so each rank sums to 100% abundance
 def rank_renormalize(clades2abs, only_strains=False):
-	rank_totals = [i:0.0 for i in RANKS]  # current rank abundance sums
+	rank_totals = {i:0.0 for i in RANKS}  # current rank abundance sums
 	for clade in clades2abs:
 		rank, ab = clades2abs[clade][1], clades2abs[clade][-1]
 		rank_totals[rank] += ab  # add this to the rank sum total
 	for clade in clades2abs:  # here's the normalization
-		if only_strains and clade2abs[clade] != 'strain':
+		if only_strains and clades2abs[clade] != 'strain':
 			continue
-		clades2abs[clade][-1] /= rank_totals[clades2abs[clade][1]]
+		clades2abs[clade][-1] /= (rank_totals[clades2abs[clade][1]] / 100.0)
 	return clades2abs
 
 
 # given initital taxids2abs, some taxids will be higher than strain level;
 #  	we insert "unknown" taxa down to strain level for normalization purposes
 def gen_lower_taxa(taxids2abs):
+	to_add = {}  # lower taxa to add after iteration
 	for taxid in taxids2abs:
 		taxid, rank, taxlin, namelin, ab = taxids2abs[taxid]
 		if rank == 'strain':  # already lowest level
@@ -262,24 +266,29 @@ def gen_lower_taxa(taxids2abs):
 		lowest_name = namelin.split('|')[rankpos]
 		new_name = lowest_name + ' unknown strain'
 		new_taxid = taxid+'.0'
-		taxids2abs[new_taxid] = [new_taxid, 'strain', taxlin + new_taxid,
+		to_add[new_taxid] = [new_taxid, 'strain', taxlin + new_taxid,
 								namelin + new_name, ab]
 
+	# add in the new taxa
+	for taxa in to_add:
+		taxids2abs[taxa] = to_add[taxa]
 	# clean out higher taxa listings -- they will return when we fill the tree
-	taxids2abs = {k:v for k,v in taxids2abs.items() if v[2] == 'strain'}
+	taxids2abs = {k:v for k,v in taxids2abs.items() if v[2] != 'strain'}
 	return taxids2abs
 
 
-# Format taxids2abs in CAMI results format, including higher clade abundances
-def format_results_cami(taxids2abs):
+# Get abundances for all clades in the tree and put in CAMI format
+def tree_results_cami(args, taxids2abs):
 	# rearrange fields to be in CAMI format
 	for taxid in taxids2abs:
 		old = taxids2abs[taxid]
-		taixds2abs[taxid] = [taxid, old[3], old[5], old[4], old[1]]
+		taxids2abs[taxid] = [taxid, old[3], old[5], old[4], old[1]]
 	taxids2abs = gen_lower_taxa(taxids2abs)  # ensures everything strain level
+	# always renormalize strains, to ensure legitimate profile
+	taxids2abs = rank_renormalize(taxids2abs, only_strains=True)
 
 	# Now compute higher clade abundances
-	clades2abs = taxids2abs
+	clades2abs = {k:v for k,v in taxids2abs.items()}
 	for taxid in taxids2abs:
 		taxlin = taxids2abs[taxid][2].split('|')
 		namelin = taxids2abs[taxid][3].split('|')
@@ -291,11 +300,11 @@ def format_results_cami(taxids2abs):
 				clades2abs[clade][-1] += taxids2abs[taxid][-1]
 			else:
 				# determine CAMI fields for this clade
-				clade_taxid, clade_ranks = clade, RANKS[i]
-				clade_taxlin = '|'.join(taxlin[:i+1+1])
-				clade_namelin = '|'.join(namelin[:i+1+1])
+				clade_taxid, clade_rank = clade, RANKS[i]
+				clade_taxlin = '|'.join(taxlin[:i+1])
+				clade_namelin = '|'.join(namelin[:i+1])
 				clade_ab = taxids2abs[taxid][-1]  # currently just lower tax ab
-				clade2abs[clade_taxid] = [clade_taxid, clade_rank,
+				clades2abs[clade_taxid] = [clade_taxid, clade_rank,
 										  clade_taxlin, clade_namelin, clade_ab]
 
 	if not args.no_rank_renormalization:
@@ -324,7 +333,7 @@ def compute_abundances(args, samfile, acc2info, tax2info):
 	if args.verbose:
 		print('Multimapped reads assigned.')
 
-	results = format_results_cami(taxids2abs)
+	results = tree_results_cami(args, taxids2abs)
 	if args.verbose:
 		print('Done computing abundances for sam file ' + samfile)
 	return results
@@ -349,7 +358,7 @@ def gather_results(args, acc2info, taxid2info):
 		results[clade][-1] /= len(args.sam)  # average over all input files
 		rank = RANKS.index(results[clade][1])
 		if rank == 7:  # strain; add extra CAMI genomeID and OTU fields
-			taxid = results[clade[0]]
+			taxid = results[clade][0]
 			if taxid.endswith('.0'):  # unidentified strain
 				cami_genid, cami_otu = taxid, taxid.split('.')[0]
 			else:
@@ -364,14 +373,18 @@ def write_results(args, rank_results):
 		# Print some CAMI format header lines
 		outfile.write('@SampleID:' + ','.join(args.sam) + '\n')
 		outfile.write('@Version:MiCoP2-v0.1\n')
-		outfile.write('@Ranks: \
-			superkingdom|phylum|class|order|family|genus|species|strain\n\n')
+		outfile.write('@Ranks: ' +
+			'superkingdom|phylum|class|order|family|genus|species|strain\n\n')
 		outfile.write('@@TAXID\tRANK\tTAXPATH\tTAXPATHSN\
 			\tPERCENTAGE\t_CAMI_genomeID\t_CAMI_OTU\n')
 
 		for i in range(len(RANKS)):
 			lines = rank_results[i]  # all lines to write for this tax level
-			lines.sort(key=lambda x: 100.0-x[-1])  # sort, descending abundance
+			# now sort clades in rank by descending abundance
+			if i != 7:  # not strains, which have extra fields
+				lines.sort(key=lambda x: 100.0-x[-1])
+			else:  # strains
+				lines.sort(key=lambda x: 100.0-x[-3])
 			if lines == None or len(lines) < 1:
 				continue
 			for line in lines:
