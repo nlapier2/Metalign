@@ -3,12 +3,8 @@ import argparse, os, shlex, subprocess, sys, time
 
 # Globals: Program timer, download links, and CAMI-relevant taxonomic ranks
 start = time.time()
-ASM = ['ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/archaea/assembly_summary.txt',
-	'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/assembly_summary.txt',
-	'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/fungi/assembly_summary.txt',
-	'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/protozoa/assembly_summary.txt',
-	'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/assembly_summary.txt']
 ASM_ORDER = ['archaea', 'bacteria', 'fungi', 'protozoa', 'viral']
+DB_ORDER = ['refseq', 'genbank']
 TAXDUMP_LOC = 'ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.zip'
 # Links relevant CAMI ranks to an index in a lineage list (see trace_lineages)
 CAMI_RANKS = {'superkingdom':0, 'phylum':1, 'class':2, 'order':3,
@@ -40,6 +36,13 @@ def parseargs():    # handle user arguments
 		description='Download all RefSeq genomes and extract needed info.')
 	parser.add_argument('--dir', default='micopdb/',
 		help = 'Name of directory to store database and info.')
+	parser.add_argument('--mode', default='all',
+		choices=['all', 'setup', 'dl-genomes', 'build_info'],
+		help = 'What steps of database building to run. Default: all')
+	parser.add_argument('--no_clean', action='store_true',
+		help = 'Do not clean up intermediate files after running.')
+	parser.add_argument('--no_combine', action='store_true',
+		help = 'Do not combine individual organism files into one database.')
 	parser.add_argument('--test', action='store_true',
 		help = 'Do a small test run (should take about 1-3 minutes).')
 	parser.add_argument('--verbose', action='store_true',
@@ -48,32 +51,44 @@ def parseargs():    # handle user arguments
 	return args
 
 
-def download_info(args):
-	clade_fnames = [o + '_' + 'assembly_summary.txt' for o in ASM_ORDER]
-	for i in range(len(ASM)):
-		# Download assembly summary file with genome ftp addresses
-		with(open('logfile', 'a')) as logfile:
-			subprocess.Popen(['wget', ASM[i]],
-				stdout=logfile, stderr=logfile).wait()
+def download_summaries(args):
+	spec_fnames, url_prefix = [], 'ftp://ftp.ncbi.nlm.nih.gov/genomes/'
+	for i in range(10):
+		# Iterate through clades and refseq/genbank, create specific filename
+		dbtype, clade = DB_ORDER[int(i/5)], ASM_ORDER[i % 5]
+		link = url_prefix + dbtype + '/' + clade + '/assembly_summary.txt'
+		spec_fnames.append(dbtype + '_' + clade + '_' + 'assembly_summary.txt')
+		with(open('logfile', 'a')) as log:
+			subprocess.Popen(['wget', link], stdout=log, stderr=log).wait()
 
 		# If this is a test run, retain only 10 lines per clade
 		if args.test:
-			with(open('tmpfile', 'w')) as tmpfile:
+			with(open('TEMP', 'w')) as tmp:
 				subprocess.Popen(['head', 'assembly_summary.txt'],
-					stdout=tmpfile).wait()
+					stdout=tmp).wait()
 				subprocess.Popen(['rm', 'assembly_summary.txt']).wait()
-				subprocess.Popen(['mv', 'tmpfile',
-					'assembly_summary.txt']).wait()
+				subprocess.Popen(['mv', 'TEMP', 'assembly_summary.txt']).wait()
 
-		# Move assembly_summary.txt to a clade-specific file name so it's not
-		# 		overwritten when we download the next one
-		subprocess.Popen(['mv', 'assembly_summary.txt', clade_fnames[i]]).wait()
+		# Move assembly_summary.txt to a unique filename to avoid overwriting
+		subprocess.Popen(['mv', 'assembly_summary.txt', spec_fnames[-1]]).wait()
 
-	# Now we cat these clade-specific summaries into one single file
-	cmd = ['cat'] + clade_fnames
-	with(open('assembly_summary.txt', 'w')) as cmdfile:
-		subprocess.Popen(cmd, stdout = cmdfile).wait()
+	# Combine all refseq entries and unique genbank entries into one single file
+	with(open('assembly_summary.txt', 'w')) as outfile:
+		for specfile in spec_fnames:
+			rfsq = 'refseq' in specfile
+			acc, prev_acc = '', ''  # used to check duplicate entries
+			with(open(specfile, 'r')) as infile:
+				infile.readline(); infile.readline()  # skip header lines
+				for line in infile:  #write all refseq, unpaired genbank entries
+					if rfsq or not ('identical' in line or 'different' in line):
+						acc = line.split('\t')[0]
+						if acc != prev_acc:
+							outfile.write(line)
+						prev_acc = acc
 
+
+def setup(args):
+	download_summaries(args)  # download and setup assembly_summary.txt file
 	# Now extract relevant file names to download from the assembly summaries
 	cmd = 'awk -F "\t" \'$11=="latest"{print $20}\' assembly_summary.txt'
 	with(open('ftpdirpaths', 'w')) as cmdfile:
@@ -100,14 +115,15 @@ def download_info(args):
 		subprocess.Popen(['unzip', 'new_taxdump.zip'],
 			stdout=logfile, stderr=logfile).wait()
 		os.chdir('..')
+		subprocess.Popen(['cp', 'taxonomy/names.dmp', '.']).wait()
+		subprocess.Popen(['cp', 'taxonomy/nodes.dmp', '.']).wait()
 
-	# Finally, clean some old files out
-	for fn in clade_fnames:
-		subprocess.Popen(['rm', fn]).wait()
-	subprocess.Popen(['rm', 'assembly_summary.txt', 'ftpdirpaths']).wait()
-	subprocess.Popen(['cp', 'taxonomy/names.dmp', '.']).wait()
-	subprocess.Popen(['cp', 'taxonomy/nodes.dmp', '.']).wait()
-	subprocess.Popen(['rm', '-r', 'taxonomy/']).wait()
+	# Finally, clean some old files out unless --no_clean is used
+	if not args.no_clean:
+		for fn in spec_fnames:
+			subprocess.Popen(['rm', fn]).wait()
+		subprocess.Popen(['rm', 'assembly_summary.txt', 'ftpdirpaths']).wait()
+		subprocess.Popen(['rm', '-r', 'taxonomy/']).wait()
 
 
 def build_taxtree(args):
@@ -135,7 +151,7 @@ def build_taxtree(args):
 
 def download_genomes(args):
 	# clear files because they will be appended to
-	open('refseq.fasta', 'w').close()
+	open('ref_db.fasta', 'w').close()
 	open('reports.txt', 'w').close()
 
 	# number of downloads needed and how many are done, for progress tracking
@@ -144,42 +160,52 @@ def download_genomes(args):
 
 	# We now open the file handlers for appending, download the files,
 	# 		and append them to the growing reference database and info file
-	refseq = open('refseq.fasta', 'a')
-	reports = open('reports.txt', 'a')  # temp file, db_info constructed later
-	with(open('ftpfilepaths', 'r')) as ftpfilepaths:
-		with(open('ftpreportpaths', 'r')) as ftpreportpaths:
+	if not args.no_combine:
+		refseq = open('ref_db.fasta', 'a')
+	nc = '../' if args.no_combine else ''  # add to filenames if args.no_combine
+	reports = open(nc+'reports.txt', 'a')  # temp file, db_info constructed later
+	if args.no_combine:  # if keeping individual org. files, mkdir for them
+		os.makedirs('organism_files')
+		os.chdir('organism_files')
+
+	with(open(nc+'ftpfilepaths', 'r')) as ftpfilepaths:
+		with(open(nc+'ftpreportpaths', 'r')) as ftpreportpaths:
 			for fileline in ftpfilepaths:
 				reportline = ftpreportpaths.readline()
 				# download the files
-				with(open('logfile', 'a')) as logfile:
+				with(open(nc+'logfile', 'a')) as logfile:
 					subprocess.Popen(['wget', fileline.strip()],
 						stdout=logfile, stderr=logfile).wait()
 					subprocess.Popen(['wget', reportline.strip()],
 						stdout=logfile, stderr=logfile).wait()
 
-				# grab the file names, decompress the genome, and append to
-				# 		refseq.fasta and dbinfo.txt
-				filename = fileline.strip().split('/')[-1]
+				if not args.no_combine:
+					# grab the file names, decompress the genome, and append to
+					# 		ref_db.fasta and dbinfo.txt
+					fname = fileline.strip().split('/')[-1]
+					p = subprocess.Popen(['cat', fname], stdout=subprocess.PIPE)
+					subprocess.Popen(['gunzip'],
+						stdin=p.stdout, stdout=refseq).wait()
+					subprocess.Popen(['rm', fname]).wait()
+				# always combine report files
 				reportname = reportline.strip().split('/')[-1]
-				p = subprocess.Popen(['cat', filename], stdout=subprocess.PIPE)
-				subprocess.Popen(['gunzip'],
-					stdin=p.stdout, stdout=refseq).wait()
 				subprocess.Popen(['cat', reportname], stdout=reports).wait()
-
-				# Finally, remove the individual files and update progress
-				subprocess.Popen(['rm', filename, reportname]).wait()
+				subprocess.Popen(['rm', reportname]).wait()
 				if args.verbose:
 					done += 1
 					progressBar(done, num_dl)
-	refseq.close()
 	reports.close()
+	if args.no_combine:
+		os.chdir('..')
+	else:
+		refseq.close()
 
 
 def get_accession_lengths(args):
-	# reads through refseq.fasta, matching accession to entry length in bases
+	# reads through ref_db.fasta, matching accession to entry length in bases
 	acc2len = {}
 	accession, curlen = 'IGNORE', 0
-	with(open('refseq.fasta', 'r')) as refseq:
+	with(open('ref_db.fasta', 'r')) as refseq:
 		for line in refseq:
 			if line.startswith('>'):
 				acc2len[accession] = str(curlen)
@@ -278,7 +304,7 @@ def clean_refseq(args):
 			acc = line.split()[0]
 			info_accessions[acc] = 0
 
-	with(open('refseq.fasta', 'r')) as infile:
+	with(open('ref_db.fasta', 'r')) as infile:
 		with(open('refseq-clean.fasta', 'w')) as outfile:
 			for line in infile:
 				if line.startswith('>'):
@@ -286,8 +312,8 @@ def clean_refseq(args):
 					write = (acc in info_accessions)
 				if write:
 					outfile.write(line)
-	subprocess.Popen(['rm', 'refseq.fasta']).wait()
-	subprocess.Popen(['mv', 'refseq-clean.fasta', 'refseq.fasta']).wait()
+	subprocess.Popen(['rm', 'ref_db.fasta']).wait()
+	subprocess.Popen(['mv', 'refseq-clean.fasta', 'ref_db.fasta']).wait()
 
 
 def main():
@@ -300,31 +326,37 @@ def main():
 	os.chdir(args.dir)
 	open('logfile', 'w').close()  # clear the logfile
 
-	# Call the methods to construct refseq.fasta and db_info.txt
-	if args.verbose:
-		echo('Downloading filepaths and taxonomy dump (<5 mins)...')
-	download_info(args)
-	if args.verbose:
-		echo('Building taxonomic tree (<1 min)...')
-	taxtree = build_taxtree(args)
-	if args.verbose:
-		echo('Downloading genomes and building database (very long)...')
-	download_genomes(args)
-	if args.verbose:
-		echo('Building database info file (~1 hour)...', prepend='\n')
-	construct_dbinfo(args, taxtree)
-	if args.verbose:
-		echo('Cleaning files (<1 hour)...', prepend='\n')
-	remove_dupl_dbinfo(args)
-	clean_refseq(args)
+	# Call the methods to construct ref_db.fasta and db_info.txt
+	if args.mode == 'all' or args.mode == 'setup':
+		if args.verbose:
+			echo('Downloading filepaths and taxonomy dump (<5 mins)...')
+		setup(args)
+	if args.mode != 'setup':
+		if args.verbose:
+			echo('Building taxonomic tree (<1 min)...')
+		taxtree = build_taxtree(args)
+		if args.mode == 'all' or args.mode == 'dl-genomes':
+			if args.verbose:
+				echo('Downloading genomes and building database (very long)...')
+			download_genomes(args)
+		if (args.mode == 'all' or args.mode == 'build_info'):
+			if not args.no_combine:
+				if args.verbose:
+					echo('Building database info file (~1 hour)...',
+						prepend='\n')
+				construct_dbinfo(args, taxtree)
+				if args.verbose:
+					echo('Adjusting databases (<1 hour)...', prepend='\n')
+				remove_dupl_dbinfo(args)
+				clean_refseq(args)
 
-	# Clear temporary files
-	subprocess.Popen(['rm', 'ftpfilepaths', 'ftpreportpaths',
-	 	'reports.txt', 'logfile']).wait()
-	subprocess.Popen(['rm', 'names.dmp', 'nodes.dmp']).wait()
+	if not args.no_clean:
+		# Clear temporary files
+		subprocess.Popen(['rm', 'ftpfilepaths', 'ftpreportpaths',
+		 	'reports.txt', 'logfile']).wait()
+		subprocess.Popen(['rm', 'names.dmp', 'nodes.dmp']).wait()
 
 
 if __name__ == '__main__':
 	main()
 #
-
