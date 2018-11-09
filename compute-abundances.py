@@ -14,7 +14,9 @@ def parseargs():  # handle user arguments
 	parser.add_argument('sam', nargs='+',
 		help='.sam file or list of .sam files to process. Required.')
 	parser.add_argument('--assignment', choices=['em', 'proportional'],
-		default='proportional', help='Method for assignming multimapped reads.')
+		default='em', help='Method for assignming multimapped reads.')
+	parser.add_argument('--min_abundance', type=float, default=10**-10,
+		help='Minimum abundance for a taxa to be included in the results.')
 	parser.add_argument('--min_map', type=int, default=-1,
 		help='Minimum bases mapped to count a hit.')
 	parser.add_argument('--max_ed', type=int, default=999999999,
@@ -30,6 +32,8 @@ def parseargs():  # handle user arguments
 		help='Minimum percent identity from reference to count a hit.')
 	parser.add_argument('--read_cutoff', type=int, default=-1,
 		help='Number of reads to count an organism as present.')
+	parser.add_argument('--sampleID', default='NONE',
+		help='Sample ID for output. Defaults to sam file name(s).')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
 	args = parser.parse_args()
@@ -578,7 +582,10 @@ def gather_results(args, acc2info, taxid2info):
 def write_results(args, rank_results):
 	with(open(args.output, 'w')) as outfile:
 		# Print some CAMI format header lines
-		outfile.write('@SampleID:' + ','.join(args.sam) + '\n')
+		if args.sampleID == 'NONE':
+			outfile.write('@SampleID:' + ','.join(args.sam) + '\n')
+		else:
+			outfile.write('@SampleID:' + args.sampleID + '\n')
 		outfile.write('@Version:MiCoP2-v0.1\n')
 		outfile.write('@Ranks: ' +
 			'superkingdom|phylum|class|order|family|genus|species|strain\n\n')
@@ -595,6 +602,8 @@ def write_results(args, rank_results):
 			if lines == None or len(lines) < 1:
 				continue
 			for line in lines:
+				if line[4] < args.min_abundance:
+					continue
 				line = [str(i) for i in line]
 				outfile.write('\t'.join(line)+'\n')
 
