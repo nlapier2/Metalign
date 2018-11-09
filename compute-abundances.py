@@ -104,7 +104,6 @@ def parse_flag(flag, cigar):
 	# 1st or 2nd read in a pair, both false if single end
 	pair1 = (flag & 1 != 0) and (flag & 64 != 0)
 	pair2 = (flag & 1 != 0) and (flag & 128 != 0)
-	#sndary = (flag & 256 != 0)  # secondary hit
 	chimeric = (flag & 2048 != 0)
 	# "bad" here means unmapped or cigar string unavailable
 	is_bad = (flag & 4 != 0) or (cigar == '*')  # or (flag & 2048 != 0)
@@ -163,7 +162,6 @@ def process_read(args, read_hits, pair1, pair2, pair1maps, pair2maps):
 		if len(intersect) == 0:  # one end unmapped, other multimapped
 			return [], 'Ambiguous', '', -1  #we consider this case too ambiguous
 		elif len(intersect) == 1:  # read pairs only agree on one taxid
-			#hitlen = int(len(read_hits[0][9])) + int(len(read_hits[1][9]))
 			return [], read_hits[0][2], readquals, hitlen  # considered uniq map
 		else:  # both ends multimapped, handle later
 			return intersect_hits, '', readquals, hitlen
@@ -201,7 +199,7 @@ def process_samfile(args, samfile, acc2info, taxid2info):
 				continue
 			splits = line.strip().split()
 			pair1, pair2, chimer, is_bad = parse_flag(int(splits[1]), splits[5])
-			if is_bad:  #unmapped or cigar string unavailable
+			if is_bad:  # unmapped or cigar string unavailable
 				continue
 			splits[1] = [pair1, pair2, chimer, is_bad]  # store flag fields
 			# here we change accession to taxid since we want to
@@ -275,8 +273,6 @@ def single_read_likelihood(probs, cigar, taxid_ab):
 		if ch.isdigit():
 			curval = (curval * 10) + int(ch)
 		else:
-			#print('len(probs) cur_ind curval cigar')
-			#print(len(probs), cur_ind, curval, cigar)
 			if ch == 'M' or ch == '=':  # base likelihoods for matched bases
 				base_likelihoods.extend(
 					[1-probs[i] for i in range(cur_ind, cur_ind + curval)])
@@ -316,10 +312,8 @@ def read_likelihood_ratio(read_hits, taxids2abs):
 		prob_bases_wrong = [10 ** (-(ord(ch) - 33) / 10) for ch in base_quals]
 		likelihoods[taxid] = single_read_likelihood(prob_bases_wrong, cigars,
 														taxids2abs[taxid])
-		#print('Likelihood for taxid ' +str(taxid) + ': ' +str(likelihoods[taxid]))
 
 	# compute likelihoods as proportions of sum over all assignment likelihoods
-	#print(likelihoods)
 	total_likelihood = sum([v for k, v in likelihoods.items()])
 	likelihoods = {k: v / total_likelihood for k,v in likelihoods.items()}
 	return likelihoods
@@ -396,8 +390,6 @@ def resolve_multi_em(args, total_bases, taxids2abs, multimapped, taxid2info):
 	if len(multimapped) == 0:
 		return taxids2abs
 	uniq_prop, only_abs = initital_estimate(only_abs, multimapped, total_bases)
-	#if args.verbose:
-	#	print('EM initial estimates: ' + str(only_abs))
 
 	# we have a dict showing changes in ab. estimates for each step;
 	#  	 if this changes dict has small enough magnitude, end EM updates
@@ -411,8 +403,6 @@ def resolve_multi_em(args, total_bases, taxids2abs, multimapped, taxid2info):
 			print('EM iteration', str(iter), '-- Sum of changes in abundances:',
 			 	str(sum([abs(v) for k,v in changes.items()])))
 
-	#if args.verbose:
-	#	print('\n\nEM final estimates: ' + str(only_abs))
 	for taxid in only_abs:  # incorporate updated abundance estimates
 		taxids2abs[taxid][1] = only_abs[taxid]
 	return taxids2abs
@@ -464,10 +454,7 @@ def rank_renormalize(clades2abs, only_strains=False):
 		rank, ab = clades2abs[clade][1], clades2abs[clade][-1]
 		rank_totals[rank] += ab  # add this to the rank sum total
 	for clade in clades2abs:  # here's the normalization
-		#if only_strains and clades2abs[clade][1] == 'strain':
 		clades2abs[clade][-1] /= (rank_totals[clades2abs[clade][1]] / 100.0)
-		#else:  # don't div by 100.0, already did in strain ab. normalization
-		#	clades2abs[clade][-1] /= rank_totals[clades2abs[clade][1]]
 	return clades2abs
 
 
@@ -582,10 +569,7 @@ def gather_results(args, acc2info, taxid2info):
 		rank = RANKS.index(results[clade][1])
 		if rank == 7:  # strain; add extra CAMI genomeID and OTU fields
 			taxid = results[clade][0]
-			#if taxid.endswith('.0'):  # unidentified strain
 			cami_genid, cami_otu = taxid, taxid.split('.')[0]
-			#else:
-			#	cami_genid, cami_otu = taxid + '.1', taxid
 			results[clade].extend([cami_genid, cami_otu])
 		rank_results[rank].append(results[clade])  # results per rank
 	return rank_results
@@ -594,12 +578,10 @@ def gather_results(args, acc2info, taxid2info):
 def write_results(args, rank_results):
 	with(open(args.output, 'w')) as outfile:
 		# Print some CAMI format header lines
-		#outfile.write('# MiCoP2 Profiling Output\n')
 		outfile.write('@SampleID:' + ','.join(args.sam) + '\n')
 		outfile.write('@Version:MiCoP2-v0.1\n')
 		outfile.write('@Ranks: ' +
 			'superkingdom|phylum|class|order|family|genus|species|strain\n\n')
-		#outfile.write('@TaxonomyID:ncbi-taxonomy_29Sep2018\n')
 		outfile.write('@@TAXID\tRANK\tTAXPATH\tTAXPATHSN\t' +
 			'PERCENTAGE\t_CAMI_genomeID\t_CAMI_OTU\n')
 
