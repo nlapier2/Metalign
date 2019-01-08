@@ -7,6 +7,8 @@ def parseargs():    # handle user arguments
 	parser.add_argument('reads', help='Path to reads file.')
 	parser.add_argument('db_dir',
 		help='Directory with all organism files in the full database.')
+	parser.add_argument('--cmash_results', default='NONE',
+		help='Can specfily location of CMash query results if already done.')
 	parser.add_argument('--cutoff', type=float, default=-1.0,
 		help = 'CMash cutoff value. Default is 1/(log10(reads file bytes)**2).')
 	parser.add_argument('--output', default='cmashed_db.fna',
@@ -17,12 +19,16 @@ def parseargs():    # handle user arguments
 
 def run_cmash_and_cutoff(args):
 	cmash_db_loc = 'data/cmash_db.h5'
-	# temporarily write cmash results to the --output file; should be writeable
-	cmash_proc = subprocess.Popen(['CMash/scripts/QueryDNADatabase.py',
-		args.reads, cmash_db_loc, args.output]).wait()
+	if args.cmash_results == 'NONE':
+		# temporarily write cmash results to --output file; should be writeable
+		cmash_out = args.output
+		cmash_proc = subprocess.Popen(['CMash/scripts/QueryDNADatabase.py',
+			args.reads, cmash_db_loc, args.output]).wait()
+	else:
+		cmash_out = args.cmash_results
 
 	organisms_to_include = []
-	with(open(args.output, 'r')) as cmash_results:
+	with(open(cmash_out, 'r')) as cmash_results:
 		cmash_results.readline()  # skip header line
 		for line in cmash_results:
 			splits = line.strip().split(',')
