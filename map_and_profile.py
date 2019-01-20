@@ -32,6 +32,8 @@ def parseargs():  # handle user arguments
 		help='Output abundances file. Default: abundances.txt')
 	parser.add_argument('--pct_id', type=float, default=-1,
 		help='Minimum percent identity from reference to count a hit.')
+	parser.add_argument('--quantify_unmapped', action='store_true',
+		help='Factor in unmapped reads in abundance estimation.')
 	parser.add_argument('--read_cutoff', type=int, default=-1,
 		help='Number of reads to count an organism as present.')
 	parser.add_argument('--sampleID', default='NONE',
@@ -194,19 +196,27 @@ def preprocess_multimapped(total_bases, multimapped, taxids2abs):
 # Runs minimap2, processes output, and returns a dict of taxids mapped to number
 #  	of uniquely mapped reads and bases for that taxid,
 #  	and a list of multimapped reads.
-def map_and_process(args, readsfile, acc2info, taxid2info):
+def map_and_process(args, infile, acc2info, taxid2info):
 	taxids2abs, multimapped = {}, []  # taxids to abundances, multimapped reads
 	prev_read, read_hits = '', [] # read tracker, all hits for read (full lines)
 	pair1maps, pair2maps = 0, 0  # reads mapped to each pair (single = pair1)
 	total_bases = 0
 
-	mapper = subprocess.Popen(['./minimap2/minimap2', '-ax', 'sr', '-w', '5',
-		'-k', '15', '-t', '4', '-2', '-n' '1', '--secondary=yes',
-		args.db, readsfile], stdout=subprocess.PIPE, bufsize=1)
-	for line in iter(mapper.stdout.readline, ""):
-		line = line.decode('utf-8')
-		if not line:  # process finished
-			break
+	samfile = False
+	if infile.endswith('sam'):  # input stream from sam file
+		samfile = True
+		instream = open(infile, 'r')
+	else:  # run minimap2 and stream its output as input
+		mapper = subprocess.Popen(['./minimap2/minimap2', '-ax', 'sr', '-w','5',
+			'-k', '15', '-t', '4', '-2', '-n' '1', '--secondary=yes',
+			args.db, infile], stdout=subprocess.PIPE, bufsize=1)
+		instream = iter(mapper.stdout.readline, "")
+
+	for line in instream:
+		if not samfile:
+			line = line.decode('utf-8')
+			if not line:  # process finished
+				break
 		if line.startswith('@'):
 			continue
 		splits = line.strip().split()
@@ -246,61 +256,11 @@ def map_and_process(args, readsfile, acc2info, taxid2info):
 			pair2maps += pair2  # unchanged if pair2 false
 			read_hits.append(splits)
 
-	mapper.stdout.close()
-	mapper.wait()
-	total_bases, multimapped = preprocess_multimapped(total_bases, multimapped,
-														taxids2abs)
-	return taxids2abs, multimapped, float(total_bases)
-
-
-# Reads sam file -> returns a dict of taxids mapped to number of uniquely mapped
-# 	reads and bases for that taxid, and a list of multimapped reads.
-def process_samfile(args, samfile, acc2info, taxid2info):
-	taxids2abs, multimapped = {}, []  # taxids to abundances, multimapped reads
-	prev_read, read_hits = '', [] # read tracker, all hits for read (full lines)
-	pair1maps, pair2maps = 0, 0  # reads mapped to each pair (single = pair1)
-	total_bases = 0
-
-	with(open(samfile, 'r')) as infile:
-		for line in infile:
-			if line.startswith('@'):
-				continue
-			splits = line.strip().split()
-			pair1, pair2, chimer, is_bad = parse_flag(int(splits[1]), splits[5])
-			if is_bad:  # unmapped or cigar string unavailable
-				continue
-			splits[1] = [pair1, pair2, chimer, is_bad]  # store flag fields
-			# here we change accession to taxid since we want to
-			#  	profile by organisms, not accessions
-			splits[2] = acc2info[splits[2]][1]
-
-			read, ref = splits[0], splits[2]
-			if read != prev_read:
-				# get uniq hit taxid and hitlen, or multimapped hits intersect
-				intersect_hits, taxid, readquals, hitlen = process_read(
-					args, read_hits, pair1, pair2, pair1maps, pair2maps)
-				# reset these read-specific variables
-				prev_read, read_hits, pair1maps, pair2maps = read, [splits], 0,0
-				if taxid == 'Ambiguous':  # ambiguous mapping (see process_read)
-					continue
-				if taxid != '' and not (args.no_len_normalization
-											or args.assignment == 'em'):
-					hitlen /= taxid2info[taxid][0]  # normalize by genome length
-				if intersect_hits == []:  # unique hit
-					total_bases += hitlen
-					if taxid in taxids2abs:
-						taxids2abs[taxid][0] += 1  # reads hit
-						taxids2abs[taxid][1] += hitlen  # bases hit
-					else:  # also store lineage for taxid
-						taxids2abs[taxid] = [1, hitlen] + taxid2info[taxid]
-				else:  # multimapped hit
-					intersect_hits[0][10] = readquals  # ensure qual scores
-					intersect_hits[0].append(pair1 or pair2)  # paired or not
-					multimapped.append(intersect_hits)
-			else:
-				pair1maps += pair1 or not(pair1 or pair2)  # pair1 or single
-				pair2maps += pair2  # unchanged if pair2 false
-				read_hits.append(splits)
+	if samfile:
+		instream.close()
+	else:
+		mapper.stdout.close()
+		mapper.wait()
 	if len(multimapped) > 0:
 		total_bases, multimapped = preprocess_multimapped(total_bases,
 										multimapped, taxids2abs)
@@ -328,11 +288,14 @@ def initital_estimate(taxids2abs, multimapped, total_bases):
 
 
 # Based on magnitude of changes since last EM estimate, decide whether to stop
-def end_condition(changes):
+def end_condition(changes, prev_magnitude):
 	ab_magnitude = sum([abs(v) for k,v in changes.items()])
 	if ab_magnitude < (10 ** -3):
-		return True
-	return False
+		return True, ab_magnitude
+	diff_pct = abs(prev_magnitude - ab_magnitude) / prev_magnitude
+	if diff_pct < 0.1:
+		return True, ab_magnitude
+	return False, ab_magnitude
 
 
 # Computes the likelihood estimate for a read mapping using base quality scores
@@ -468,14 +431,16 @@ def resolve_multi_em(args, total_bases, taxids2abs, multimapped, taxid2info):
 	# we have a dict showing changes in ab. estimates for each step;
 	#  	 if this changes dict has small enough magnitude, end EM updates
 	changes = {k:(only_abs[k]-v) for k,v in uniq_prop.items()}
-	iter = 0
-	while not end_condition(changes):
+	iter, end_iters = 0, 0
+	end, prev_magnitude = end_condition(changes, 1000000.0)
+	while not end:
 		changes, only_abs = em_update(args, total_bases, uniq_prop,
 										only_abs, taxid2info, multimapped)
 		if args.verbose:
 			iter += 1
 			print('EM iteration', str(iter), '-- Sum of changes in abundances:',
 			 	str(sum([abs(v) for k,v in changes.items()])))
+		end, prev_magnitude = end_condition(changes, prev_magnitude)
 
 	for taxid in only_abs:  # incorporate updated abundance estimates
 		taxids2abs[taxid][1] = only_abs[taxid]
@@ -599,15 +564,9 @@ def compute_abundances(args, infile, acc2info, tax2info):
 	taxids2abs, clades2abs, multimapped = {}, {}, {}
 	if args.verbose:
 		print('Reading input file ' + infile)
-
-	if infile.endswith('sam'):
-		# parse sam file to get uniq map abundances and multimapped reads
-		taxids2abs, multimapped, total_bases = process_samfile(args, infile,
-															acc2info, tax2info)
-	else:
-		# run mapping and process to get uniq map abundances & multimapped reads
-		taxids2abs, multimapped, total_bases = map_and_process(args, infile,
-															acc2info, tax2info)
+	# run mapping and process to get uniq map abundances & multimapped reads
+	taxids2abs, multimapped, total_bases = map_and_process(args, infile,
+														acc2info, tax2info)
 	if args.verbose:
 		print('Done reading input file ' + infile)
 	# filter out organisms below the read cutoff set by the user, if applicable
