@@ -155,6 +155,7 @@ def assign_unique_taxids(taxid2asmnames, name2final_ver):
 def build_dbinfo_and_extract(args, asm2taxid, taxtree):
 	dbinfo = open(args.output_dir + 'db_info.txt', 'w')
 	dbinfo.write('Accesion\tLength   \tTaxID   \tLineage \tTaxID_Lineage\n')
+	dbinfo.write('Unmapped\t0\tUnmapped\t|||||||Unmapped\t|||||||Unmapped\n')
 	for asm_acc in asm2taxid:
 		# for each assembly, generate its lineage info and output file handler
 		taxid, genome_len, acc_list = asm2taxid[asm_acc], 0, []
