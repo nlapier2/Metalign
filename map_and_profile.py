@@ -69,7 +69,7 @@ def get_acc2info(args):
 		for line in infofile:
 			acc, acclen, taxid, namelin, taxlin = line.strip().split('\t')
 			rank = get_taxid_rank(taxlin)
-			if rank == 'strain':
+			if rank == 'strain' and acc != 'Unmapped':
 				taxid += '.1'  # CAMI formatting specification
 				taxlin += '.1'
 			acclen = int(acclen)
@@ -200,9 +200,9 @@ def map_and_process(args, infile, acc2info, taxid2info):
 	taxids2abs, multimapped = {}, []  # taxids to abundances, multimapped reads
 	prev_read, read_hits = '', [] # read tracker, all hits for read (full lines)
 	pair1maps, pair2maps = 0, 0  # reads mapped to each pair (single = pair1)
-	total_bases = 0
+	total_bases, total_reads = 0, 0.0
 
-	samfile = False
+	samfile = False  # whether reading from existing sam file
 	if infile.endswith('sam'):  # input stream from sam file
 		samfile = True
 		instream = open(infile, 'r')
@@ -218,6 +218,11 @@ def map_and_process(args, infile, acc2info, taxid2info):
 			if not line:  # process finished
 				break
 		if line.startswith('@'):
+			if args.quantify_unmapped:
+				if 'Unmapped' in taxids2abs:
+					taxids2abs['Unmapped'][0] += 1.0  # reads hit
+				else:  # also store lineage for taxid
+					taxids2abs['Unmapped'] = [1.0, 0.0] + taxid2info['Unmapped']
 			continue
 		splits = line.strip().split()
 		pair1, pair2, chimer, is_bad = parse_flag(int(splits[1]), splits[5])
@@ -230,12 +235,19 @@ def map_and_process(args, infile, acc2info, taxid2info):
 
 		read, ref = splits[0], splits[2]
 		if read != prev_read:
+			total_reads += 1.0
 			# get uniq hit taxid and hitlen, or multimapped hits intersect
 			intersect_hits, taxid, readquals, hitlen = process_read(
 				args, read_hits, pair1, pair2, pair1maps, pair2maps)
 			# reset these read-specific variables
 			prev_read, read_hits, pair1maps, pair2maps = read, [splits], 0,0
 			if taxid == 'Ambiguous':  # ambiguous mapping (see process_read)
+				if args.quantify_unmapped:
+					if 'Unmapped' in taxids2abs:
+						taxids2abs['Unmapped'][0] += 1.0  # reads hit
+					else:  # also store lineage for taxid
+						taxids2abs['Unmapped'] = ([1.0, 0.0] +
+							taxid2info['Unmapped'])
 				continue
 			if taxid != '' and not (args.no_len_normalization
 										or args.assignment == 'em'):
@@ -264,6 +276,9 @@ def map_and_process(args, infile, acc2info, taxid2info):
 	if len(multimapped) > 0:
 		total_bases, multimapped = preprocess_multimapped(total_bases,
 										multimapped, taxids2abs)
+	# store percentage of unmapped reads
+	if args.quantify_unmapped:
+		taxids2abs['Unmapped'][1] = taxids2abs['Unmapped'][0] / total_reads
 	return taxids2abs, multimapped, float(total_bases)
 
 
@@ -421,7 +436,7 @@ def min_likelihood_filter(multimapped, taxids2abs):
 #  	without explicitly assigning reads. Recommended method in MiCoP2.
 def resolve_multi_em(args, total_bases, taxids2abs, multimapped, taxid2info):
 	# we temporarily just keep abundance to simplify EM operations
-	only_abs = {k: v[1] for k,v in taxids2abs.items()}
+	only_abs = {k: v[1] for k,v in taxids2abs.items() if k != 'Unmapped'}
 	# filter out hits and reads with extremely low likelihood
 	multimapped = min_likelihood_filter(multimapped, only_abs)
 	if len(multimapped) == 0:
@@ -487,13 +502,26 @@ def resolve_multi_prop(args, taxids2abs, multimapped, taxid2info):
 
 
 # Renormalize each taxonomic rank so each rank sums to 100% abundance
-def rank_renormalize(clades2abs, only_strains=False):
+def rank_renormalize(args, clades2abs, only_strains=False):
 	rank_totals = {i:0.0 for i in RANKS}  # current rank abundance sums
+	mapped_pct = 100.0
+	if args.quantify_unmapped:  # only normalize against the pct of mapped reads
+		mapped_pct = 100.0 - (100.0 * clades2abs['Unmapped'][-1])
 	for clade in clades2abs:
+		if clade == 'Unmapped':
+			continue
 		rank, ab = clades2abs[clade][1], clades2abs[clade][-1]
+		if only_strains and rank != 'strain':
+			continue
 		rank_totals[rank] += ab  # add this to the rank sum total
+
 	for clade in clades2abs:  # here's the normalization
-		clades2abs[clade][-1] /= (rank_totals[clades2abs[clade][1]] / 100.0)
+		if clade == 'Unmapped':
+			continue
+		rank = clades2abs[clade][1]
+		if only_strains and rank != 'strain':
+			continue
+		clades2abs[clade][-1]/= (rank_totals[clades2abs[clade][1]] / mapped_pct)
 	return clades2abs
 
 
@@ -530,7 +558,7 @@ def tree_results_cami(args, taxids2abs):
 		taxids2abs[taxid] = [taxid, old[3], old[5], old[4], old[1]]
 	taxids2abs = gen_lower_taxa(taxids2abs)  # ensures everything strain level
 	# always renormalize strains, to ensure legitimate profile
-	taxids2abs = rank_renormalize(taxids2abs, only_strains=True)
+	taxids2abs = rank_renormalize(args, taxids2abs, only_strains=True)
 
 	# Now compute higher clade abundances
 	clades2abs = {k:v for k,v in taxids2abs.items()}
@@ -553,7 +581,7 @@ def tree_results_cami(args, taxids2abs):
 										  clade_taxlin, clade_namelin, clade_ab]
 
 	if not args.no_rank_renormalization:
-		clades2abs = rank_renormalize(clades2abs)
+		clades2abs = rank_renormalize(args, clades2abs)
 	return clades2abs
 
 
