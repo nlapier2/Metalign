@@ -5,8 +5,7 @@ from functools import reduce
 
 start = time.time()  # start a program timer
 __location__ = os.path.realpath(os.path.join(os.getcwd(),
-								os.path.dirname(__file__)))
-db_info = __location__ + '/data/db_info.txt'
+								os.path.dirname(__file__))) + '/'
 RANKS = ['superkingdom', 'phylum', 'class', 'order',
 		'family', 'genus', 'species', 'strain']
 
@@ -29,6 +28,8 @@ def parseargs():  # handle user arguments
 		default='em', help='Method for assignming multimapped reads.')
 	parser.add_argument('--db', default='NONE',
 		help='Path to database from select_db.py. Required if read files given.')
+	parser.add_argument('--dbinfo', default='AUTO',
+		help = 'Location of db_info file. Default: data/subset_db_info.txt')
 	parser.add_argument('--min_abundance', type=float, default=10**-4,
 		help='Minimum abundance for a taxa to be included in the results.')
 	parser.add_argument('--min_map', type=int, default=-1,
@@ -68,15 +69,15 @@ def get_taxid_rank(taxlin):
 	return RANKS[-(end_empty+1)]
 
 
-# Parses information in db_info.txt file, which maps NCBI accession to
+# Parses information in dbinfo file, which maps NCBI accession to
 # 	accession length, taxid, name lineage, and taxid lineage.
 # Also maps all lowest-level taxids to organism length, which is the sum of
 #  	accession lengths for accessions with that taxid, and lineage info
 def get_acc2info(args):
 	if args.verbose:
-		echo('Reading db_info.txt...')
+		echo('Reading dbinfo file...')
 	acc2info, taxid2info = {}, {}
-	with(open(db_info, 'r')) as infofile:
+	with(open(args.dbinfo, 'r')) as infofile:
 		infofile.readline()  # skip header line
 		for line in infofile:
 			acc, acclen, taxid, namelin, taxlin = line.strip().split('\t')
@@ -91,7 +92,7 @@ def get_acc2info(args):
 			else:
 				taxid2info[taxid] = [acclen, rank, namelin, taxlin]
 	if args.verbose:
-		echo('Done reading db_info.txt.')
+		echo('Done reading dbinfo file.')
 	return acc2info, taxid2info
 
 
@@ -684,6 +685,8 @@ def main():
 	if args.db == 'NONE' and not args.infiles[0].endswith('sam'):
 		print('Error: --db must be specified unless .sam files are provided.')
 		sys.exit()
+	if args.dbinfo == 'AUTO':
+		args.dbinfo = __location__ + 'data/subset_db_info.txt'
 	open(args.output, 'w').close()  # test to see if writeable
 
 	# maps NCBI accession to length, taxid, name lineage, taxid lineage
