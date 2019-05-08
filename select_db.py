@@ -69,25 +69,15 @@ def run_kmc_steps(args):
 				fasta.write('>seq' + '\n' + seq + '\n')
 
 
-	#cat_proc = subprocess.Popen(['cat', args.kmc_dir+'60mers_intersection_dump'],
-	#	stdout=subprocess.PIPE)
-	#cut_proc = subprocess.Popen(['cut', '-f1'], stdin=cat_proc.stdout,
-	#	stdout=subprocess.PIPE)
-	#with(open(args.kmc_dir + '60mers_intersection_dump.fa', 'w')) as kmc_res:
-	#	sed_proc = subprocess.Popen(['sed', "'s/^/>seq\n/g'"],
-	#		stdin = cut_proc.stdout, stdout = kmc_res).wait()
-
-
 def run_cmash_and_cutoff(args, taxid2info):
 	cmash_db_loc = __location__ + 'data/cmash_db_n1000_k60.h5'
 	cmash_filter_loc = __location__ + 'data/cmash_filter_n1000_k60_30-60-10.bf'
 	if args.cmash_results == 'NONE':
-		# temporarily write cmash results to --output file; should be writeable
-		cmash_out = args.output
+		cmash_out = args.kmc_dir + 'cmash_query_results.csv'  # args.output
 		script_loc = __location__ + 'CMash/scripts/StreamingQueryDNADatabase.py'
 		cmash_proc = subprocess.Popen(['python', script_loc,
 			args.kmc_dir + '60mers_intersection_dump.fa', cmash_db_loc,
-			args.output, '30-60-10', '-c', '0', '-r', '1000000', '-v',
+			cmash_out, '30-60-10', '-c', '0', '-r', '1000000', '-v',
 			'-f', cmash_filter_loc, '--sensitive']).wait()
 	else:
 		cmash_out = args.cmash_results
@@ -155,7 +145,7 @@ def main():
 	organisms_to_include = run_cmash_and_cutoff(args, taxid2info)
 	make_db_and_dbinfo(args, organisms_to_include, taxid2info)
 
-	if not args.keep_kmc_files:
+	if not args.keep_kmc_files and args.cmash_results == 'NONE':
 		subprocess.Popen(['rm', args.kmc_dir + 'reads_60mers.kmc_pre',
 		args.kmc_dir + 'reads_60mers.kmc_suf',
 		args.kmc_dir + '60mers_intersection.kmc_pre',
