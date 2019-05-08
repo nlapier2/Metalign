@@ -24,8 +24,8 @@ def parseargs():  # handle user arguments
 		description='Compute abundance estimations for species in a sample.')
 	parser.add_argument('infiles', nargs='+',
 		help='sam or reads file(s) (space-delimited if multiple). Required.')
-	parser.add_argument('--assignment', choices=['em', 'proportional'],
-		default='em', help='Method for assignming multimapped reads.')
+	parser.add_argument('--assignment', choices=['em', 'proportional', 'none'],
+		default='proportional', help='Method for assignming multimapped reads.')
 	parser.add_argument('--db', default='NONE',
 		help='Path to database from select_db.py. Required if read files given.')
 	parser.add_argument('--dbinfo', default='AUTO',
@@ -51,6 +51,8 @@ def parseargs():  # handle user arguments
 		help='Number of reads to count an organism as present.')
 	parser.add_argument('--sampleID', default='NONE',
 		help='Sample ID for output. Defaults to input file name(s).')
+	parser.add_argument('--strain_level', action='store_true',
+		help='Write output at the strain level as well.')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
 	args = parser.parse_args()
@@ -332,12 +334,13 @@ def map_and_process(args, infile, acc2info, taxid2info):
 					# store taxids hit and length (in bases) of hits
 					intersect_hits = [[hit[2], len(hit[9])]
 						for hit in intersect_hits]
-				else:  # em assignment -- compute read assingment likelihoods
+					intersect_hits[0].append(len(readquals))  # total hit length
+				elif args.assignment == 'em':  # compute assingment likelihoods
 					intersect_hits[0][10] = readquals  # ensure qual scores
 					intersect_hits[0].append(pair1 or pair2)  # paired or not
 					intersect_hits = compute_read_likelihoods(intersect_hits)
 				# for em, ensure min. likelihood filter didn't filter all hits
-				if intersect_hits[0] != {}:
+				if intersect_hits[0] != {} and args.assignment != 'none':
 					multimapped.append(intersect_hits)
 					mmap_bases.append(len(readquals))
 		else:
@@ -355,6 +358,8 @@ def map_and_process(args, infile, acc2info, taxid2info):
 		total_bases, multimapped = preprocess_multimapped(args, total_bases,
 			mmap_bases, multimapped, taxids2abs)
 		mmap_bases = total_bases - unique_bases  # number of multimapped bases
+	else:
+		mmap_bases = 0
 	# store percentage of unmapped reads
 	if args.quantify_unmapped:
 		taxids2abs['Unmapped'][1] = taxids2abs['Unmapped'][0] / float(total_reads)
@@ -469,28 +474,41 @@ def resolve_multi_prop(args, taxids2abs, multimapped, taxid2info):
 			continue
 		taxid_abs = [taxids2abs[tax][1] for tax in all_taxids]
 
-		# now get cumulative proportional abs. of taxids relative to each other
+		## now get cumulative proportional abs. of taxids relative to each other
 		sumabs = sum(taxid_abs)
 		proportions = [ab / sumabs for ab in taxid_abs]
-		cumulative = [sum(proportions[:i+1]) for i in range(len(proportions))]
+		hitlen = read_hits[0][-1]
+
+		# divide hit length proportionally among hit taxids; divided assignment
+		for i in range(len(all_taxids)):
+			this_hitlen = proportions[i] * hitlen
+			if not args.no_len_normalization:
+				this_hitlen /= taxid2info[all_taxids[i]][0]
+			if all_taxids[i] in to_add:
+				to_add[all_taxids[i]] += this_hitlen
+			else:
+				to_add[all_taxids[i]] = this_hitlen
+
+
+		#cumulative = [sum(proportions[:i+1]) for i in range(len(proportions))]
 
 		# randomly proportionally choose which taxid to assign hit to
-		rand_draw = random.random()
-		for i in range(len(cumulative)):
-			if rand_draw < cumulative[i] or i+1 == len(cumulative):
-				assigned_taxid = all_taxids[i]
-		assigned_hits = [hit for hit in read_hits if hit[0] == assigned_taxid]
+		#rand_draw = random.random()
+		#for i in range(len(cumulative)):
+		#	if rand_draw < cumulative[i] or i+1 == len(cumulative):
+		#		assigned_taxid = all_taxids[i]
+		#assigned_hits = [hit for hit in read_hits if hit[0] == assigned_taxid]
 
 		# set the amount to add to taxid abundances
-		hitlen = assigned_hits[0][1]
-		if len(assigned_hits) == 2:  # paired end
-			hitlen += assigned_hits[1][1]
-		if not args.no_len_normalization:
-			hitlen /= taxid2info[assigned_taxid][0]
-		if assigned_taxid in to_add:
-			to_add[assigned_taxid] += hitlen
-		else:
-			to_add[assigned_taxid] = hitlen
+		#hitlen = assigned_hits[0][1]
+		#if len(assigned_hits) == 2:  # paired end
+		#	hitlen += assigned_hits[1][1]
+		#if not args.no_len_normalization:
+		#	hitlen /= taxid2info[assigned_taxid][0]
+		#if assigned_taxid in to_add:
+		#	to_add[assigned_taxid] += hitlen
+		#else:
+		#	to_add[assigned_taxid] = hitlen
 
 	for taxid in to_add:  # add in the multimapped portions
 		taxids2abs[taxid][1] += to_add[taxid]
@@ -596,14 +614,14 @@ def compute_abundances(args, infile, acc2info, tax2info):
 	# filter out organisms below the read cutoff set by the user, if applicable
 	taxids2abs = {k:v for k,v in taxids2abs.items() if v[0] > args.read_cutoff}
 
-	if args.verbose:
+	if args.verbose and args.assignment != 'none':
 		echo('Assigning multimapped reads...')
 	if len(multimapped) > 0 and args.assignment == 'em':
 		taxids2abs = resolve_multi_em(args, total_bases, mmap_bases, taxids2abs,
 			multimapped, tax2info)
-	elif len(multimapped) > 0:  # proportional
+	elif len(multimapped) > 0 and args.assignment == 'proportional':
 		taxids2abs = resolve_multi_prop(args, taxids2abs, multimapped, tax2info)
-	if args.verbose:
+	if args.verbose and args.assignment != 'none':
 		echo('Multimapped reads assigned.')
 
 	results = tree_results_cami(args, taxids2abs)
@@ -657,6 +675,8 @@ def write_results(args, rank_results):
 			'PERCENTAGE\t_CAMI_genomeID\t_CAMI_OTU\n')
 
 		for i in range(len(RANKS)):
+			if not args.strain_level and i == len(RANKS)-1:
+				continue  # skip the strain level unless user wants it
 			lines = rank_results[i]  # all lines to write for this tax level
 			# now sort clades in rank by descending abundance
 			if i != 7:  # not strains, which have extra fields
