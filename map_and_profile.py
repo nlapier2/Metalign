@@ -1,11 +1,22 @@
-import argparse, math, os, random, subprocess, sys
+import argparse, math, os, random, subprocess, sys, time
+from operator import mul
+from functools import reduce
 
 
+start = time.time()  # start a program timer
 __location__ = os.path.realpath(os.path.join(os.getcwd(),
-								os.path.dirname(__file__)))
-db_info = __location__ + '/data/db_info.txt'
+								os.path.dirname(__file__))) + '/'
 RANKS = ['superkingdom', 'phylum', 'class', 'order',
 		'family', 'genus', 'species', 'strain']
+
+
+def echo(msg):
+	global start
+	seconds = time.time() - start
+	m, s = divmod(seconds, 60)
+	h, m = divmod(m, 60)
+	hms = "%02d:%02d:%02d" % (h, m, s)
+	print('['+hms+'] ' + msg)
 
 
 def parseargs():  # handle user arguments
@@ -13,10 +24,12 @@ def parseargs():  # handle user arguments
 		description='Compute abundance estimations for species in a sample.')
 	parser.add_argument('infiles', nargs='+',
 		help='sam or reads file(s) (space-delimited if multiple). Required.')
-	parser.add_argument('--assignment', choices=['em', 'proportional'],
-		default='em', help='Method for assignming multimapped reads.')
+	parser.add_argument('--assignment', choices=['em', 'proportional', 'none'],
+		default='proportional', help='Method for assignming multimapped reads.')
 	parser.add_argument('--db', default='NONE',
 		help='Path to database from select_db.py. Required if read files given.')
+	parser.add_argument('--dbinfo', default='AUTO',
+		help = 'Location of db_info file. Default: data/subset_db_info.txt')
 	parser.add_argument('--min_abundance', type=float, default=10**-4,
 		help='Minimum abundance for a taxa to be included in the results.')
 	parser.add_argument('--min_map', type=int, default=-1,
@@ -38,6 +51,8 @@ def parseargs():  # handle user arguments
 		help='Number of reads to count an organism as present.')
 	parser.add_argument('--sampleID', default='NONE',
 		help='Sample ID for output. Defaults to input file name(s).')
+	parser.add_argument('--strain_level', action='store_true',
+		help='Write output at the strain level as well.')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
 	args = parser.parse_args()
@@ -56,15 +71,15 @@ def get_taxid_rank(taxlin):
 	return RANKS[-(end_empty+1)]
 
 
-# Parses information in db_info.txt file, which maps NCBI accession to
+# Parses information in dbinfo file, which maps NCBI accession to
 # 	accession length, taxid, name lineage, and taxid lineage.
 # Also maps all lowest-level taxids to organism length, which is the sum of
 #  	accession lengths for accessions with that taxid, and lineage info
 def get_acc2info(args):
 	if args.verbose:
-		print('Reading db_info.txt...')
+		echo('Reading dbinfo file...')
 	acc2info, taxid2info = {}, {}
-	with(open(db_info, 'r')) as infofile:
+	with(open(args.dbinfo, 'r')) as infofile:
 		infofile.readline()  # skip header line
 		for line in infofile:
 			acc, acclen, taxid, namelin, taxlin = line.strip().split('\t')
@@ -79,7 +94,7 @@ def get_acc2info(args):
 			else:
 				taxid2info[taxid] = [acclen, rank, namelin, taxlin]
 	if args.verbose:
-		print('Done reading db_info.txt.')
+		echo('Done reading dbinfo file.')
 	return acc2info, taxid2info
 
 
@@ -127,6 +142,7 @@ def intersect_read_hits(read_hits, pair1maps, pair2maps):
 	pair1refs, pair2refs = all_ref_hits[:pair1maps], all_ref_hits[pair1maps:]
 	# now intersect the lists and return hits to references in the intersect
 	intersect = set([ref for ref in pair1refs if ref in pair2refs])
+	#intersect = set([ref for ref in all_ref_hits])
 	intersect_hits = [hit for hit in read_hits if hit[2] in intersect]
 	return [intersect, intersect_hits]
 
@@ -166,7 +182,7 @@ def process_read(args, read_hits, pair1, pair2, pair1maps, pair2maps):
 			return [], read_hits[0][2], readquals, hitlen
 
 		intersect, intersect_hits = intersect_read_hits(
-											read_hits, pair1maps, pair2maps)
+			read_hits, pair1maps, pair2maps)
 		if len(intersect) == 0:  # one end unmapped, other multimapped
 			return [], 'Ambiguous', '', -1  #we consider this case too ambiguous
 		elif len(intersect) == 1:  # read pairs only agree on one taxid
@@ -181,14 +197,69 @@ def process_read(args, read_hits, pair1, pair2, pair1maps, pair2maps):
 			return False, read_hits[0][2], readquals, hitlen
 
 
+# Computes the likelihood estimate for a read mapping using base quality scores
+#  	and CIGAR string
+def single_read_likelihood(probs, cigar):
+	# curval = current cigar letter amount, cur_ind = base probs. index
+	base_likelihoods, curval, cur_ind = [], 0, 0
+	for ch in cigar:
+		if ch.isdigit():
+			curval = (curval * 10) + int(ch)
+		else:
+			if ch != 'D':  # deletions do not consume base quality scores
+				if ch == 'M' or ch == '=':  # base likelihoods for matched bases
+					base_likelihoods.extend(
+						[1-probs[i] for i in range(cur_ind, cur_ind + curval)])
+				else:  # base likelihoods for mismatched base
+					base_likelihoods.extend(
+						[probs[i]/3.0 for i in range(cur_ind, cur_ind+curval)])
+				cur_ind = cur_ind + curval
+			curval = 0
+	return reduce(mul, base_likelihoods, 1)  # product of base likelihoods
+
+
+# computes likelihood of read being assigned to each hit taxid based on CIGAR
+#  	string and base quality scores
+def compute_read_likelihoods(read_hits):
+	base_quals, hitlen = read_hits[0][10], len(read_hits[0][10])
+	hit_dict = {}  # used to group reads by reference hit, needed for paired end
+	for hit in read_hits:
+		if hit[2] in hit_dict:
+			hit_dict[hit[2]].append(hit)
+		else:
+			hit_dict[hit[2]] = [hit]
+
+	likelihoods = {}
+	for taxid in hit_dict:
+		cigars = hit_dict[taxid][0][5]
+		if len(hit_dict[taxid]) == 2:  # paired end
+			cigars += hit_dict[taxid][1][5]
+		else:
+			# eliminates unfair advantages for one end mapped reads caused by
+			#  	having less probabilities to multiply over than both ends mapped
+			cigars += hit_dict[taxid][0][5]
+		# compute prob. of each base being wrong, then this read's likelihood
+		prob_bases_wrong = [10 ** (-(ord(ch) - 33) / 10) for ch in base_quals]
+		read_likelihood = single_read_likelihood(prob_bases_wrong, cigars)
+		if read_likelihood  < 10 ** -300:  # minimum likelihood filter
+			likelihoods[taxid] = read_likelihood
+	return [likelihoods, hitlen]
+
+
 # Remove hits to taxids not in taxids2abs (no unique mappings to that taxid)
-def preprocess_multimapped(total_bases, multimapped, taxids2abs):
+def preprocess_multimapped(args, total_bases, mmap_bases, multimapped, taxids2abs):
 	for i in range(len(multimapped)):
-		readquals, paired = multimapped[i][0][10], multimapped[i][0][-1]
-		multimapped[i] = [hit for hit in multimapped[i] if hit[2] in taxids2abs]
+		if args.assignment == 'proportional':
+			hitlen = multimapped[i][0][-1]
+			multimapped[i] = [hit for hit in multimapped[i]
+				if hit[0] in taxids2abs]
+			if len(multimapped[i]) > 0 and len(multimapped[i][0]) == 1:
+				multimapped[i][0].append(hitlen)  # ensure hitlen is kept
+		else:
+			multimapped[i][0] = {hit: val
+				for hit,val in multimapped[i][0].items() if hit in taxids2abs}
 		if len(multimapped[i]) > 0:
-			multimapped[i][0][10], multimapped[i][0][-1] = readquals, paired
-			total_bases += len(readquals)
+			total_bases += mmap_bases[i]
 	multimapped = [read for read in multimapped if len(read) > 0]
 	return total_bases, multimapped
 
@@ -198,17 +269,18 @@ def preprocess_multimapped(total_bases, multimapped, taxids2abs):
 #  	and a list of multimapped reads.
 def map_and_process(args, infile, acc2info, taxid2info):
 	taxids2abs, multimapped = {}, []  # taxids to abundances, multimapped reads
+	mmap_bases = []  # tracks number of bases for each multimapped read
 	prev_read, read_hits = '', [] # read tracker, all hits for read (full lines)
 	pair1maps, pair2maps = 0, 0  # reads mapped to each pair (single = pair1)
-	total_bases, total_reads = 0, 0.0
+	total_bases, total_reads = 0, 0
 
 	samfile = False  # whether reading from existing sam file
 	if infile.endswith('sam'):  # input stream from sam file
 		samfile = True
 		instream = open(infile, 'r')
 	else:  # run minimap2 and stream its output as input
-		mapper = subprocess.Popen(['./minimap2/minimap2', '-ax', 'sr', '-w','5',
-			'-k', '15', '-t', '4', '-2', '-n' '1', '--secondary=yes',
+		mapper = subprocess.Popen(['./minimap2/minimap2', '-ax', 'sr',
+			'-t', '4', '-2', '-n' '1', '--secondary=yes',
 			args.db, infile], stdout=subprocess.PIPE, bufsize=1)
 		instream = iter(mapper.stdout.readline, "")
 
@@ -235,12 +307,14 @@ def map_and_process(args, infile, acc2info, taxid2info):
 
 		read, ref = splits[0], splits[2]
 		if read != prev_read:
-			total_reads += 1.0
+			total_reads += 1
+			if args.verbose and total_reads % 100000 == 0:
+				echo('Done processing ' + str(total_reads) + ' read segments.')
 			# get uniq hit taxid and hitlen, or multimapped hits intersect
 			intersect_hits, taxid, readquals, hitlen = process_read(
 				args, read_hits, pair1, pair2, pair1maps, pair2maps)
 			# reset these read-specific variables
-			prev_read, read_hits, pair1maps, pair2maps = read, [splits], 0,0
+			prev_read, read_hits, pair1maps, pair2maps = read, [], 0, 0
 			if taxid == 'Ambiguous':  # ambiguous mapping (see process_read)
 				if args.quantify_unmapped:
 					if 'Unmapped' in taxids2abs:
@@ -250,7 +324,7 @@ def map_and_process(args, infile, acc2info, taxid2info):
 							taxid2info['Unmapped'])
 				continue
 			if taxid != '' and not (args.no_len_normalization
-										or args.assignment == 'em'):
+					or args.assignment == 'em'):
 				hitlen /= taxid2info[taxid][0]  # normalize by genome length
 			if intersect_hits == []:  # unique hit
 				total_bases += hitlen
@@ -260,13 +334,24 @@ def map_and_process(args, infile, acc2info, taxid2info):
 				else:  # also store lineage for taxid
 					taxids2abs[taxid] = [1, hitlen] + taxid2info[taxid]
 			else:  # multimapped hit
-				intersect_hits[0][10] = readquals  # ensure qual scores
-				intersect_hits[0].append(pair1 or pair2)  # paired or not
-				multimapped.append(intersect_hits)
-		else:
-			pair1maps += pair1 or not(pair1 or pair2)  # pair1 or single
-			pair2maps += pair2  # unchanged if pair2 false
-			read_hits.append(splits)
+				if args.assignment == 'proportional':
+					# store taxids hit and length (in bases) of hits
+					#intersect_hits = [[hit[2], len(hit[9])]
+					#	for hit in intersect_hits]
+					intersect_hits = [[hit[2]] for hit in intersect_hits]
+					intersect_hits[0].append(len(readquals))  # total hit length
+				elif args.assignment == 'em':  # compute assingment likelihoods
+					intersect_hits[0][10] = readquals  # ensure qual scores
+					intersect_hits[0].append(pair1 or pair2)  # paired or not
+					intersect_hits = compute_read_likelihoods(intersect_hits)
+				# for em, ensure min. likelihood filter didn't filter all hits
+				if intersect_hits[0] != {} and args.assignment != 'none':
+					multimapped.append(intersect_hits)
+					mmap_bases.append(len(readquals))
+		#else:
+		pair1maps += pair1 or not(pair1 or pair2)  # pair1 or single
+		pair2maps += pair2  # unchanged if pair2 false
+		read_hits.append(splits)
 
 	if samfile:
 		instream.close()
@@ -274,29 +359,32 @@ def map_and_process(args, infile, acc2info, taxid2info):
 		mapper.stdout.close()
 		mapper.wait()
 	if len(multimapped) > 0:
-		total_bases, multimapped = preprocess_multimapped(total_bases,
-										multimapped, taxids2abs)
+		unique_bases = total_bases
+		total_bases, multimapped = preprocess_multimapped(args, total_bases,
+			mmap_bases, multimapped, taxids2abs)
+		mmap_bases = total_bases - unique_bases  # number of multimapped bases
+	else:
+		mmap_bases = 0
 	# store percentage of unmapped reads
 	if args.quantify_unmapped:
-		taxids2abs['Unmapped'][1] = taxids2abs['Unmapped'][0] / total_reads
-	return taxids2abs, multimapped, float(total_bases)
+		taxids2abs['Unmapped'][1] = taxids2abs['Unmapped'][0] / float(total_reads)
+	return taxids2abs, multimapped, float(total_bases), float(mmap_bases)
 
 
 # Initial EM abundances estimate: similar to Karp paper, except proportion of
 #  	uniquely-mapped reads is changed to (possibly length-normalized) proportion
 #  	of uniquely-mapped bases, allowing variable read length to factor in
-def initital_estimate(taxids2abs, multimapped, total_bases):
+def initital_estimate(taxids2abs, multimapped, total_bases, mmap_bases):
 	# calculate share of total bases uniquely mapped to each taxid
 	taxids2abs = {k: v/total_bases for k,v in taxids2abs.items()}
 	uniq_proportions = {k:v for k,v in taxids2abs.items()}
 
 	# now add in initial estimate for multimapped reads: evenly-distributed
-	all_multimap_len = float(sum([len(read[0][10]) for read in multimapped]))
 	all_mmap_taxids = []  # set of multimapped taxids with >= 1 uniq mapped read
 	for read in multimapped:
-		all_mmap_taxids.extend([hit[2] for hit in read if hit[2] in taxids2abs])
+		all_mmap_taxids.extend([hit for hit in read[0] if hit in taxids2abs])
 	all_mmap_taxids = set(all_mmap_taxids)
-	even_dist = float(all_multimap_len) / float(total_bases) / float(len(all_mmap_taxids))
+	even_dist = mmap_bases / total_bases / float(len(all_mmap_taxids))
 	for taxid in taxids2abs:
 		taxids2abs[taxid] += even_dist
 	return uniq_proportions, taxids2abs
@@ -313,148 +401,65 @@ def end_condition(changes, prev_magnitude):
 	return False, ab_magnitude
 
 
-# Computes the likelihood estimate for a read mapping using base quality scores
-#  	and CIGAR string
-def single_read_likelihood(probs, cigar, taxid_ab):
-	# curval = current cigar letter amount, cur_ind = base probs. index
-	base_likelihoods, curval, cur_ind = [], 0, 0
-	for ch in cigar:
-		if ch.isdigit():
-			curval = (curval * 10) + int(ch)
-		else:
-			if ch != 'D':  # deletions do not consume base quality scores
-				if ch == 'M' or ch == '=':  # base likelihoods for matched bases
-					base_likelihoods.extend(
-						[1-probs[i] for i in range(cur_ind, cur_ind + curval)])
-				else:  # base likelihoods for mismatched base
-					base_likelihoods.extend(
-						[probs[i]/3.0 for i in range(cur_ind, cur_ind+curval)])
-				cur_ind = cur_ind + curval
-			curval = 0
-	# take product of base_likelihoods, times previous EM taxid abundance est.
-	result = taxid_ab
-	for bl in base_likelihoods:
-		result *= bl
-	return result
-
-
-# computes likelihood of read being assigned to one hit, divided over the total
-#  	likelihood of all hit assignments
-def read_likelihood_ratio(read_hits, taxids2abs):
-	base_quals = read_hits[0][10]
-	hit_dict = {}  # used to group reads by reference hit, needed for paired end
-	for hit in read_hits:
-		if hit[2] in hit_dict:
-			hit_dict[hit[2]].append(hit)
-		else:
-			hit_dict[hit[2]] = [hit]
-
-	likelihoods = {}
-	for taxid in hit_dict:
-		cigars = hit_dict[taxid][0][5]
-		if len(hit_dict[taxid]) == 2:  # paired end
-			cigars += hit_dict[taxid][1][5]
-		else:
-			# eliminates unfair advantages for one end mapped reads caused by
-			#  	having less probabilities to multiply over than both ends mapped
-			cigars += hit_dict[taxid][0][5]
-		# compute prob. of each base being wrong, then this read's likelihood
-		prob_bases_wrong = [10 ** (-(ord(ch) - 33) / 10) for ch in base_quals]
-		likelihoods[taxid] = single_read_likelihood(prob_bases_wrong, cigars,
-														taxids2abs[taxid])
-
-	# compute likelihoods as proportions of sum over all assignment likelihoods
-	total_likelihood = sum([v for k, v in likelihoods.items()])
-	likelihoods = {k: v / total_likelihood for k,v in likelihoods.items()}
-	return likelihoods
-
-
 # Performs an updated abundance estimation for an interation of the EM algorithm
 def em_update(args, total_bases, uniq_prop, taxids2abs,taxid2info, multimapped):
 	init_abs = {k:v for k,v in taxids2abs.items()}
 	# get read assignment likelihoods for each read
 	likelihood_sums = {}
 	for read in multimapped:
+		read_likelihoods, hitlen = read  # unpack read info
 		# base_share is the share of total bases reflected in this read
-		base_share = float(len(read[0][10])) / float(total_bases)
-		if read[0][-1]:  # if paired end, account for other end
-			base_share += float(len(read[-1][9])) / float(total_bases)
-		read_likelihoods = read_likelihood_ratio(read, taxids2abs)
-		for taxid in read_likelihoods:
+		base_share = float(hitlen) / float(total_bases)
+		# calculate read likelihoods times abundances ("ab_likelihoods") and
+		#  	the sum of the ab_likelihoods, and the ratio of each to the total
+		ab_likelihoods = {k: v * taxids2abs[k] for k,v in read_likelihoods.items()
+			if k in taxids2abs}
+		total_likelihood = sum([v for k,v in ab_likelihoods.items()])
+		if total_likelihood == 0.0:
+			continue
+		read_ratios = {k: v / total_likelihood for k,v in ab_likelihoods.items()}
+		# sum all likelihood ratios for a taxid (combines multiple hits)
+		for taxid in read_ratios:
 			if taxid not in likelihood_sums:
-				likelihood_sums[taxid] = (read_likelihoods[taxid] * base_share)
-			else:
-				likelihood_sums[taxid] += (read_likelihoods[taxid] * base_share)
+				likelihood_sums[taxid] = (read_ratios[taxid] * base_share)
+			else:  # add in additional hits for the same taxid
+				likelihood_sums[taxid] += (read_ratios[taxid] * base_share)
 
 	# update taxids2abs
 	for taxid in likelihood_sums:#taxids2abs:
 		taxids2abs[taxid] = uniq_prop[taxid] + likelihood_sums[taxid]
 	if not args.no_len_normalization:  # normalize by genome len. if user wants
 		taxids2abs = {k: v / float(taxid2info[k][0])
-						for k,v in taxids2abs.items()}
+			for k,v in taxids2abs.items()}
 		all_abs = sum([v for k,v in taxids2abs.items()])
 		taxids2abs = {k: v/all_abs for k,v in taxids2abs.items()}  # renorm
 	changes = {k:(taxids2abs[k]-v) for k,v in init_abs.items()}
 	return changes, taxids2abs
 
 
-# Filters out read mappings below a certain likelihood threshold
-def min_likelihood_filter(multimapped, taxids2abs):
-	for read in range(len(multimapped)):
-		del_hits = []  # hits to be deleted
-		base_quals, paired = multimapped[read][0][10], multimapped[read][0][-1]
-		hit_dict = {}  # group reads by reference hit, needed for paired end
-		for hit in multimapped[read]:
-			if hit[2] in hit_dict:
-				hit_dict[hit[2]].append(hit)
-			else:
-				hit_dict[hit[2]] = [hit]
-
-		# compute read likelihoods
-		for taxid in hit_dict:
-			cigars = hit_dict[taxid][0][5]
-			if len(hit_dict[taxid]) == 2:  # paired end
-				cigars += hit_dict[taxid][1][5]
-			else:
-				cigars += hit_dict[taxid][0][5]  # see: read_likelihood_ratio
-			# compute prob. of each base being wrong, then this read's likelihood
-			prob_bases_wrong = [10 ** (-(ord(ch) - 33)/10) for ch in base_quals]
-			likelihood = single_read_likelihood(prob_bases_wrong, cigars,
-															taxids2abs[taxid])
-			if likelihood  < 10 ** -300:  # min. likelihood
-				del_hits.extend([hit for hit in hit_dict[taxid]])
-
-		# clean extremely low-likelihood hits and reads with only these bad hits
-		multimapped[read] = [i for i in multimapped[read] if i not in del_hits]
-		if len(multimapped[read]) > 0:
-			multimapped[read][0][10],multimapped[read][0][-1]=base_quals,paired
-	multimapped = [read for read in multimapped if len(read) > 0]
-	return multimapped
-
-
 # Use EM algorithm to revise taxid abundances using multimapped information,
 #  	without explicitly assigning reads. Recommended method in MiCoP2.
-def resolve_multi_em(args, total_bases, taxids2abs, multimapped, taxid2info):
+def resolve_multi_em(args, total_bases, mmap_bases, taxids2abs, multimapped, taxid2info):
 	# we temporarily just keep abundance to simplify EM operations
 	only_abs = {k: v[1] for k,v in taxids2abs.items() if k != 'Unmapped'}
-	# filter out hits and reads with extremely low likelihood
-	multimapped = min_likelihood_filter(multimapped, only_abs)
 	if len(multimapped) == 0:
 		return taxids2abs
-	uniq_prop, only_abs = initital_estimate(only_abs, multimapped, total_bases)
+	uniq_prop, only_abs = initital_estimate(
+		only_abs, multimapped, total_bases, mmap_bases)
 
 	# we have a dict showing changes in ab. estimates for each step;
 	#  	 if this changes dict has small enough magnitude, end EM updates
 	changes = {k:(only_abs[k]-v) for k,v in uniq_prop.items()}
-	iter, end_iters = 0, 0
+	em_iter, end_iters = 0, 0
 	end, prev_magnitude = end_condition(changes, 1000000.0)
 	while not end:
 		changes, only_abs = em_update(args, total_bases, uniq_prop,
-										only_abs, taxid2info, multimapped)
+			only_abs, taxid2info, multimapped)
 		if args.verbose:
-			iter += 1
-			print('EM iteration', str(iter), '-- Sum of changes in abundances:',
-			 	str(sum([abs(v) for k,v in changes.items()])))
+			em_iter += 1
+			echo('EM iteration ' + str(em_iter
+				) + ' -- Sum of changes in abundances:' + str(
+				sum([abs(v) for k,v in changes.items()])))
 		end, prev_magnitude = end_condition(changes, prev_magnitude)
 
 	for taxid in only_abs:  # incorporate updated abundance estimates
@@ -469,32 +474,49 @@ def resolve_multi_prop(args, taxids2abs, multimapped, taxid2info):
 	to_add = {}
 	for read_hits in multimapped:
 		# get abundances of all taxids in read_hits
-		all_taxids = list(set(
-						[hit[2] for hit in read_hits if hit[2] in taxids2abs]))
+		all_taxids = list(set([hit[0] for hit in read_hits
+			if hit[0] in taxids2abs]))
 		if len(all_taxids) == 0:  # all hits were to taxids with no unique hits
 			continue
 		taxid_abs = [taxids2abs[tax][1] for tax in all_taxids]
 
-		# now get cumulative proportional abs. of taxids relative to each other
+		## now get cumulative proportional abs. of taxids relative to each other
 		sumabs = sum(taxid_abs)
+		if sumabs == 0.0:
+			continue
 		proportions = [ab / sumabs for ab in taxid_abs]
-		cumulative = [sum(proportions[:i+1]) for i in range(len(proportions))]
+		hitlen = read_hits[0][-1]
+
+		# divide hit length proportionally among hit taxids; divided assignment
+		for i in range(len(all_taxids)):
+			this_hitlen = proportions[i] * hitlen
+			if not args.no_len_normalization:
+				this_hitlen /= taxid2info[all_taxids[i]][0]
+			if all_taxids[i] in to_add:
+				to_add[all_taxids[i]] += this_hitlen
+			else:
+				to_add[all_taxids[i]] = this_hitlen
+
+
+		#cumulative = [sum(proportions[:i+1]) for i in range(len(proportions))]
 
 		# randomly proportionally choose which taxid to assign hit to
-		rand_draw = random.random()
-		for i in range(len(cumulative)):
-			if rand_draw < cumulative[i] or i+1 == len(cumulative):
-				assigned_taxid = all_taxids[i]
-		assigned_hits = [hit for hit in read_hits if hit[2] == assigned_taxid]
+		#rand_draw = random.random()
+		#for i in range(len(cumulative)):
+		#	if rand_draw < cumulative[i] or i+1 == len(cumulative):
+		#		assigned_taxid = all_taxids[i]
+		#assigned_hits = [hit for hit in read_hits if hit[0] == assigned_taxid]
 
 		# set the amount to add to taxid abundances
-		hitlen = len(assigned_hits[0][9]) + len(assigned_hits[1][9])
-		if not args.no_len_normalization:
-			hitlen /= taxid2info[assigned_taxid][0]
-		if assigned_taxid in to_add:
-			to_add[assigned_taxid] += hitlen
-		else:
-			to_add[assigned_taxid] = hitlen
+		#hitlen = assigned_hits[0][1]
+		#if len(assigned_hits) == 2:  # paired end
+		#	hitlen += assigned_hits[1][1]
+		#if not args.no_len_normalization:
+		#	hitlen /= taxid2info[assigned_taxid][0]
+		#if assigned_taxid in to_add:
+		#	to_add[assigned_taxid] += hitlen
+		#else:
+		#	to_add[assigned_taxid] = hitlen
 
 	for taxid in to_add:  # add in the multimapped portions
 		taxids2abs[taxid][1] += to_add[taxid]
@@ -540,7 +562,7 @@ def gen_lower_taxa(taxids2abs):
 		new_name = lowest_name + ' unknown strain'
 		new_taxid = taxid+'.0'
 		to_add[new_taxid] = [new_taxid, 'strain', taxlin + new_taxid,
-								namelin + new_name, ab]
+			namelin + new_name, ab]
 
 	# add in the new taxa
 	for taxa in to_add:
@@ -578,7 +600,7 @@ def tree_results_cami(args, taxids2abs):
 				clade_namelin = '|'.join(namelin[:i+1])
 				clade_ab = taxids2abs[taxid][-1]  # currently just lower tax ab
 				clades2abs[clade_taxid] = [clade_taxid, clade_rank,
-										  clade_taxlin, clade_namelin, clade_ab]
+					clade_taxlin, clade_namelin, clade_ab]
 
 	if not args.no_rank_renormalization:
 		clades2abs = rank_renormalize(args, clades2abs)
@@ -591,28 +613,28 @@ def compute_abundances(args, infile, acc2info, tax2info):
 	# taxids and higher clades to abundances, and multimapped reads dict
 	taxids2abs, clades2abs, multimapped = {}, {}, {}
 	if args.verbose:
-		print('Reading input file ' + infile)
+		echo('Reading input file ' + infile)
 	# run mapping and process to get uniq map abundances & multimapped reads
-	taxids2abs, multimapped, total_bases = map_and_process(args, infile,
-														acc2info, tax2info)
+	taxids2abs, multimapped, total_bases, mmap_bases = map_and_process(
+		args, infile, acc2info, tax2info)
 	if args.verbose:
-		print('Done reading input file ' + infile)
+		echo('Done reading input file ' + infile)
 	# filter out organisms below the read cutoff set by the user, if applicable
 	taxids2abs = {k:v for k,v in taxids2abs.items() if v[0] > args.read_cutoff}
 
-	if args.verbose:
-		print('Assigning multimapped reads...')
+	if args.verbose and args.assignment != 'none':
+		echo('Assigning multimapped reads...')
 	if len(multimapped) > 0 and args.assignment == 'em':
-		taxids2abs = resolve_multi_em(args, total_bases, taxids2abs,
-										multimapped, tax2info)
-	elif len(multimapped) > 0:  # proportional
+		taxids2abs = resolve_multi_em(args, total_bases, mmap_bases, taxids2abs,
+			multimapped, tax2info)
+	elif len(multimapped) > 0 and args.assignment == 'proportional':
 		taxids2abs = resolve_multi_prop(args, taxids2abs, multimapped, tax2info)
-	if args.verbose:
-		print('Multimapped reads assigned.')
+	if args.verbose and args.assignment != 'none':
+		echo('Multimapped reads assigned.')
 
 	results = tree_results_cami(args, taxids2abs)
 	if args.verbose:
-		print('Done computing abundances for input file ' + infile)
+		echo('Done computing abundances for input file ' + infile)
 	return results
 
 
@@ -622,7 +644,7 @@ def gather_results(args, acc2info, taxid2info):
 	results = {}
 	for infile in args.infiles:
 		if args.verbose:
-			print('Computing abundances for input file ' + infile + '...')
+			echo('Computing abundances for input file ' + infile + '...')
 		file_res = compute_abundances(args, infile, acc2info, taxid2info)
 		for clade in file_res:
 			if clade not in results:
@@ -631,12 +653,12 @@ def gather_results(args, acc2info, taxid2info):
 				results[clade][-1] += file_res[clade][-1]
 
 	if args.verbose:
-		print('Compiling and writing results...')
+		echo('Compiling and writing results...')
 	rank_results = {i:[] for i in range(len(RANKS))}
 	for clade in results:
 		ab = results[clade][-1]  # avg over input files, truncate to 4 digits
 		results[clade][-1] = float(math.trunc(
-								(ab / len(args.infiles)) * (10**4))) / (10**4)
+			(ab / len(args.infiles)) * (10**4))) / (10**4)
 		rank = RANKS.index(results[clade][1])
 		if rank == 7:  # strain; add extra CAMI genomeID and OTU fields
 			taxid = results[clade][0]
@@ -661,6 +683,8 @@ def write_results(args, rank_results):
 			'PERCENTAGE\t_CAMI_genomeID\t_CAMI_OTU\n')
 
 		for i in range(len(RANKS)):
+			if not args.strain_level and i == len(RANKS)-1:
+				continue  # skip the strain level unless user wants it
 			lines = rank_results[i]  # all lines to write for this tax level
 			# now sort clades in rank by descending abundance
 			if i != 7:  # not strains, which have extra fields
@@ -679,16 +703,19 @@ def write_results(args, rank_results):
 def main():
 	args = parseargs()
 	if args.pct_id == -1:  # not set by user
-		if args.assignment == 'em':  # em assignment default
-			args.pct_id = 0.5
-		else:  # proportional default
-			args.pct_id = 0.95
+		args.pct_id = 0.5
+		#if args.assignment == 'em':  # em assignment default
+		#	args.pct_id = 0.5
+		#else:  # proportional default
+		#	args.pct_id = 0.95
 	if args.pct_id > 1.0 or args.pct_id < 0.0:
 		print('Error: --pct_id must be between 0.0 and 1.0, inclusive.')
 		sys.exit()
 	if args.db == 'NONE' and not args.infiles[0].endswith('sam'):
 		print('Error: --db must be specified unless .sam files are provided.')
 		sys.exit()
+	if args.dbinfo == 'AUTO':
+		args.dbinfo = __location__ + 'data/subset_db_info.txt'
 	open(args.output, 'w').close()  # test to see if writeable
 
 	# maps NCBI accession to length, taxid, name lineage, taxid lineage
