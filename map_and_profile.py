@@ -19,7 +19,7 @@ def echo(msg):
 	print('['+hms+'] ' + msg)
 
 
-def parseargs():  # handle user arguments
+def profile_parseargs():  # handle user arguments
 	parser = argparse.ArgumentParser(
 		description='Compute abundance estimations for species in a sample.')
 	parser.add_argument('infiles', nargs='+',
@@ -700,8 +700,9 @@ def write_results(args, rank_results):
 				outfile.write('\t'.join(line)+'\n')
 
 
-def main():
-	args = parseargs()
+def map_main(args = None):
+	if args == None:
+		args = profile_parseargs()
 	if args.pct_id == -1:  # not set by user
 		args.pct_id = 0.5
 		#if args.assignment == 'em':  # em assignment default
@@ -726,5 +727,6 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+	args = profile_parseargs()
+	map_main(args)
 #
