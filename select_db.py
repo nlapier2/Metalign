@@ -5,26 +5,26 @@ __location__ = os.path.realpath(os.path.join(os.getcwd(),
 								os.path.dirname(__file__))) + '/'
 
 
-def parseargs():    # handle user arguments
+def select_parseargs():    # handle user arguments
 	parser = argparse.ArgumentParser(description="Run CMash and" +
 				" select a subset of the whole database to align to.")
 	parser.add_argument('reads', help='Path to reads file.')
 	parser.add_argument('db_dir',
 		help='Directory with all organism files in the full database.')
-	parser.add_argument('kmc_dir',
+	parser.add_argument('temp_dir',
 		help='Directory to write temporary KMC files to.')
 	parser.add_argument('--cmash_results', default='NONE',
 		help='Can specfily location of CMash query results if already done.')
 	parser.add_argument('--cutoff', type=float, default=-1.0,
 		help='CMash cutoff value. Default is 1/(log10(reads file bytes)**2).')
+	parser.add_argument('--db', default='cmashed_db.fna',
+		help='Path to where to write the output database.')
 	parser.add_argument('--dbinfo_in', default='AUTO',
 		help='Specify location of db_info file. Default is data/db_info.txt')
 	parser.add_argument('--dbinfo_out', default='AUTO',
 		help='Where to write subset db_info. Default: data/subset_db_info.txt')
-	parser.add_argument('--keep_kmc_files', action = 'store_true',
-		help='Keep KMC files instead of deleting after this script finisishes.')
-	parser.add_argument('--output', default='cmashed_db.fna',
-		help='Path to where to write the output database.')
+	parser.add_argument('--keep_temp_files', action = 'store_true',
+		help='Keep KMC files instead of deleting after this script finishes.')
 	parser.add_argument('--strain_level', action='store_true',
 		help='Include all strains above cutoff. Default: 1 strain per species.')
 	args = parser.parse_args()
@@ -53,17 +53,17 @@ def run_kmc_steps(args):
 
 	subprocess.Popen([kmc_loc, '-v', '-k60', '-m200', '-sm', '-fq', '-ci2',
 		'-cs3', '-t48', '-jlog_sample', args.reads,
-		args.kmc_dir + 'reads_60mers', args.kmc_dir]).wait()
+		args.temp_dir + 'reads_60mers', args.temp_dir]).wait()
 
 	subprocess.Popen([kmc_loc+'_tools', 'simple', db_60mers_loc,
-		args.kmc_dir + 'reads_60mers', 'intersect',
-		args.kmc_dir + '60mers_intersection']).wait()
+		args.temp_dir + 'reads_60mers', 'intersect',
+		args.temp_dir + '60mers_intersection']).wait()
 
-	subprocess.Popen([kmc_loc+'_dump', args.kmc_dir + '60mers_intersection',
-		args.kmc_dir + '60mers_intersection_dump']).wait()
+	subprocess.Popen([kmc_loc+'_dump', args.temp_dir + '60mers_intersection',
+		args.temp_dir + '60mers_intersection_dump']).wait()
 
-	with(open(args.kmc_dir + '60mers_intersection_dump', 'r')) as infile:
-		with(open(args.kmc_dir + '60mers_intersection_dump.fa', 'w')) as fasta:
+	with(open(args.temp_dir + '60mers_intersection_dump', 'r')) as infile:
+		with(open(args.temp_dir + '60mers_intersection_dump.fa', 'w')) as fasta:
 			for line in infile:
 				seq = line.split()[0]
 				fasta.write('>seq' + '\n' + seq + '\n')
@@ -73,10 +73,10 @@ def run_cmash_and_cutoff(args, taxid2info):
 	cmash_db_loc = __location__ + 'data/cmash_db_n1000_k60.h5'
 	cmash_filter_loc = __location__ + 'data/cmash_filter_n1000_k60_30-60-10.bf'
 	if args.cmash_results == 'NONE':
-		cmash_out = args.kmc_dir + 'cmash_query_results.csv'  # args.output
+		cmash_out = args.temp_dir + 'cmash_query_results.csv'  # args.output
 		script_loc = __location__ + 'CMash/scripts/StreamingQueryDNADatabase.py'
 		cmash_proc = subprocess.Popen(['python', script_loc,
-			args.kmc_dir + '60mers_intersection_dump.fa', cmash_db_loc,
+			args.temp_dir + '60mers_intersection_dump.fa', cmash_db_loc,
 			cmash_out, '30-60-10', '-c', '0', '-r', '1000000', '-v',
 			'-f', cmash_filter_loc, '--sensitive']).wait()
 	else:
@@ -122,8 +122,9 @@ def make_db_and_dbinfo(args, organisms_to_include, taxid2info):
 				outfile.write('\t'.join([acc,len,taxid,namelin,taxlin]) + '\n')
 
 
-def main():
-	args = parseargs()
+def select_main(args = None):
+	if args == None:
+		args = select_parseargs()
 	if args.cutoff == -1.0:  # not set by user
 		fsize_bytes = os.path.getsize(args.reads)
 		args.cutoff = 1.0 / (math.log10(fsize_bytes) ** 2)
@@ -132,8 +133,8 @@ def main():
 		sys.exit()
 	if not args.db_dir.endswith('/'):
 		args.db_dir += '/'
-	if not args.kmc_dir.endswith('/'):
-		args.kmc_dir += '/'
+	if not args.temp_dir.endswith('/'):
+		args.temp_dir += '/'
 	if args.dbinfo_in == 'AUTO':
 		args.dbinfo_in = __location__ + 'data/db_info.txt'
 	if args.dbinfo_out == 'AUTO':
@@ -145,15 +146,16 @@ def main():
 	organisms_to_include = run_cmash_and_cutoff(args, taxid2info)
 	make_db_and_dbinfo(args, organisms_to_include, taxid2info)
 
-	if not args.keep_kmc_files and args.cmash_results == 'NONE':
-		subprocess.Popen(['rm', args.kmc_dir + 'reads_60mers.kmc_pre',
-		args.kmc_dir + 'reads_60mers.kmc_suf',
-		args.kmc_dir + '60mers_intersection.kmc_pre',
-		args.kmc_dir + '60mers_intersection.kmc_suf',
-		args.kmc_dir + '60mers_intersection_dump',
-		args.kmc_dir + '60mers_intersection_dump.fa']).wait()
+	if not args.keep_temp_files and args.cmash_results == 'NONE':
+		subprocess.Popen(['rm', args.temp_dir + 'reads_60mers.kmc_pre',
+		args.temp_dir + 'reads_60mers.kmc_suf',
+		args.temp_dir + '60mers_intersection.kmc_pre',
+		args.temp_dir + '60mers_intersection.kmc_suf',
+		args.temp_dir + '60mers_intersection_dump',
+		args.temp_dir + '60mers_intersection_dump.fa']).wait()
 
 
 if __name__ == '__main__':
-	main()
+	args = select_parseargs()
+	select_main(args)
 #
