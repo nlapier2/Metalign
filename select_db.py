@@ -73,7 +73,7 @@ def run_cmash_and_cutoff(args, taxid2info):
 	cmash_db_loc = __location__ + 'data/cmash_db_n1000_k60.h5'
 	cmash_filter_loc = __location__ + 'data/cmash_filter_n1000_k60_30-60-10.bf'
 	if args.cmash_results == 'NONE':
-		cmash_out = args.temp_dir + 'cmash_query_results.csv'  # args.output
+		cmash_out = args.temp_dir + 'cmash_query_results.csv'
 		script_loc = __location__ + 'CMash/scripts/StreamingQueryDNADatabase.py'
 		cmash_proc = subprocess.Popen(['python', script_loc,
 			args.temp_dir + '60mers_intersection_dump.fa', cmash_db_loc,
@@ -102,12 +102,12 @@ def run_cmash_and_cutoff(args, taxid2info):
 
 
 def make_db_and_dbinfo(args, organisms_to_include, taxid2info):
-	open(args.output, 'w').close()  # clear cmash results; no longer needed
-	with(open(args.output, 'a')) as outfile:
+	open(args.db, 'w').close()  # clear cmash results; no longer needed
+	with(open(args.db, 'a')) as outfile:
 		for organism in organisms_to_include:
 			organism_fname = args.db_dir + organism
 			# write organisms to full db via cat to append-mode file handler
-			subprocess.call(['cat', organism_fname], stdout=outfile)
+			subprocess.Popen(['cat', organism_fname], stdout=outfile).wait()
 
 	with(open(args.dbinfo_out, 'w')) as outfile:
 		# write header lines
