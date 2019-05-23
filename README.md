@@ -1,29 +1,27 @@
-# ContainEM: Efficient alignment-based metagenomic profiling via containment min hash and EM algorithm
+# Metalign: Efficient alignment-based metagenomic profiling via containment min hash
 
-ContainEM is a method for estimating the taxonomic composition and relative abundances of organisms in a metagenomic sample based on whole-genomeshotgun sequencing reads.
-ContainEM is able to achieve strong results by performing efficient alignment-based profiling via the Containment Min Hash and an Expectation-Maximization (EM) algorithm.
+Metalign is a method for estimating the taxonomic composition and relative abundances of organisms in a metagenomic sample based on whole-genome shotgun sequencing reads.
 
 ### Quick Usage
 
 ```
-git clone https://github.com/nlapier2/ContainEM.git
-cd ContainEM/
+git clone https://github.com/nlapier2/Metalign.git
+cd Metalign/
 ./setup.sh
-python select_db.py my_reads.fq --db_name my_db.fna
-python map_and_profile.py my_reads.fq --db_name my_db.fna --results profile.tsv
+python3 metalign.py my_reads.fq --output profile.tsv
 ```
 
 Note that this will run some python package installations via "pip install --user". If you want to root install, run "./setup.sh root" instead. Alternatively, you can install the bioconda package or manually set up the package. These options are described below.
 
 ### Paper
 
-The MiCoP paper is currently available on bioRxiv: (Not yet) 
+The Metalign paper is currently available on bioRxiv: (Not yet) 
 
-If you use MiCoP, please cite the paper. For instance:
+If you use Metalign, please cite the paper. For instance:
 
-LaPierre, N., Mangul, S., Alser, M., Koslicki, D., & Eskin, E. (2019). ContainEM: Efficient alignment-based metagenomic profiling via containment min hash and EM algorithm. *bioRxiv*, (Not yet).
+LaPierre, N., Koslicki, D., Alser, M., Eskin, E., & Mangul, S. (2019). Metalign: Efficient alignment-based metagenomic profiling via containment min hash. *bioRxiv*, (Not yet).
 
-### Download and Setup ContainEM
+### Download and Setup
 
 Simply run:
 ```
