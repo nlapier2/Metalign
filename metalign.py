@@ -2,8 +2,8 @@ import argparse, math, os, random, subprocess, sys, time
 from operator import mul
 from functools import reduce
 # Import metalign modules
-import map_and_profile
-import select_db
+import map_and_profile as mapper
+import select_db as select
 
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(),
@@ -67,13 +67,13 @@ def main():
 	args.db = args.temp_dir + 'cmashed_db.fna'
 	args.dbinfo = args.temp_dir + 'subset_db_info.txt'
 	args.dbinfo_out = args.dbinfo
-	args.infiles = args.reads
-	args.assingment = 'proportional'
+	args.infiles = [args.reads]  # map_and_profile expects a list
+	args.assignment = 'proportional'
 	args.cmash_results = 'NONE'
 
 	# Run the database selection and map/profile routines
-	select_main()  # runs select_db routine
-	map_main()  # runs map_and_profile routine
+	select.select_main(args)  # runs select_db routine
+	mapper.map_main(args)  # runs map_and_profile routine
 
 
 if __name__ == '__main__':
