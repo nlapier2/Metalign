@@ -12,6 +12,8 @@ def parseargs():    # handle user arguments
 		help = 'Name of directory with names.dmp and nodes.dmp.')
 	parser.add_argument('--output_dir', default='organism_files/',
 		help = 'Name of directory to write selected genome files to.')
+	parser.add_argument('--no_output', action = 'store_true',
+		help = 'Do not split; just (re-)write db_info.')
 	args = parser.parse_args()
 	return args
 
@@ -32,9 +34,11 @@ def build_taxtree(taxonomy_dir):
 
 	with(open(taxonomy_dir + 'nodes.dmp', 'r')) as nodes:
 		for line in nodes:
-			splits = line.split()
 			# add taxonomic rank and parent TaxID to list of info for this taxID
-			taxtree[splits[0]].extend([splits[4], splits[2]])
+			splits = [field.strip() for field in line.split('|')]
+			taxid, parent, rank = splits[:3]
+			taxtree[taxid].extend([rank, parent])
+			#taxtree[splits[0]].extend([splits[4], splits[2]])
 	return taxtree
 
 
@@ -78,7 +82,7 @@ def parse_map(map_file):
 	return acc2taxid
 
 
-def split_and_process(input_file, output_dir, taxtree, acc2taxid):
+def split_and_process(input_file, output_dir, taxtree, acc2taxid, block_output):
 	outfile, acc2info = '', {}
 	with(open(input_file, 'r')) as infile:
 		acc, genome_len, taxid, name_lin, tax_lin = '', 0, '', '', ''
@@ -87,13 +91,15 @@ def split_and_process(input_file, output_dir, taxtree, acc2taxid):
 				# get the new accession and its taxid and lineage information
 				acc = line.strip().split()[0][1:].split('|')[3]
 				taxid = acc2taxid[acc]
-				genome_len = 0
 				name_lin, tax_lin = trace_lineages(taxid, taxtree)
-				acc2info[acc] = [str(genome_len), taxid, name_lin, tax_lin]
-				outfile = open(output_dir + 'taxid_' + taxid.replace('.', '_') + '_genomic.fna', 'a')
+				acc2info[acc] = [0, taxid, name_lin, tax_lin]
+				if not block_output:
+					#outfile = open(output_dir + 'acc_' + acc.replace('.', '-') + '_genomic.fna', 'w')
+					outfile = open(output_dir + 'taxid_' + taxid.replace('.', '_') + '_genomic.fna', 'a')
 			else:
-				genome_len += len(line.strip())
-			outfile.write(line)  # write this line to the taxid genomic file
+				acc2info[acc][0] += len(line.strip())
+			if not block_output:
+				outfile.write(line)  # write this line to the taxid genomic file
 	return acc2info
 
 
@@ -102,6 +108,7 @@ def write_dbinfo(output_dir, acc2info):
 		outfile.write('Accesion\tLength   \tTaxID   \tLineage \tTaxID_Lineage\n')
 		outfile.write('Unmapped\t0\tUnmapped\t|||||||Unmapped\t|||||||Unmapped\n')
 		for acc in acc2info:
+			acc2info[acc][0] = str(acc2info[acc][0])
 			outfile.write(acc + '\t' + '\t'.join(acc2info[acc]) + '\n')
 
 
@@ -116,7 +123,7 @@ def main():
 
 	taxtree = build_taxtree(args.taxonomy_dir)
 	acc2taxid = parse_map(args.map_file)
-	acc2info = split_and_process(args.input_file, args.output_dir, taxtree, acc2taxid)
+	acc2info = split_and_process(args.input_file, args.output_dir, taxtree, acc2taxid, args.no_output)
 	write_dbinfo(args.output_dir, acc2info)
 
 
