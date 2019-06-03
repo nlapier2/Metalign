@@ -1,6 +1,6 @@
 import argparse, math, os, random, subprocess, sys, time
-from operator import mul
-from functools import reduce
+import numpy as np
+from scipy.stats import chisquare
 
 
 start = time.time()  # start a program timer
@@ -23,7 +23,7 @@ def parseargs():  # handle user arguments
 	parser = argparse.ArgumentParser(
 		description='Given samfile & profile, extract statistics for TP/FP taxa.')
 	parser.add_argument('samfile', help='sam file to process. Required.')
-	parser.add_argument('profile', help='CAMI gold standard profile to use for TP/FP. Required.')
+	parser.add_argument('gold_standard', help='CAMI gold standard profile to use for TP/FP. Required.')
 	parser.add_argument('--dbinfo', default='AUTO',
 		help = 'Location of db_info file. Default: data/subset_db_info.txt')
 	parser.add_argument('--no_len_normalization', action='store_true',
@@ -268,10 +268,8 @@ def process_samfile(args, acc2info, taxid2info):
 					acc2hitpos[acc] = [[],[]]
 				if taxid != 'multi':
 					acc2hitpos[acc][0].append([pos, hitlen])
-					#taxids2stats[hit[2]][4].append([pos, hitlen])
 				else:
 					acc2hitpos[acc][1].append([pos, hitlen])
-					#taxids2stats[hit[2]][5].append([pos, hitlen])
 
 		pair1maps += pair1 or not(pair1 or pair2)  # pair1 or single
 		pair2maps += pair2  # unchanged if pair2 false
@@ -306,49 +304,120 @@ def prune_tree(args, taxids2stats):
 	return taxids2stats
 
 
-# using the read hit positions in acc2hitpos, compute coverage for accesion for
-#  	both uniquely and multi mapped reads. then summarize into coverages for taxids.
-def compute_coverages(args, taxid2info, taxids2stats, acc2info, acc2hitpos):
+def get_covg_stats(block_covg_dict, max_covg, acclen):
+	#if len(block_covg_dict) == 0:
+	#	return 0, 0, 0, 0, 'nan'
+	# first make a list of all base coverages from the block_covg_dict
+	# simultaneously compute average covg. amount and percent of bases covered at least once
+	base_covgs = np.zeros(acclen + 1)#[]
+	total_base_hits, total_bases_covd = 0, 0
+	for covg_amnt in range(1, max_covg + 1):
+		for block in block_covg_dict[covg_amnt]:
+			#if block[1] + 1 > len(base_covgs):
+			#	base_covgs.extend([0 for i in range(len(base_covgs), block[1] + 1)])
+			end = max(acclen + 1, block[1] + 1)
+			for i in range(block[0], end):
+				base_covgs[i] = covg_amnt
+			block_len = end - block[0]
+			total_bases_covd += block_len
+			total_base_hits += block_len * covg_amnt  # bases were hit covg_amnt times
+	avg_covg = float(total_base_hits) / float(acclen)
+	covd_bases_pct = float(total_bases_covd) / float(acclen)
+
+	# uniform coverage test
+	# if X~Unif(0,1) then -2 * ln(X) ~ chi-squared with 2 degrees of freedom
+	# transform to chi-quared so we can do chi-squared test
+	# first, scale the variables to (0,1) range
+	max_covg = float(max_covg)
+	#base_covgs_scaled = [float(i) / max_covg for i in base_covgs]
+	# avoid the hard (0, 1) boundaries
+	base_covgs_scaled = (base_covgs / max_covg) * 0.9999999 + 0.00000001
+	#base_covgs_scaled = [i * 0.9999999 + 0.00000001 for i in base_covgs_scaled]
+	avg_covg_scaled = np.mean(base_covgs_scaled)#float(sum(base_covgs_scaled)) / float(len(base_covgs_scaled))
+	unif_dist = np.full(len(base_covgs_scaled), avg_covg_scaled)#[avg_covg_scaled for i in base_covgs]
+	# now do chi_squared transform and perform the test
+	chi_observed = -2 * np.log(np.array(base_covgs_scaled))
+	chi_expected = -2 * np.log(np.array(unif_dist))
+	ddof = len(base_covgs_scaled) - 3  # ensures 2 deg of freedom since method uses #vars-1-ddof
+	test_statistic, pvalue = chisquare(chi_observed, chi_expected, ddof = ddof)
+	return total_base_hits, total_bases_covd, avg_covg, covd_bases_pct, pvalue
+
+
+# Given hit positions for accessions, calculate the covered blocks and their coverage
+def compute_blocks(acc2hitpos):
 	acc2blocks = {}  # collapse hits into blocks of coverage
 	for acc in acc2hitpos:
-		acc2blocks[acc] = [[],[]]
+		acc2blocks[acc] = [{}, {}, 1, 1]  # uniq and multi blocks and max coverages
 		for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
 			hits = acc2hitpos[acc][j]
 			if len(hits) == 0:
 				continue
 			hits.sort(key = lambda x: x[0])  # sort by increasing position
+			cur_covg = 1  # coverage level of current block
 			for hit_start, hit_len in hits:
 				hit_start, hit_len = int(hit_start), int(hit_len)
 				hit_end = hit_start + hit_len
 				# three cases: hit creates new block, extends it, or doesn't extend it
 				if len(acc2blocks[acc][j]) == 0:
-					acc2blocks[acc][j].append([hit_start, hit_end])
+					acc2blocks[acc][j][1] = [[hit_start, hit_end]]
 				else:
-					blocks_end = acc2blocks[acc][j][-1][1]  # end of last covered block
-					if hit_start > blocks_end:
-						acc2blocks[acc][j].append([hit_start, hit_end])
-					elif hit_end > blocks_end:  # hit starts in block but extends it
-						acc2blocks[acc][j][-1][1] = hit_end
-					# last case is that this hit is subsumed by last block -- do nothing
+					blocks_end = acc2blocks[acc][j][cur_covg][-1][1]  # end of last covered block
+					if hit_start > blocks_end:  # hit outside of cur block, start new one
+						cur_covg = 1  # reset coverage level of current block
+						acc2blocks[acc][j][1].append([hit_start, hit_end])
 
+					elif hit_end > blocks_end:  # hit starts in block but extends it
+						# make cur_covg block end at hit_start
+						acc2blocks[acc][j][cur_covg][-1][1] = hit_start - 1
+						# then increase cur_covg by 1 and make hit block there
+						cur_covg += 1
+						if cur_covg not in acc2blocks[acc][j]:
+							acc2blocks[acc][j][cur_covg] = []
+						if cur_covg > acc2blocks[acc][j + 2]:
+							acc2blocks[acc][j + 2] = cur_covg
+						acc2blocks[acc][j][cur_covg].append([hit_start, blocks_end])
+						# finally the new part becomes its own new covg 1 block
+						cur_covg = 1
+						acc2blocks[acc][j][cur_covg].append([blocks_end + 1, hit_end])
+
+					else:  # hit is subsumed by current block
+						# possibly split current block, then create increased covg hit block
+						acc2blocks[acc][j][cur_covg][-1][1] = hit_start - 1
+						cur_covg += 1
+						if cur_covg not in acc2blocks[acc][j]:
+							acc2blocks[acc][j][cur_covg] = []
+						if cur_covg > acc2blocks[acc][j + 2]:
+							acc2blocks[acc][j + 2] = cur_covg
+						acc2blocks[acc][j][cur_covg].append([hit_start, hit_end])
+						if hit_end + 1 < blocks_end:
+							acc2blocks[acc][j][cur_covg].append([hit_end + 1, blocks_end])
+							cur_covg -= 1  # reset back to previous covg
+	return acc2blocks
+
+
+# using the read hit positions in acc2hitpos, compute coverage for accesion for
+#  	both uniquely and multi mapped reads. then summarize into coverages for taxids.
+def compute_coverages(args, taxid2info, taxids2stats, acc2info, acc2hitpos):
+	acc2blocks = compute_blocks(acc2hitpos)
 	acc2coverage = {}
 	for acc in acc2blocks:
 		acc2coverage[acc] = [[],[]]
 		for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
 			if len(acc2blocks[acc][j]) == 0:
 				continue
-			block_lengths = [block[1] - block[0] for block in acc2blocks[acc][j]]
-			covered_bases = sum(block_lengths)
-			total_bases = acc2info[acc][0]
-			coverage = float(covered_bases) / float(total_bases)
-			acc2coverage[acc][j] = [coverage, covered_bases, total_bases, block_lengths]
+			max_covg = acc2blocks[acc][j + 2]
+			acclen = acc2info[acc][0]
+			base_hits, covd_bases, avg_covg, covg_pct, pvalue = get_covg_stats(
+				acc2blocks[acc][j], max_covg, acclen)
+			acc2coverage[acc][j] = [covg_pct, covd_bases, acclen, avg_covg, max_covg, base_hits, pvalue]
 
 	taxids2coverage = {}
 	for taxid in taxid2info:
 		if taxid not in taxids2stats:  # a taxid that wasn't mapped to
 			continue
-		# accs hit, total accs, bases covered, total bases in accs hit & in all accs, block lengths
-		taxids2coverage[taxid] = [[0, 0, 0, 0, 0, []], [0, 0, 0, 0, 0, []]]
+		# accs hit, total accs, bases covered, total bases in accs hit & in all accs,
+		#  	avgerage coverage, max coverage, average pvalue for uniform acc coverage
+		taxids2coverage[taxid] = [[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]
 
 		taxid_len = taxid2info[taxid][0]
 		taxids2coverage[taxid][0][4] = taxid_len
@@ -363,14 +432,16 @@ def compute_coverages(args, taxid2info, taxids2stats, acc2info, acc2hitpos):
 					taxids2coverage[taxid][j][0] += 1
 					taxids2coverage[taxid][j][2] += acc2coverage[acc][j][1]
 					taxids2coverage[taxid][j][3] += acc2coverage[acc][j][2]
-					taxids2coverage[taxid][j][5].extend(acc2coverage[acc][j][3])
+					taxids2coverage[taxid][j][5] += acc2coverage[acc][j][3]
+					taxids2coverage[taxid][j][6] += acc2coverage[acc][j][4]
+					taxids2coverage[taxid][j][7] += acc2coverage[acc][j][6]
 	return acc2coverage, taxids2coverage
 
 
 # given a gold stanard profile, compute whether taxids are true or false positives
 def compute_tpfp(args, taxids2stats, acc2covg, acc2info):
 	tp_taxids = {}  # true positive taxIDs extracted from profile
-	with(open(args.profile, 'r')) as infile:
+	with(open(args.gold_standard, 'r')) as infile:
 		for line in infile:
 			if line.startswith('@') or line.startswith('#') or len(line) < 5:
 				continue
@@ -438,56 +509,69 @@ def compute_taxid_covg_quantiles(quantiles, taxids2covg, taxids2tpfp, true_posit
 		tax_covg = {k: v for k,v in taxids2covg.items() if taxids2tpfp[k]}
 	else:
 		tax_covg = {k: v for k,v in taxids2covg.items() if not taxids2tpfp[k]}
-	# taxid to [accs hit, total accs, bases covered, bases in accs hit & total, block_lengths]
+	# taxid to [accs hit, total accs, bases covered, bases in accs hit & total, avg & max covg, pval sum]
 
 	if len(tax_covg) == 0:
 		sys.exit('Error: one or more classes is empty.')
-	all_covg_in_hits, all_covg_overall, all_block_hits, all_block_lens = [[],[]],[[],[]],[[],[]],[[],[]]
+	all_covg_in_hits, all_covg_overall = [[],[]],[[],[]]
+	all_avg_covg, all_max_covg, all_pval = [[],[]], [[],[]], [[],[]]
 	for taxid in tax_covg:
 		for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
 			if len(tax_covg[taxid][j]) == 0 or tax_covg[taxid][j][0] == 0:
 				continue  # no hit accs for this mapping status for this taxid
-			hit_accs, total_accs, cov_bases, hit_acc_bases, total_bases, block_lens = tax_covg[taxid][j]
+			hit_accs, total_accs, cov_bases, hit_acc_bases, total_bases = tax_covg[taxid][j][:5]
+			avg_covg_sum, max_covg_sum, pval_sum = tax_covg[taxid][j][5:]
 			pct_accs_hit = float(hit_accs) / float(total_accs)
 			# compute coverage % in only the accesions hit by reads, and overall bases covered
 			covg_in_hits = float(cov_bases) / float(hit_acc_bases)
 			covg_overall = float(cov_bases) / float(total_bases)
-			block_hits = len(block_lens)
+			avg_covg = float(avg_covg_sum) / float(hit_accs)
+			max_covg = float(max_covg_sum) / float(hit_accs)
+			avg_pval = float(pval_sum) / float(hit_accs)
 			all_covg_in_hits[j].append(covg_in_hits)
 			all_covg_overall[j].append(covg_overall)
-			all_block_hits[j].append(block_hits)
-			all_block_lens[j].extend(block_lens)
+			all_avg_covg[j].append(avg_covg)
+			all_max_covg[j].append(max_covg)
+			all_pval[j].append(avg_pval)
 	all_covg_in_hits[0] = [float('%.5f'%(k)) for k in all_covg_in_hits[0]]
 	all_covg_in_hits[1] = [float('%.5f'%(k)) for k in all_covg_in_hits[1]]
 	all_covg_overall[0] = [float('%.5f'%(k)) for k in all_covg_in_hits[0]]
 	all_covg_overall[1] = [float('%.5f'%(k)) for k in all_covg_in_hits[1]]
+	all_avg_covg[0] = [float('%.5f'%(k)) for k in all_avg_covg[0]]
+	all_avg_covg[1] = [float('%.5f'%(k)) for k in all_avg_covg[1]]
+	all_max_covg[0] = [float('%.5f'%(k)) for k in all_max_covg[0]]
+	all_max_covg[1] = [float('%.5f'%(k)) for k in all_max_covg[1]]
+	all_pval[0] = [float('%.5f'%(k)) for k in all_pval[0]]
+	all_pval[1] = [float('%.5f'%(k)) for k in all_pval[1]]
 	all_covg_in_hits[0].sort() ; all_covg_overall[0].sort()
-	all_block_hits[0].sort() ; all_block_lens[0].sort()
+	all_avg_covg[0].sort() ; all_max_covg[0].sort() ; all_pval[0].sort()
 	all_covg_in_hits[1].sort() ; all_covg_overall[1].sort()
-	all_block_hits[1].sort() ; all_block_lens[1].sort()
+	all_avg_covg[1].sort() ; all_max_covg[1].sort() ; all_pval[1].sort()
 
 	# compute quantile values: get indices for each quantile, extract info into dict
 	covg_quantiles = {}
 	quant_ind_uniq = [int(quantiles[i] * len(all_covg_in_hits[0])) for i in range(len(quantiles))]
 	quant_ind_multi = [int(quantiles[i] * len(all_covg_in_hits[1])) for i in range(len(quantiles))]
-	block_quant_ind_uniq = [int(quantiles[i] * len(all_block_lens[0])) for i in range(len(quantiles))]
-	block_quant_ind_multi = [int(quantiles[i] * len(all_block_lens[1])) for i in range(len(quantiles))]
-	covg_quantiles['TaxID uniquely mapped reads coverage over hit accessions'] = [
+	covg_quantiles['TaxID uniquely mapped reads coverage percent over hit accessions'] = [
 		all_covg_in_hits[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['TaxID uniquely mapped reads coverage over all accessions'] = [
+	covg_quantiles['TaxID uniquely mapped reads coverage percent over all accessions'] = [
 		all_covg_overall[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['TaxID uniquely mapped reads number of blocks'] = [
-		all_block_hits[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['TaxID uniquely mapped reads block lengths'] = [
-		all_block_lens[0][ind] for ind in block_quant_ind_uniq]
-	covg_quantiles['TaxID multimapped reads coverage over hit accessions'] = [
+	covg_quantiles['TaxID uniquely mapped reads average mean coverage'] = [
+		all_avg_covg[0][ind] for ind in quant_ind_uniq]
+	covg_quantiles['TaxID uniquely mapped reads average max coverage'] = [
+		all_max_covg[0][ind] for ind in quant_ind_uniq]
+	covg_quantiles['TaxID uniquely mapped reads average uniform test p-value'] = [
+		all_pval[0][ind] for ind in quant_ind_uniq]
+	covg_quantiles['TaxID multimapped reads coverage percent over hit accessions'] = [
 		all_covg_in_hits[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['TaxID multimapped reads coverage over all accessions'] = [
+	covg_quantiles['TaxID multimapped reads coverage percentover all accessions'] = [
 		all_covg_overall[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['TaxID multimapped reads number of blocks'] = [
-		all_block_hits[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['TaxID multimapped reads block lengths'] = [
-		all_block_lens[1][ind] for ind in block_quant_ind_multi]
+	covg_quantiles['TaxID multimapped reads average mean coverage'] = [
+		all_avg_covg[1][ind] for ind in quant_ind_multi]
+	covg_quantiles['TaxID multimapped reads average max coverage'] = [
+		all_max_covg[1][ind] for ind in quant_ind_multi]
+	covg_quantiles['TaxID multimapped reads average uniform test p-value'] = [
+		all_pval[1][ind] for ind in quant_ind_multi]
 	return covg_quantiles
 
 
@@ -497,43 +581,51 @@ def compute_acc_covg_quantiles(quantiles, acc2covg, acc2tpfp, true_positives):
 		acc_covg = {k: v for k,v in acc2covg.items() if acc2tpfp[k]}
 	else:
 		acc_covg = {k: v for k,v in acc2covg.items() if not acc2tpfp[k]}
-	# acc_covg has [coverage_pct, covered_bases, total_bases, block_lengths]
+	# acc_covg has [covg_pct, covd_bases, acclen, avg_covg, max_covg, base_hits, pvalue]
 
 	if len(acc_covg) == 0:
 		sys.exit('Error: one or more classes is empty.')
-	all_coverage, all_block_hits, all_block_lens = [[],[]], [[],[]], [[],[]]
+	all_covg_pct, all_avg_covg, all_max_covg, all_pval = [[],[]], [[],[]], [[],[]], [[],[]]
 	for acc in acc_covg:
 		for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
 			if len(acc_covg[acc][j]) == 0 or acc_covg[acc][j][0] == 0.0:
 				continue  # no coverage for this accession for this mapping status
-			coverage, cov_bases, total_bases, block_lengths = acc_covg[acc][j]
-			block_hits = len(block_lengths)
-			all_coverage[j].append(coverage)
-			all_block_hits[j].append(block_hits)
-			all_block_lens[j].extend(block_lengths)
-	all_coverage[0] = [float('%.5f'%(k)) for k in all_coverage[0]]
-	all_coverage[1] = [float('%.5f'%(k)) for k in all_coverage[1]]
-	all_coverage[0].sort() ; all_block_hits[0].sort() ; all_block_lens[0].sort()
-	all_coverage[1].sort() ; all_block_hits[1].sort() ; all_block_lens[1].sort()
+			coverage, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue = acc_covg[acc][j]
+			all_covg_pct[j].append(coverage)
+			all_avg_covg[j].append(avg_covg)
+			all_max_covg[j].append(max_covg)
+			all_pval[j].append(pvalue)
+	all_covg_pct[0] = [float('%.5f'%(k)) for k in all_covg_pct[0]]
+	all_covg_pct[1] = [float('%.5f'%(k)) for k in all_covg_pct[1]]
+	all_avg_covg[0] = [float('%.5f'%(k)) for k in all_avg_covg[0]]
+	all_avg_covg[1] = [float('%.5f'%(k)) for k in all_avg_covg[1]]
+	all_max_covg[0] = [float('%.5f'%(k)) for k in all_max_covg[0]]
+	all_max_covg[1] = [float('%.5f'%(k)) for k in all_max_covg[1]]
+	all_pval[0] = [float('%.5f'%(k)) for k in all_pval[0]]
+	all_pval[1] = [float('%.5f'%(k)) for k in all_pval[1]]
+	all_covg_pct[0].sort() ; all_avg_covg[0].sort() ; all_max_covg[0].sort() ; all_pval[0].sort()
+	all_covg_pct[1].sort() ; all_avg_covg[1].sort() ; all_max_covg[1].sort() ; all_pval[1].sort()
 
 	# compute quantile values: get indices for each quantile, extract info into dict
 	covg_quantiles = {}
-	quant_ind_uniq = [int(quantiles[i] * len(all_coverage[0])) for i in range(len(quantiles))]
-	quant_ind_multi = [int(quantiles[i] * len(all_coverage[1])) for i in range(len(quantiles))]
-	block_quant_ind_uniq = [int(quantiles[i] * len(all_block_lens[0])) for i in range(len(quantiles))]
-	block_quant_ind_multi = [int(quantiles[i] * len(all_block_lens[1])) for i in range(len(quantiles))]
-	covg_quantiles['Accesion uniquely mapped reads coverage'] = [
-		all_coverage[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['Accession uniquely mapped reads number of blocks'] = [
-		all_block_hits[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['Accession uniquely mapped reads block lengths'] = [
-		all_block_lens[0][ind] for ind in block_quant_ind_uniq]
-	covg_quantiles['Accesion multimapped reads coverage'] = [
-		all_coverage[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['Accession multimapped reads number of blocks'] = [
-		all_block_hits[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['Accession multimapped reads block lengths'] = [
-		all_block_lens[1][ind] for ind in block_quant_ind_multi]
+	quant_ind_uniq = [int(quantiles[i] * len(all_covg_pct[0])) for i in range(len(quantiles))]
+	quant_ind_multi = [int(quantiles[i] * len(all_covg_pct[1])) for i in range(len(quantiles))]
+	covg_quantiles['Accesion uniquely mapped reads covered bases percent'] = [
+		all_covg_pct[0][ind] for ind in quant_ind_uniq]
+	covg_quantiles['Accession uniquely mapped reads average coverage'] = [
+		all_avg_covg[0][ind] for ind in quant_ind_uniq]
+	covg_quantiles['Accession uniquely mapped reads max coverage'] = [
+		all_max_covg[0][ind] for ind in quant_ind_uniq]
+	covg_quantiles['Accession uniquely mapped reads pvalue'] = [
+		all_pval[0][ind] for ind in quant_ind_uniq]
+	covg_quantiles['Accesion multimapped reads covered bases percent'] = [
+		all_covg_pct[1][ind] for ind in quant_ind_multi]
+	covg_quantiles['Accession multimapped reads average coverage'] = [
+		all_avg_covg[1][ind] for ind in quant_ind_multi]
+	covg_quantiles['Accession multimapped reads max coverage'] = [
+		all_max_covg[1][ind] for ind in quant_ind_multi]
+	covg_quantiles['Accession multimapped reads pvalue'] = [
+		all_pval[1][ind] for ind in quant_ind_multi]
 	return covg_quantiles
 
 
@@ -606,21 +698,24 @@ def write_results(args, taxids2stats, taxids2covg, taxids2tpfp, acc2covg, acc2tp
 						else:
 							outfile.write('Multimapped reads ')
 						if len(taxids2covg[line[0]][j]) == 0 or taxids2covg[line[0]][j][0] == 0:
-							pct_accs_hit, covg_in_hits, covg_overall, block_hits = 0.0, 0.0, 0.0, 0
+							pct_accs_hit, covg_in_hits, covg_overall = 0.0, 0.0, 0.0
+							avg_covg, max_covg, pval_avg = 0.0, 0.0, 'nan'
 						else:
-							x = taxids2covg[line[0]][j]
-							hit_accs, tot_accs, cov_bases, hit_acc_bases, tot_acc_bases, block_lens = x
+							covg_info = taxids2covg[line[0]][j]
+							hit_accs, tot_accs, cov_bases, hit_acc_bases, tot_acc_bases = covg_info[:5]
+							avg_covg_sum, max_covg_sum, pval_sum = covg_info[5:]
 							pct_accs_hit = float(hit_accs) / float(tot_accs)
 							# compute coverage % in only the accs hit by reads, and overall bases covered
 							covg_in_hits = float(cov_bases) / float(hit_acc_bases)
 							covg_overall = float(cov_bases) / float(tot_acc_bases)
-							block_hits = len(block_lens)
-							avg_block_hit = float(sum(block_lens)) / float(len(block_lens))
+							avg_covg = float(avg_covg_sum) / float(hit_accs)
+							max_covg = float(max_covg_sum) / float(hit_accs)
+							pval_avg = float(pval_sum) / float(hit_accs)
 						to_write = str([str(k) for k in
-							[pct_accs_hit, covg_in_hits, covg_overall, block_hits, avg_block_hit]])
-						outfile.write('[Pct. accs hit, Avg. covg. in accs hit, ')
-						outfile.write('Avg. covg. over all accs, Num. blocks hit, ')
-						outfile.write('Avg. block hit len.] == \n' + to_write + '\n')
+							[pct_accs_hit, covg_in_hits, covg_overall, avg_covg, max_covg, pval_avg]])
+						outfile.write('[Pct. accs hit, Avg. covg. pct. in accs hit, ')
+						outfile.write('Avg. covg. pct. over all accs, Avg. covg., max covg. ')
+						outfile.write('Avg. p-value for uniform covg. test] == \n' + to_write + '\n')
 				outfile.write('\n\n')
 
 		# write the per-accession information
@@ -642,13 +737,12 @@ def write_results(args, taxids2stats, taxids2covg, taxids2tpfp, acc2covg, acc2tp
 				else:
 					outfile.write('Multimapped reads ')
 				if len(acc2covg[accession][j]) == 0:
-					covg_pct, cov_bases, total_bases, block_lengths = 0.0, 0, 0, [0]
+					#acc2coverage[acc][j] = [covg_pct, covd_bases, acclen, avg_covg, max_covg, base_hits, pvalue]
+					covg_pct, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue = 0.0,0,0,0.0,0.0,0.0,0.0
 				else:
-					covg_pct, cov_bases, total_bases, block_lengths = acc2covg[accession][j]
-				num_blocks = len(block_lengths)
-				avg_block_len = float(sum(block_lengths)) / float(len(block_lengths))
-				outfile.write('[Coverage pct., Num. blocks, Avg. block len.] == \n')
-				outfile.write(str([str(k) for k in [covg_pct, num_blocks, avg_block_len]]) + '\n')
+					covg_pct, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue = acc2covg[accession][j]
+				outfile.write('[Coverage pct., Avg. covg., Max covg., uniformity test p-value] == \n')
+				outfile.write(str([str(k) for k in [covg_pct, avg_covg, max_covg, pvalue]]) + '\n')
 			outfile.write('\n')
 
 

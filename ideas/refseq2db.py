@@ -84,21 +84,36 @@ def parse_map(map_file):
 
 def split_and_process(input_file, output_dir, taxtree, acc2taxid, block_output):
 	outfile, acc2info = '', {}
+	suspend, unwanted = False, ['Chordata', 'Streptophyta', 'Arthropoda']
 	with(open(input_file, 'r')) as infile:
-		acc, genome_len, taxid, name_lin, tax_lin = '', 0, '', '', ''
+		acc, final_acc, taxid, name_lin, tax_lin = '', '', '', '', ''
 		for line in infile:
 			if line.startswith('>'):
 				# get the new accession and its taxid and lineage information
 				acc = line.strip().split()[0][1:].split('|')[3]
 				taxid = acc2taxid[acc]
 				name_lin, tax_lin = trace_lineages(taxid, taxtree)
-				acc2info[acc] = [0, taxid, name_lin, tax_lin]
+				# if this is an unwanted taxon, suspend output
+				suspend = False
+				for unwanted_taxon in unwanted:
+					if unwanted_taxon in name_lin:
+						suspend = True
+						continue
+
+				# prevent duplicate accesions by adding '.X' with unique num. X
+				final_acc, version = acc, 0
+				while final_acc in acc2info:
+					version += 1
+					final_acc = acc + '.' + str(version)
+				line = line.replace(acc, final_acc)
+				acc2info[final_acc] = [0, taxid, name_lin, tax_lin]
+
 				if not block_output:
 					#outfile = open(output_dir + 'acc_' + acc.replace('.', '-') + '_genomic.fna', 'w')
 					outfile = open(output_dir + 'taxid_' + taxid.replace('.', '_') + '_genomic.fna', 'a')
-			else:
-				acc2info[acc][0] += len(line.strip())
-			if not block_output:
+			elif not suspend:
+				acc2info[final_acc][0] += len(line.strip())
+			if not block_output and not suspend:
 				outfile.write(line)  # write this line to the taxid genomic file
 	return acc2info
 
