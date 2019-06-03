@@ -1,6 +1,4 @@
-import argparse, math, os, random, subprocess, sys, time
-from operator import mul
-from functools import reduce
+import argparse, math, os, subprocess, sys, time
 
 
 start = time.time()  # start a program timer
@@ -24,35 +22,31 @@ def profile_parseargs():  # handle user arguments
 		description='Compute abundance estimations for species in a sample.')
 	parser.add_argument('infiles', nargs='+',
 		help='sam or reads file(s) (space-delimited if multiple). Required.')
-	parser.add_argument('--assignment', choices=['em', 'proportional', 'none'],
-		default='proportional', help='Method for assignming multimapped reads.')
 	parser.add_argument('--db', default='NONE',
 		help='Path to database from select_db.py. Required if read files given.')
 	parser.add_argument('--dbinfo', default='AUTO',
 		help = 'Location of db_info file. Default: data/subset_db_info.txt')
 	parser.add_argument('--min_abundance', type=float, default=10**-4,
 		help='Minimum abundance for a taxa to be included in the results.')
-	parser.add_argument('--min_map', type=int, default=-1,
-		help='Minimum bases mapped to count a hit.')
-	parser.add_argument('--max_ed', type=int, default=999999999,
-		help='Maximum edit distance from a reference to count a hit.')
-	parser.add_argument('--no_len_normalization', action='store_true',
-		help='Do not normalize abundances by genome length.')
+	parser.add_argument('--length_normalization', action='store_true',
+		help='Normalize abundances by genome length.')
 	parser.add_argument('--no_rank_renormalization', action='store_true',
 		help='Do not renormalize abundances to 100 percent at each rank,\
 				for instance if an organism has a species but not genus label.')
 	parser.add_argument('--output', default='abundances.tsv',
 		help='Output abundances file. Default: abundances.txt')
-	parser.add_argument('--pct_id', type=float, default=-1,
+	parser.add_argument('--pct_id', type=float, default=0.5,
 		help='Minimum percent identity from reference to count a hit.')
-	parser.add_argument('--quantify_unmapped', action='store_true',
+	parser.add_argument('--no_quantify_unmapped', action='store_false',
 		help='Factor in unmapped reads in abundance estimation.')
-	parser.add_argument('--read_cutoff', type=int, default=-1,
+	parser.add_argument('--read_cutoff', type=int, default=1,
 		help='Number of reads to count an organism as present.')
 	parser.add_argument('--sampleID', default='NONE',
 		help='Sample ID for output. Defaults to input file name(s).')
 	parser.add_argument('--strain_level', action='store_true',
 		help='Write output at the strain level as well.')
+	parser.add_argument('--uniq_covg_cutoff', default = 0.2, type = float,
+		help='Coverage pct. by uniquely-mapped reads needed to count as present.')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
 	args = parser.parse_args()
@@ -98,9 +92,8 @@ def get_acc2info(args):
 	return acc2info, taxid2info
 
 
-# Determine whether to count a mapping hit based on user specifications
-# Return True if hit should be filtered out, False otherwise
-def filter_line(args, splits):
+# Get pct match of read hit using CIGAR string
+def get_pct_id(args, splits):
 	cigar = splits[5]  # quality of mapping determined by CIGAR string
 	matched_len, total_len, cur = 0, 0, 0
 	for ch in cigar:
@@ -111,15 +104,7 @@ def filter_line(args, splits):
 				matched_len += cur
 			total_len += cur
 			cur = 0
-	if matched_len < args.min_map:
-		return True
-	edit_distance = int(splits[11][5:])
-	if edit_distance > args.max_ed:
-		return True
-	#if float(mapped) / float(mapped + edit_distance) < args.pct_id:
-	if float(matched_len) / float(total_len) < args.pct_id:
-		return True
-	return False  # if read passes quality checks, don't filter
+	return float(matched_len) / float(total_len), matched_len
 
 
 # Parses FLAG field in sam line
@@ -133,141 +118,65 @@ def parse_flag(flag, cigar):
 	return pair1, pair2, chimeric, is_bad
 
 
-# for paired end reads, return read hits to references that both paired ends hit
-def intersect_read_hits(read_hits, pair1maps, pair2maps):
-	if pair1maps == 0 or pair2maps == 0:  # one end unmapped means no intersect
-		return [], []
-	# gather all ref hits then partition into hits for each pair
-	all_ref_hits = [hit[2] for hit in read_hits]
-	pair1refs, pair2refs = all_ref_hits[:pair1maps], all_ref_hits[pair1maps:]
-	# now intersect the lists and return hits to references in the intersect
-	intersect = set([ref for ref in pair1refs if ref in pair2refs])
-	#intersect = set([ref for ref in all_ref_hits])
-	intersect_hits = [hit for hit in read_hits if hit[2] in intersect]
-	return [intersect, intersect_hits]
-
-
 # Given hits for a read, extract total hit length and quality scores for both
 #  	ends of a read pair (if paired), and filter reads using user specification
-def clean_read_hits(args, read_hits, pair1maps, pair2maps):
-	hitlen, readquals = 0, ''
+def filter_read_hits(args, read_hits, pair1maps, pair2maps):
 	filtered_hits = []
 	for hit in range(len(read_hits)):
+		pct_id, total_len = get_pct_id(args, read_hits[hit])
+		read_hits[hit][5] = [pct_id, total_len]  # we no longer need cigar
 		# remove user-filtered & chimeric reads, update # of pair end map counts
-		if filter_line(args, read_hits[hit]) or read_hits[hit][1][2]:
+		if pct_id < args.pct_id or read_hits[hit][1][2]:
 			filtered_hits.append(hit)
 			if read_hits[hit][1][0]:
 				pair1maps -= 1
 			elif read_hits[hit][1][1]:
 				pair2maps -= 1
 
-		if read_hits[hit][10] != '*':  # first hit for a read / paired end
-			readquals += read_hits[hit][10]
-			hitlen += len(read_hits[hit][10])
 	read_hits = [read_hits[i] for i in range(len(read_hits))
 					if i not in filtered_hits]
-	return read_hits, [pair1maps, pair2maps, hitlen, readquals]
+	return read_hits, pair1maps, pair2maps
 
 
 # Given all hits for a read, decide whether to use it and whether multimapped
 # Returns multimapped reads, and if not, taxid and hit length of uniq map
-def process_read(args, read_hits, pair1, pair2, pair1maps, pair2maps):
-	read_hits, properties = clean_read_hits(args,read_hits,pair1maps,pair2maps)
-	pair1maps, pair2maps, hitlen, readquals = properties
+def intersect_read_hits(args, read_hits, pair1, pair2, pair1maps, pair2maps):
 	if len(read_hits) == 0:  # all lines filtered
-		return [], 'Ambiguous', '', -1
+		return [], 'Ambiguous'
 	if pair1 or pair2:  # paired read
 		if pair1maps + pair2maps == 1:
 			# if uniq mapped to one end and unmapped to other, count mapped end
-			return [], read_hits[0][2], readquals, hitlen
+			return read_hits, read_hits[0][7]
 
-		intersect, intersect_hits = intersect_read_hits(
-			read_hits, pair1maps, pair2maps)
+		# for paired end reads, find read hits to references that both paired ends hit
+		if pair1maps == 0 or pair2maps == 0:  # one end unmapped means no intersect
+			return [], 'Ambiguous'
+		# gather all ref hits then partition into hits for each pair
+		all_ref_hits = [hit[7] for hit in read_hits]
+		pair1refs, pair2refs = all_ref_hits[:pair1maps], all_ref_hits[pair1maps:]
+		# now intersect the lists and return hits to references in the intersect
+		intersect = set([ref for ref in pair1refs if ref in pair2refs])
+		#intersect = set([ref for ref in all_ref_hits])
+		intersect_hits = [hit for hit in read_hits if hit[7] in intersect]
+
 		if len(intersect) == 0:  # one end unmapped, other multimapped
-			return [], 'Ambiguous', '', -1  #we consider this case too ambiguous
+			return [], 'Ambiguous'  #we consider this case too ambiguous
 		elif len(intersect) == 1:  # read pairs only agree on one taxid
-			return [], read_hits[0][2], readquals, hitlen  # considered uniq map
+			return intersect_hits, read_hits[0][7]  # considered uniq map
 		else:  # both ends multimapped, handle later
-			return intersect_hits, '', readquals, hitlen
+			return intersect_hits, 'multi'
 
 	else:  # single end
 		if pair1maps > 1:  # multimapped
-			return read_hits, '', readquals, hitlen  # multimapped
+			return read_hits, 'multi'  # multimapped
 		else:
-			return False, read_hits[0][2], readquals, hitlen
-
-
-# Computes the likelihood estimate for a read mapping using base quality scores
-#  	and CIGAR string
-def single_read_likelihood(probs, cigar):
-	# curval = current cigar letter amount, cur_ind = base probs. index
-	base_likelihoods, curval, cur_ind = [], 0, 0
-	for ch in cigar:
-		if ch.isdigit():
-			curval = (curval * 10) + int(ch)
-		else:
-			if ch != 'D':  # deletions do not consume base quality scores
-				if ch == 'M' or ch == '=':  # base likelihoods for matched bases
-					base_likelihoods.extend(
-						[1-probs[i] for i in range(cur_ind, cur_ind + curval)])
-				else:  # base likelihoods for mismatched base
-					base_likelihoods.extend(
-						[probs[i]/3.0 for i in range(cur_ind, cur_ind+curval)])
-				cur_ind = cur_ind + curval
-			curval = 0
-	return reduce(mul, base_likelihoods, 1)  # product of base likelihoods
-
-
-# computes likelihood of read being assigned to each hit taxid based on CIGAR
-#  	string and base quality scores
-def compute_read_likelihoods(read_hits):
-	base_quals, hitlen = read_hits[0][10], len(read_hits[0][10])
-	hit_dict = {}  # used to group reads by reference hit, needed for paired end
-	for hit in read_hits:
-		if hit[2] in hit_dict:
-			hit_dict[hit[2]].append(hit)
-		else:
-			hit_dict[hit[2]] = [hit]
-
-	likelihoods = {}
-	for taxid in hit_dict:
-		cigars = hit_dict[taxid][0][5]
-		if len(hit_dict[taxid]) == 2:  # paired end
-			cigars += hit_dict[taxid][1][5]
-		else:
-			# eliminates unfair advantages for one end mapped reads caused by
-			#  	having less probabilities to multiply over than both ends mapped
-			cigars += hit_dict[taxid][0][5]
-		# compute prob. of each base being wrong, then this read's likelihood
-		prob_bases_wrong = [10 ** (-(ord(ch) - 33) / 10) for ch in base_quals]
-		read_likelihood = single_read_likelihood(prob_bases_wrong, cigars)
-		if read_likelihood  < 10 ** -300:  # minimum likelihood filter
-			likelihoods[taxid] = read_likelihood
-	return [likelihoods, hitlen]
-
-
-# Remove hits to taxids not in taxids2abs (no unique mappings to that taxid)
-def preprocess_multimapped(args, total_bases, mmap_bases, multimapped, taxids2abs):
-	for i in range(len(multimapped)):
-		if args.assignment == 'proportional':
-			hitlen = multimapped[i][0][-1]
-			multimapped[i] = [hit for hit in multimapped[i]
-				if hit[0] in taxids2abs]
-			if len(multimapped[i]) > 0 and len(multimapped[i][0]) == 1:
-				multimapped[i][0].append(hitlen)  # ensure hitlen is kept
-		else:
-			multimapped[i][0] = {hit: val
-				for hit,val in multimapped[i][0].items() if hit in taxids2abs}
-		if len(multimapped[i]) > 0:
-			total_bases += mmap_bases[i]
-	multimapped = [read for read in multimapped if len(read) > 0]
-	return total_bases, multimapped
+			return False, read_hits[0][7]
 
 
 # Given all read hits for a read, return their lowest common ancestor (LCA)
 def get_lowest_common_ancestor(read_hits, taxid2info):
 	lca = ''
-	all_taxids = [hit[2] for hit in read_hits]
+	all_taxids = [hit[7] for hit in read_hits]
 	all_taxlins = [taxid2info[taxid][-1].split('|') for taxid in all_taxids]
 	for i in range(8):
 		# get all unique non-blank taxids for this rank
@@ -282,15 +191,109 @@ def get_lowest_common_ancestor(read_hits, taxid2info):
 	return lca
 
 
-# Runs minimap2, processes output, and returns a dict of taxids mapped to number
-#  	of uniquely mapped reads and bases for that taxid,
-#  	and a list of multimapped reads.
+# Given hit information and LCA, update abundance info for relevant taxa
+def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, taxid2info):
+	taxids_processed = {}
+	# record position and hitlen for lowest level taxid hit
+	acc, pos, pct_id, hitlen = hit[2], hit[3], hit[5][0], hit[5][1]
+	if acc not in acc2hitpos:
+		acc2hitpos[acc] = [[],[]]
+	if taxid != 'multi':
+		acc2hitpos[acc][0].append([pos, hitlen])
+	else:
+		acc2hitpos[acc][1].append([pos, hitlen])
+
+	taxlin = taxid2info[hit[7]][-1].split('|')
+	namelin = taxid2info[hit[7]][-2].split('|')
+	for i in range(len(taxlin)):
+		this_taxid = taxlin[i]
+		if this_taxid == '' or this_taxid in taxids_processed:
+			continue
+		taxids_processed[this_taxid] = ''  # avoid re-processing this taxid
+		is_unique = (i <= lca_index)  # unique hit if LCA or an ancestor
+		if this_taxid in tax2abs:
+			if this_taxid in taxid2info:
+				if is_unique:
+					tax2abs[this_taxid][0] += 1
+					tax2abs[this_taxid][1] += avg_hitlen
+			else:
+				if is_unique:
+					tax2abs[this_taxid][0] += 1
+					tax2abs[this_taxid][1] += avg_hitlen
+					if taxid == 'multi':
+						if acc not in tax2abs[this_taxid][2]:
+							tax2abs[this_taxid][2][acc] = [len(acc2hitpos[acc][1]) - 1]
+						else:
+							tax2abs[this_taxid][2][acc].append(len(acc2hitpos[acc][1]) - 1)
+			#else: tax2abs[this_taxid][1] += 1
+		else:
+			#read to [uniq_hits, uniq_hit_bases,
+			#  3rd field (see below), rank, name lineage, taxid lineage]
+			if this_taxid in taxid2info:
+				# 3rd field is accession length -- for covg purposes
+				if is_unique:
+					tax2abs[this_taxid] = [1, avg_hitlen] + taxid2info[this_taxid]
+				else:
+					tax2abs[this_taxid] = [0, 0] + taxid2info[this_taxid]
+			else:
+				# 3rd field is dict with counts of reads unique to this
+				#  taxa but multimapped to children, used as proxy
+				#  evidence of unique read "coverage" for higher taxa
+				this_rank = RANKS[i]
+				this_taxlin = '|'.join(taxlin[:i+1])
+				this_namelin = '|'.join(namelin[:i+1])
+				if is_unique:
+					tax2abs[this_taxid] = [1, avg_hitlen, {},
+						this_rank, this_namelin, this_taxlin]
+					if taxid == 'multi':
+						tax2abs[this_taxid][2][acc] = [len(acc2hitpos[acc][1]) - 1]
+				else:
+					tax2abs[this_taxid] = [0, 0, {},
+						this_rank, this_namelin, this_taxlin]
+	return tax2abs, taxids_processed, acc2hitpos
+
+
+# Given the possible read hits & info for this read, update accumulated global results
+def update_global_hits(args, hits, taxid, global_results, taxid2info, acc2info):
+	tax2abs, multimapped, acc2hitpos = global_results
+	if taxid == 'Ambiguous':  # ambiguous mapping (see intersect_read_hits)
+		if not args.no_quantify_unmapped:
+			if 'Unmapped' in tax2abs:
+				tax2abs['Unmapped'][0] += 1.0  # reads hit
+			else:  # also store lineage for taxid
+				tax2abs['Unmapped'] = ([1.0, 0.0] +
+					taxid2info['Unmapped'])
+		return tax2abs, multimapped, acc2hitpos
+	if taxid != 'multi' and args.length_normalization:
+		for i in range(len(hits)):
+			hits[i][5][1] /= taxid2info[hits[i][7]][0] # normalize by genome length
+	lca = get_lowest_common_ancestor(hits, taxid2info)
+	if lca == '':
+		lca_index = -1
+	else:
+		lca_index = taxid2info[hits[0][7]][-1].split('|').index(lca)
+	avg_hitlen = float(sum([hit[5][1] for hit in hits])) / len(hits)
+	for hit in hits:
+		tax2abs, taxids_processed, acc2hitpos = process_hit(hit, taxid, lca_index,
+			avg_hitlen, acc2hitpos, tax2abs, taxid2info)
+
+	if taxid == 'multi':  # store taxids hit and length (in bases) of hits
+		#hits = [[hit[7], len(hit[9])] for hit in hits]
+		hits = [avg_hitlen] + [hit[7] for hit in hits]
+		multimapped.append(hits)
+	return tax2abs, multimapped, acc2hitpos
+
+
+# Runs minimap2, processes output, and returns abundance information for taxids,
+#  and multimapping and coverage information for post-processing.
+# This is the general iterator function; it calls subroutines to process
+#  individual lines of input
 def map_and_process(args, infile, acc2info, taxid2info):
-	taxids2abs, multimapped = {}, []  # taxids to abundances, multimapped reads
-	mmap_bases = []  # tracks number of bases for each multimapped read
-	prev_read, read_hits = '', [] # read tracker, all hits for read (full lines)
-	pair1maps, pair2maps = 0, 0  # reads mapped to each pair (single = pair1)
-	total_bases, total_reads = 0, 0
+	# fields tracked through lines: current read, previous read, hits to current
+	#    read, hit counts for first and second paired ends, total reads
+	read, prev_read, read_hits, pair1maps, pair2maps, total_reads = '', '', [], 0, 0, 0
+	# dict of taxids to abundances, multimapped reads, read hit positions for accesions
+	tax2abs, multimapped, acc2hitpos = {}, [], {}
 
 	samfile = False  # whether reading from existing sam file
 	if infile.endswith('sam'):  # input stream from sam file
@@ -307,110 +310,43 @@ def map_and_process(args, infile, acc2info, taxid2info):
 			line = line.decode('utf-8')
 			if not line:  # process finished
 				break
+
 		if line.startswith('@'):
-			if args.quantify_unmapped:
-				if 'Unmapped' in taxids2abs:
-					taxids2abs['Unmapped'][0] += 1.0  # reads hit
+			if not args.no_quantify_unmapped:
+				if 'Unmapped' in tax2abs:
+					tax2abs['Unmapped'][0] += 1.0  # reads hit
 				else:  # also store lineage for taxid
-					taxids2abs['Unmapped'] = [1.0, 0.0] + taxid2info['Unmapped']
+					tax2abs['Unmapped'] = [1.0, 0.0] + taxid2info['Unmapped']
 			continue
 		splits = line.strip().split()
 		pair1, pair2, chimer, is_bad = parse_flag(int(splits[1]), splits[5])
 		if is_bad:  # unmapped or cigar string unavailable
 			continue
 		splits[1] = [pair1, pair2, chimer, is_bad]  # store flag fields
-		# here we change accession to taxid since we want to
-		#  	profile by organisms, not accessions
-		#splits[2] = acc2info[splits[2]][1]
-		acc = splits[2].split('|')[-2]
-		splits[2] = acc2info[acc][1]
+		if '|' in line:
+			acc = splits[2].split('|')[-2]
+			splits[2] = acc
+		else:
+			acc = splits[2]
+		splits[7] = acc2info[acc][1]  # replace PNEXT field (unused) w/ taxid
 
-		read, ref = splits[0], splits[2]
+		read = splits[0]
 		if read != prev_read:
 			total_reads += 1
 			if args.verbose and total_reads % 100000 == 0:
-				echo('Done processing ' + str(total_reads) + ' read segments.')
-			# get uniq hit taxid and hitlen, or multimapped hits intersect
-			intersect_hits, taxid, readquals, hitlen = process_read(
+				echo('Done processing ' + str(total_reads) + ' reads.')
+			# get uniq hit taxid or multimapped hits intersect
+			read_hits, pair1maps, pair2maps = filter_read_hits(
+				args, read_hits, pair1maps, pair2maps)
+			intersect_hits, taxid = intersect_read_hits(
 				args, read_hits, pair1, pair2, pair1maps, pair2maps)
+			# update accumulated global results using the read hits information
+			global_results = [tax2abs, multimapped, acc2hitpos]
+			tax2abs, multimapped, acc2hitpos = update_global_hits(
+				args, intersect_hits, taxid, global_results, taxid2info, acc2info)
 			# reset these read-specific variables
 			prev_read, read_hits, pair1maps, pair2maps = read, [], 0, 0
-			if taxid == 'Ambiguous':  # ambiguous mapping (see process_read)
-				if args.quantify_unmapped:
-					if 'Unmapped' in taxids2abs:
-						taxids2abs['Unmapped'][0] += 1.0  # reads hit
-					else:  # also store lineage for taxid
-						taxids2abs['Unmapped'] = ([1.0, 0.0] +
-							taxid2info['Unmapped'])
-				continue
-			if taxid != '' and not (args.no_len_normalization
-					or args.assignment == 'em'):
-				hitlen /= taxid2info[taxid][0]  # normalize by genome length
-			if intersect_hits == []:  # unique hit
-				total_bases += hitlen
-				taxlin = taxid2info[taxid][-1].split('|')
-				namelin = taxid2info[taxid][-2].split('|')
-				#taxid2info[taxid] = [acclen, rank, namelin, taxlin]
-				for i in range(len(taxlin)):
-					this_taxid = taxlin[i]
-					if this_taxid == '':
-						continue
-					if this_taxid in taxids2abs:
-						taxids2abs[this_taxid][0] += 1
-						taxids2abs[this_taxid][1] += hitlen
-					else:
-						this_rank = RANKS[i]
-						this_taxlin = '|'.join(taxlin[:i+1])
-						this_namelin = '|'.join(namelin[:i+1])
-						taxids2abs[this_taxid] = [1, hitlen] + [0,
-							this_rank, this_namelin, this_taxlin]
-				'''if taxid in taxids2abs:
-					taxids2abs[taxid][0] += 1  # reads hit
-					taxids2abs[taxid][1] += hitlen  # bases hit
-				else:  # also store lineage for taxid
-					taxids2abs[taxid] = [1, hitlen] + taxid2info[taxid]'''
-			else:  # multimapped hit
-				lca = get_lowest_common_ancestor(intersect_hits, taxid2info)
-				if lca != '':
-					# counts as unique hit for the LCA and higher ranks
-					taxinfo = taxid2info[intersect_hits[0][2]]
-					full_taxlin = taxinfo[-1].split('|')
-					full_namelin = taxinfo[-2].split('|')
-					lca_index = full_taxlin.index(lca)
-					taxlin = full_taxlin[:lca_index + 1]
-					namelin = full_taxlin[:lca_index + 1]
-					#taxlin = taxid2info[lca][-1].split('|')
-					#namelin = taxid2info[lca][-2].split('|')
-					#taxid2info[taxid] = [acclen, rank, namelin, taxlin]
-					for i in range(len(taxlin)):
-						this_taxid = taxlin[i]
-						if this_taxid == '':
-							continue
-						if this_taxid in taxids2abs:
-							taxids2abs[this_taxid][0] += 1
-							taxids2abs[this_taxid][1] += hitlen
-						else:
-							this_rank = RANKS[i]
-							this_taxlin = '|'.join(taxlin[:i+1])
-							this_namelin = '|'.join(namelin[:i+1])
-							taxids2abs[this_taxid] = [1, hitlen] + [0,
-								this_rank, this_namelin, this_taxlin]
 
-				if args.assignment == 'proportional':
-					# store taxids hit and length (in bases) of hits
-					#intersect_hits = [[hit[2], len(hit[9])]
-					#	for hit in intersect_hits]
-					intersect_hits = [[hit[2]] for hit in intersect_hits]
-					intersect_hits[0].append(len(readquals))  # total hit length
-				elif args.assignment == 'em':  # compute assingment likelihoods
-					intersect_hits[0][10] = readquals  # ensure qual scores
-					intersect_hits[0].append(pair1 or pair2)  # paired or not
-					intersect_hits = compute_read_likelihoods(intersect_hits)
-				# for em, ensure min. likelihood filter didn't filter all hits
-				if intersect_hits[0] != {} and args.assignment != 'none':
-					multimapped.append(intersect_hits)
-					mmap_bases.append(len(readquals))
-		#else:
 		pair1maps += pair1 or not(pair1 or pair2)  # pair1 or single
 		pair2maps += pair2  # unchanged if pair2 false
 		read_hits.append(splits)
@@ -420,205 +356,89 @@ def map_and_process(args, infile, acc2info, taxid2info):
 	else:
 		mapper.stdout.close()
 		mapper.wait()
-	if len(multimapped) > 0:
-		unique_bases = total_bases
-		total_bases, multimapped = preprocess_multimapped(args, total_bases,
-			mmap_bases, multimapped, taxids2abs)
-		mmap_bases = total_bases - unique_bases  # number of multimapped bases
-	else:
-		mmap_bases = 0
 	# store percentage of unmapped reads
-	if args.quantify_unmapped:
-		taxids2abs['Unmapped'][1] = taxids2abs['Unmapped'][0] / float(total_reads)
-	return taxids2abs, multimapped, float(total_bases), float(mmap_bases)
+	if not args.no_quantify_unmapped:
+		tax2abs['Unmapped'][1] = tax2abs['Unmapped'][0] / float(total_reads)
+	return tax2abs, multimapped, acc2hitpos
 
 
-# Initial EM abundances estimate: similar to Karp paper, except proportion of
-#  	uniquely-mapped reads is changed to (possibly length-normalized) proportion
-#  	of uniquely-mapped bases, allowing variable read length to factor in
-def initital_estimate(taxids2abs, multimapped, total_bases, mmap_bases):
-	# calculate share of total bases uniquely mapped to each taxid
-	taxids2abs = {k: v/total_bases for k,v in taxids2abs.items()}
-	uniq_proportions = {k:v for k,v in taxids2abs.items()}
-
-	# now add in initial estimate for multimapped reads: evenly-distributed
-	all_mmap_taxids = []  # set of multimapped taxids with >= 1 uniq mapped read
-	for read in multimapped:
-		all_mmap_taxids.extend([hit for hit in read[0] if hit in taxids2abs])
-	all_mmap_taxids = set(all_mmap_taxids)
-	even_dist = mmap_bases / total_bases / float(len(all_mmap_taxids))
-	for taxid in taxids2abs:
-		taxids2abs[taxid] += even_dist
-	return uniq_proportions, taxids2abs
-
-
-# Based on magnitude of changes since last EM estimate, decide whether to stop
-def end_condition(changes, prev_magnitude):
-	ab_magnitude = sum([abs(v) for k,v in changes.items()])
-	if ab_magnitude < (10 ** -3):
-		return True, ab_magnitude
-	diff_pct = abs(prev_magnitude - ab_magnitude) / prev_magnitude
-	if diff_pct < 0.1:
-		return True, ab_magnitude
-	return False, ab_magnitude
-
-
-# Performs an updated abundance estimation for an interation of the EM algorithm
-def em_update(args, total_bases, uniq_prop, taxids2abs,taxid2info, multimapped):
-	init_abs = {k:v for k,v in taxids2abs.items()}
-	# get read assignment likelihoods for each read
-	likelihood_sums = {}
-	for read in multimapped:
-		read_likelihoods, hitlen = read  # unpack read info
-		# base_share is the share of total bases reflected in this read
-		base_share = float(hitlen) / float(total_bases)
-		# calculate read likelihoods times abundances ("ab_likelihoods") and
-		#  	the sum of the ab_likelihoods, and the ratio of each to the total
-		ab_likelihoods = {k: v * taxids2abs[k] for k,v in read_likelihoods.items()
-			if k in taxids2abs}
-		total_likelihood = sum([v for k,v in ab_likelihoods.items()])
-		if total_likelihood == 0.0:
-			continue
-		read_ratios = {k: v / total_likelihood for k,v in ab_likelihoods.items()}
-		# sum all likelihood ratios for a taxid (combines multiple hits)
-		for taxid in read_ratios:
-			if taxid not in likelihood_sums:
-				likelihood_sums[taxid] = (read_ratios[taxid] * base_share)
-			else:  # add in additional hits for the same taxid
-				likelihood_sums[taxid] += (read_ratios[taxid] * base_share)
-
-	# update taxids2abs
-	for taxid in likelihood_sums:#taxids2abs:
-		taxids2abs[taxid] = uniq_prop[taxid] + likelihood_sums[taxid]
-	if not args.no_len_normalization:  # normalize by genome len. if user wants
-		taxids2abs = {k: v / float(taxid2info[k][0])
-			for k,v in taxids2abs.items()}
-		all_abs = sum([v for k,v in taxids2abs.items()])
-		taxids2abs = {k: v/all_abs for k,v in taxids2abs.items()}  # renorm
-	changes = {k:(taxids2abs[k]-v) for k,v in init_abs.items()}
-	return changes, taxids2abs
-
-
-# Use EM algorithm to revise taxid abundances using multimapped information,
-#  	without explicitly assigning reads. Recommended method in MiCoP2.
-def resolve_multi_em(args, total_bases, mmap_bases, taxids2abs, multimapped, taxid2info):
-	# we temporarily just keep abundance to simplify EM operations
-	only_abs = {k: v[1] for k,v in taxids2abs.items() if k != 'Unmapped'}
+# Divide abundances of multimapped reads according to uniquely mapped reads
+#  	portion for each of the hit organisms
+def resolve_multi_prop(args, tax2abs, multimapped, taxid2info):
+	# remove hits to pruned nodes, and exit if no multimapped reads remain
+	for i in range(len(multimapped)):
+		multimapped[i] = [multimapped[i][0]] + [
+			hit for hit in multimapped[i][1:] if hit in tax2abs]
+	multimapped = [read for read in multimapped if len(read) > 1]
 	if len(multimapped) == 0:
-		return taxids2abs
-	uniq_prop, only_abs = initital_estimate(
-		only_abs, multimapped, total_bases, mmap_bases)
+		return tax2abs
 
-	# we have a dict showing changes in ab. estimates for each step;
-	#  	 if this changes dict has small enough magnitude, end EM updates
-	changes = {k:(only_abs[k]-v) for k,v in uniq_prop.items()}
-	em_iter, end_iters = 0, 0
-	end, prev_magnitude = end_condition(changes, 1000000.0)
-	while not end:
-		changes, only_abs = em_update(args, total_bases, uniq_prop,
-			only_abs, taxid2info, multimapped)
-		if args.verbose:
-			em_iter += 1
-			echo('EM iteration ' + str(em_iter
-				) + ' -- Sum of changes in abundances:' + str(
-				sum([abs(v) for k,v in changes.items()])))
-		end, prev_magnitude = end_condition(changes, prev_magnitude)
-
-	for taxid in only_abs:  # incorporate updated abundance estimates
-		taxids2abs[taxid][1] = only_abs[taxid]
-	return taxids2abs
-
-
-# Assign multimapped reads to specific organisms via proportional method,
-#  	e.g. proportional to uniquely mapped reads; method used by MiCoP1
-def resolve_multi_prop(args, taxids2abs, multimapped, taxid2info):
-	# ensures early read assignments don't affect proportions of later ones
-	to_add = {}
+	to_add = {}  # abundances to add to total after all reads processed
 	for read_hits in multimapped:
 		# get abundances of all taxids in read_hits
-		all_taxids = list(set([hit[0] for hit in read_hits
-			if hit[0] in taxids2abs]))
+		#all_taxids = list(set([hit[0] for hit in read_hits
+		#	if hit[0] in tax2abs]))
+		all_taxids = list(set(read_hits[1:]))
 		if len(all_taxids) == 0:  # all hits were to taxids with no unique hits
 			continue
-		taxid_abs = [taxids2abs[tax][1] for tax in all_taxids]
+		taxid_abs = [tax2abs[tax][1] for tax in all_taxids]
 
 		## now get cumulative proportional abs. of taxids relative to each other
 		sumabs = sum(taxid_abs)
 		if sumabs == 0.0:
 			continue
 		proportions = [ab / sumabs for ab in taxid_abs]
-		hitlen = read_hits[0][-1]
+		hitlen = read_hits[0] #read_hits[0][-1]
 
-		# divide hit length proportionally among hit taxids; divided assignment
+		# divide hit length proportionally among hit taxids
 		for i in range(len(all_taxids)):
 			this_hitlen = proportions[i] * hitlen
-			if not args.no_len_normalization:
+			if args.length_normalization:
 				this_hitlen /= taxid2info[all_taxids[i]][0]
 			if all_taxids[i] in to_add:
 				to_add[all_taxids[i]] += this_hitlen
 			else:
 				to_add[all_taxids[i]] = this_hitlen
 
-
-		#cumulative = [sum(proportions[:i+1]) for i in range(len(proportions))]
-
-		# randomly proportionally choose which taxid to assign hit to
-		#rand_draw = random.random()
-		#for i in range(len(cumulative)):
-		#	if rand_draw < cumulative[i] or i+1 == len(cumulative):
-		#		assigned_taxid = all_taxids[i]
-		#assigned_hits = [hit for hit in read_hits if hit[0] == assigned_taxid]
-
-		# set the amount to add to taxid abundances
-		#hitlen = assigned_hits[0][1]
-		#if len(assigned_hits) == 2:  # paired end
-		#	hitlen += assigned_hits[1][1]
-		#if not args.no_len_normalization:
-		#	hitlen /= taxid2info[assigned_taxid][0]
-		#if assigned_taxid in to_add:
-		#	to_add[assigned_taxid] += hitlen
-		#else:
-		#	to_add[assigned_taxid] = hitlen
-
 	for taxid in to_add:  # add in the multimapped portions
 		taxlin = taxid2info[taxid][-1].split('|')
 		for tax in taxlin:
 			if tax != '':
-				taxids2abs[tax][1] += to_add[taxid]
-		#taxids2abs[taxid][1] += to_add[taxid]
-	return taxids2abs
+				tax2abs[tax][1] += to_add[taxid]
+	return tax2abs
 
 
 # Renormalize each taxonomic rank so each rank sums to 100% abundance
-def rank_renormalize(args, clades2abs, only_strains=False):
+def rank_renormalize(args, tax2abs, only_strains=False):
 	rank_totals = {i:0.0 for i in RANKS}  # current rank abundance sums
 	mapped_pct = 100.0
-	if args.quantify_unmapped:  # only normalize against the pct of mapped reads
-		mapped_pct = 100.0 - (100.0 * clades2abs['Unmapped'][-1])
-	for clade in clades2abs:
-		if clade == 'Unmapped':
+	if not args.no_quantify_unmapped:  # only normalize against the pct of mapped reads
+		mapped_pct = 100.0 - (100.0 * tax2abs['Unmapped'][-1])
+	for taxid in tax2abs:
+		if taxid == 'Unmapped':
 			continue
-		rank, ab = clades2abs[clade][1], clades2abs[clade][-1]
+		rank, ab = tax2abs[taxid][1], tax2abs[taxid][-1]
 		if only_strains and rank != 'strain':
 			continue
 		rank_totals[rank] += ab  # add this to the rank sum total
 
-	for clade in clades2abs:  # here's the normalization
-		if clade == 'Unmapped':
+	for taxid in tax2abs:  # here's the normalization
+		if taxid == 'Unmapped':
 			continue
-		rank = clades2abs[clade][1]
+		rank = tax2abs[taxid][1]
 		if only_strains and rank != 'strain':
 			continue
-		clades2abs[clade][-1]/= (rank_totals[clades2abs[clade][1]] / mapped_pct)
-	return clades2abs
+		if rank_totals[tax2abs[taxid][1]] != 0.0:
+			tax2abs[taxid][-1] /= (rank_totals[tax2abs[taxid][1]] / mapped_pct)
+	return tax2abs
 
 
-# given initital taxids2abs, some taxids will be higher than strain level;
+# given initital tax2abs, some taxids will be higher than strain level;
 #  	we insert "unknown" taxa down to strain level for normalization purposes
-def gen_lower_taxa(taxids2abs):
+def gen_lower_taxa(tax2abs):
 	to_add = {}  # lower taxa to add after iteration
-	for taxid in taxids2abs:
-		taxid, rank, taxlin, namelin, ab = taxids2abs[taxid]
+	for taxid in tax2abs:
+		taxid, rank, taxlin, namelin, ab = tax2abs[taxid]
 		if rank == 'strain':  # already lowest level
 			continue
 		# make a new taxid and name for this strain indicating that it is a
@@ -627,115 +447,222 @@ def gen_lower_taxa(taxids2abs):
 		lowest_name = namelin.split('|')[rankpos]
 		new_name = lowest_name + ' unknown strain'
 		new_taxid = taxid+'.0'
-		to_add[new_taxid] = [new_taxid, 'strain', taxlin + new_taxid,
-			namelin + new_name, ab]
+		to_add[new_taxid] = [new_taxid, 'strain', taxlin + '|' + new_taxid,
+			namelin + '|' + new_name, ab]
 
 	# add in the new taxa
 	for taxa in to_add:
-		taxids2abs[taxa] = to_add[taxa]
+		tax2abs[taxa] = to_add[taxa]
 	# clean out higher taxa listings -- they will return when we fill the tree
-	#taxids2abs = {k:v for k,v in taxids2abs.items() if v[1] == 'strain'}
-	return taxids2abs
+	#tax2abs = {k:v for k,v in tax2abs.items() if v[1] == 'strain'}
+	return tax2abs
 
 
-# Get abundances for all clades in the tree and put in CAMI format
-def tree_results_cami(args, taxids2abs):
+# Get abundances for all taxids in the tree and put in CAMI format
+def format_cami(args, tax2abs):
 	# rearrange fields to be in CAMI format
-	for taxid in taxids2abs:
-		old = taxids2abs[taxid]
-		taxids2abs[taxid] = [taxid, old[3], old[5], old[4], old[1]]
-	taxids2abs = gen_lower_taxa(taxids2abs)  # ensures everything strain level
+	for taxid in tax2abs:
+		old = tax2abs[taxid]
+		tax2abs[taxid] = [taxid, old[3], old[5], old[4], old[1]]
+	#tax2abs = gen_lower_taxa(tax2abs)  # ensures everything strain level
 	# always renormalize strains, to ensure legitimate profile
-	#taxids2abs = rank_renormalize(args, taxids2abs, only_strains=True)
-
-	# Now compute higher clade abundances
-	clades2abs = {k:v for k,v in taxids2abs.items()}
-	'''for taxid in taxids2abs:
-		taxlin = taxids2abs[taxid][2].split('|')
-		namelin = taxids2abs[taxid][3].split('|')
-		for i in range(len(taxlin)-1):
-			clade = taxlin[i]
-			if clade == '':  # unspecified at this level
-				continue
-			if clade in clades2abs:  # already have clade entry, add abundance
-				clades2abs[clade][-1] += taxids2abs[taxid][-1]
-			else:
-				# determine CAMI fields for this clade
-				clade_taxid, clade_rank = clade, RANKS[i]
-				clade_taxlin = '|'.join(taxlin[:i+1])
-				clade_namelin = '|'.join(namelin[:i+1])
-				clade_ab = taxids2abs[taxid][-1]  # currently just lower tax ab
-				clades2abs[clade_taxid] = [clade_taxid, clade_rank,
-					clade_taxlin, clade_namelin, clade_ab]'''
-
+	#tax2abs = rank_renormalize(args, tax2abs, only_strains=True)
 	if not args.no_rank_renormalization:
-		clades2abs = rank_renormalize(args, clades2abs)
-	return clades2abs
+		tax2abs = rank_renormalize(args, tax2abs)
+	return tax2abs
 
 
-# Apply read cutoff and min_abundance thresholds, but latter relative to parent taxa
-def prune_tree(args, taxids2abs):
-	del_list = []
-	for taxid in taxids2abs:
+# Given accession hits, compute the coverage information for each accession
+def process_accession_coverages(taxid2info, tax2abs, acc2info, acc2hitpos):
+	acc2blocks = {}  # collapse hits into blocks of coverage
+	for acc in acc2hitpos:
+		acc2blocks[acc] = [[],[]]
+		for type in range(1):#(2):  # type=0 --> uniq mapped, type=1 --> multi mapped
+			hits = acc2hitpos[acc][type]
+			if len(hits) == 0:
+				continue
+			hits.sort(key = lambda x: x[0])  # sort by increasing position
+			for hit_start, hit_len in hits:
+				hit_start, hit_len = int(hit_start), int(hit_len)
+				hit_end = hit_start + hit_len
+				# three cases: create new block, extend it, or don't extend it
+				if len(acc2blocks[acc][type]) == 0:
+					acc2blocks[acc][type].append([hit_start, hit_end])
+				else:
+					blocks_end = acc2blocks[acc][type][-1][1]  # end of last block
+					if hit_start > blocks_end:
+						acc2blocks[acc][type].append([hit_start, hit_end])
+					elif hit_end > blocks_end:  # starts in block but extends it
+						acc2blocks[acc][type][-1][1] = hit_end
+					# last case: hit is subsumed by last block -- do nothing
+
+	acc2covg = {}
+	for acc in acc2blocks:
+		acc2covg[acc] = [[],[]]
+		for type in range(1):#(2):  # type=0 --> uniq mapped, type=1 --> multi mapped
+			if len(acc2blocks[acc][type]) == 0:
+				continue
+			block_lengths = [block[1] - block[0] for block in acc2blocks[acc][type]]
+			covered_bases = sum(block_lengths)
+			total_bases = acc2info[acc][0]
+			coverage = float(covered_bases) / float(total_bases)
+			acc2covg[acc][type] = [coverage, covered_bases, total_bases]#, block_lengths]
+	return acc2covg
+
+
+# using the read hit positions in acc2hitpos, compute coverage for accesion for
+#  	both uniquely and multi mapped reads. then summarize into coverages for taxids.
+def compute_coverages(taxid2info, tax2abs, acc2info, acc2hitpos):
+	# first use the accession hits to get coverage by accession
+	acc2covg = process_accession_coverages(taxid2info, tax2abs, acc2info, acc2hitpos)
+	# now aggregate these accessions under their TaxID
+	tax2covg = {}
+	for taxid in taxid2info:
+		if taxid not in tax2abs:  # a taxid that wasn't mapped to
+			continue
+		# accs hit, total accs, bases covered, total bases in accs hit & in all accs, block lengths
+		tax2covg[taxid] = [[0, 0, 0, 0, 0, []], [0, 0, 0, 0, 0, []]]
+
+		taxid_len = taxid2info[taxid][0]
+		tax2covg[taxid][0][4] = taxid_len
+		tax2covg[taxid][1][4] = taxid_len
+		for acc in acc2covg:
+			if acc2info[acc][1] != taxid:
+				continue
+			for type in range(1):#(2):  # type=0 --> uniq mapped, type=1 --> multi mapped
+				tax2covg[taxid][type][1] += 1
+				#tax2covg[taxid][type][4] += acc2info[acc][0]
+				if acc in acc2covg and len(acc2covg[acc][type]) != 0:
+					tax2covg[taxid][type][0] += 1
+					tax2covg[taxid][type][2] += acc2covg[acc][type][1]
+					tax2covg[taxid][type][3] += acc2covg[acc][type][2]
+					#tax2covg[taxid][type][5].extend(acc2covg[acc][type][3])
+	return tax2covg
+
+
+# Mark taxa that are below user-set cutoff thresholds for deletion
+def mark_cutoff_taxa(args, tax2info, tax2abs, tax2covg, root = None):
+	del_list = {}
+	for taxid in tax2abs:
 		if taxid == 'Unmapped':
 			continue
-		taxinfo = taxids2abs[taxid]
+		taxinfo = tax2abs[taxid]
 		num_reads, taxlin = taxinfo[0], taxinfo[-1]
-		num_reads = taxinfo[0]
 		if num_reads < args.read_cutoff:
-			del_list.append(taxid)
+			del_list[taxid] = True
 			continue
+		if taxid in tax2covg:
+			uniq_stats = tax2covg[taxid][0]
+			bases_covd, total_bases = uniq_stats[2], uniq_stats[3]
+			if total_bases == 0:
+				uniq_covg_pct = 0.0
+			else:
+				uniq_covg_pct = float(bases_covd) / float(total_bases)
+			if uniq_covg_pct < args.uniq_covg_cutoff:
+				del_list[taxid] = True
+
 		taxlin_splits = taxlin.split('|')
-		if len(taxlin_splits) == 1:  # no parent
+		if len(taxlin_splits) == 1 or taxid == root:  # no parent
 			continue
 		for i in range(2, len(taxlin_splits) + 1):
 			parent = taxlin.split('|')[-i]
 			if parent != '':
 				break
-		parent_reads = taxids2abs[parent][0]
+		parent_reads = tax2abs[parent][0]
 		if float(num_reads) / float(parent_reads) < args.min_abundance:
-			del_list.append(taxid)
+			del_list[taxid] = True
+	return del_list
 
+
+# ensure the children of pruned parents are also pruned, as well as childless parents
+def ensure_consistency(tax2info, tax2abs, del_list):
 	# ensure the children of pruned parents are also pruned
-	for taxid in taxids2abs:
-		taxlin = taxids2abs[taxid][-1].split('|')
-		for tax in taxlin:
-			if tax in del_list:
-				del_list.append(taxid)
-	del_list = list(set(del_list))
+	for taxid in tax2abs:
+		taxlin = tax2abs[taxid][-1]
+		taxlin_splits = taxlin.split('|')
+		if len(taxlin_splits) == 1:  # superkingdom level should have no parent
+			continue
+		for i in range(2, len(taxlin_splits) + 1):
+			parent = taxlin.split('|')[-i]
+			if parent != '':
+				break
+		if parent in del_list:
+			del_list[taxid] = True
+	# prune childless nodes
+	for i in range(len(RANKS)):  # do for each taxonomic rank
+		for taxid in tax2abs:
+			if tax2abs[taxid][3] != RANKS[len(RANKS) - i -1]:
+				continue
+			if taxid not in tax2info:  # not leaf node
+				taxlin = tax2abs[taxid][-1]
+				children = [node for node in tax2abs if taxlin + '|' in tax2abs[node][-1]]
+				children = [child for child in children if child not in del_list]
+				if len(children) == 0:
+					del_list[taxid] = True
+	return del_list
+
+
+# After marking all deletable taxa, see if parents of pruned children should survive
+#  when considering reads multimapped for children but unique mapped for parents
+def rescue_higher_taxa(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos, del_list):
+	for taxid in tax2abs:
+		if taxid in tax2info or taxid not in del_list:
+			continue  # skip leaf nodes or those not facing deletion
+		# hits that are unique to this taxa but multimapped in lower taxa
+		multi_hits_in_lower = tax2abs[taxid][2]
+		new_acc2hitpos = {}  # count those reads as unique in leaf nodes
+		for acc in multi_hits_in_lower:
+			new_acc2hitpos[acc] = [[],[]]
+			new_acc2hitpos[acc][0] = acc2hitpos[acc][0]
+			# indices of reads multimapped at lowest level that will count as unique now
+			indices_to_add = [acc2hitpos[acc][1][i] for i in multi_hits_in_lower[acc]
+				if len(acc2hitpos[acc][1]) != 0]
+			new_acc2hitpos[acc][0].extend(indices_to_add)
+
+		# generate this node's subtree, recompute coverages, and see if it would be pruned
+		this_tax2abs = {}
+		taxlin = tax2abs[taxid][-1]
+		this_tax2abs = {node: tax2abs[node] for node in tax2abs
+			if taxlin + '|' in tax2abs[node][-1]}
+		this_tax2abs[taxid] = tax2abs[taxid]  # put current node in there
+		new_tax2covg = compute_coverages(tax2info, this_tax2abs, acc2info, new_acc2hitpos)
+		new_del_list = mark_cutoff_taxa(args, tax2info, this_tax2abs, new_tax2covg, root = taxid)
+		new_del_list = ensure_consistency(tax2info, this_tax2abs, new_del_list)
+		if taxid not in new_del_list:
+			del del_list[taxid]
+	return del_list
+
+
+# Apply read cutoff and min_abundance thresholds, but latter relative to parent taxa
+def prune_tree(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos):
+	del_list = mark_cutoff_taxa(args, tax2info, tax2abs, tax2covg)
+	del_list = ensure_consistency(tax2info, tax2abs, del_list)
+	del_list = rescue_higher_taxa(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos, del_list)
 	for taxid in del_list:
-		del taxids2abs[taxid]
-	return taxids2abs
+		del tax2abs[taxid]
+	return tax2abs
 
 
 # Processes uniquely-mapped reads, then estimates abundances using
 #  	uniquely-mapped abundances and multimapped read information
 def compute_abundances(args, infile, acc2info, tax2info):
-	# taxids and higher clades to abundances, and multimapped reads dict
-	taxids2abs, clades2abs, multimapped = {}, {}, {}
 	if args.verbose:
 		echo('Reading input file ' + infile)
 	# run mapping and process to get uniq map abundances & multimapped reads
-	taxids2abs, multimapped, total_bases, mmap_bases = map_and_process(
-		args, infile, acc2info, tax2info)
+	tax2abs, multimapped, acc2hitpos = map_and_process(args, infile,
+		acc2info, tax2info)
 	if args.verbose:
-		echo('Done reading input file ' + infile)
-	# filter out organisms below the read cutoff set by the user, if applicable
-	#taxids2abs = {k:v for k,v in taxids2abs.items() if v[0] > args.read_cutoff}
-	taxids2abs = prune_tree(args, taxids2abs)
+		echo('Computing coverage information...')
+	tax2covg = compute_coverages(tax2info, tax2abs, acc2info, acc2hitpos)
+	# prune tree based on user cutoff settings
+	tax2abs = prune_tree(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos)
 
-	if args.verbose and args.assignment != 'none':
+	if args.verbose:
 		echo('Assigning multimapped reads...')
-	if len(multimapped) > 0 and args.assignment == 'em':
-		taxids2abs = resolve_multi_em(args, total_bases, mmap_bases, taxids2abs,
-			multimapped, tax2info)
-	elif len(multimapped) > 0 and args.assignment == 'proportional':
-		taxids2abs = resolve_multi_prop(args, taxids2abs, multimapped, tax2info)
-	if args.verbose and args.assignment != 'none':
-		echo('Multimapped reads assigned.')
-
-	results = tree_results_cami(args, taxids2abs)
+	tax2abs = resolve_multi_prop(args, tax2abs, multimapped, tax2info)
+	results = format_cami(args, tax2abs)
 	if args.verbose:
+		echo('Multimapped reads assigned.')
 		echo('Done computing abundances for input file ' + infile)
 	return results
 
@@ -748,25 +675,25 @@ def gather_results(args, acc2info, taxid2info):
 		if args.verbose:
 			echo('Computing abundances for input file ' + infile + '...')
 		file_res = compute_abundances(args, infile, acc2info, taxid2info)
-		for clade in file_res:
-			if clade not in results:
-				results[clade] = file_res[clade]
+		for taxid in file_res:
+			if taxid not in results:
+				results[taxid] = file_res[taxid]
 			else:
-				results[clade][-1] += file_res[clade][-1]
+				results[taxid][-1] += file_res[taxid][-1]
 
 	if args.verbose:
 		echo('Compiling and writing results...')
 	rank_results = {i:[] for i in range(len(RANKS))}
-	for clade in results:
-		ab = results[clade][-1]  # avg over input files, truncate to 4 digits
-		results[clade][-1] = float(math.trunc(
+	for taxid in results:
+		ab = results[taxid][-1]  # avg over input files, truncate to 4 digits
+		results[taxid][-1] = float(math.trunc(
 			(ab / len(args.infiles)) * (10**4))) / (10**4)
-		rank = RANKS.index(results[clade][1])
+		rank = RANKS.index(results[taxid][1])
 		if rank == 7:  # strain; add extra CAMI genomeID and OTU fields
-			taxid = results[clade][0]
+			taxid = results[taxid][0]
 			cami_genid, cami_otu = taxid, taxid.split('.')[0]
-			results[clade].extend([cami_genid, cami_otu])
-		rank_results[rank].append(results[clade])  # results per rank
+			results[taxid].extend([cami_genid, cami_otu])
+		rank_results[rank].append(results[taxid])  # results per rank
 	return rank_results
 
 
@@ -788,7 +715,7 @@ def write_results(args, rank_results):
 			if not args.strain_level and i == len(RANKS)-1:
 				continue  # skip the strain level unless user wants it
 			lines = rank_results[i]  # all lines to write for this tax level
-			# now sort clades in rank by descending abundance
+			# now sort taxids in rank by descending abundance
 			if i != 7:  # not strains, which have extra fields
 				lines.sort(key=lambda x: 100.0-x[-1])
 			else:  # strains
@@ -805,12 +732,6 @@ def write_results(args, rank_results):
 def map_main(args = None):
 	if args == None:
 		args = profile_parseargs()
-	if args.pct_id == -1:  # not set by user
-		args.pct_id = 0.5
-		#if args.assignment == 'em':  # em assignment default
-		#	args.pct_id = 0.5
-		#else:  # proportional default
-		#	args.pct_id = 0.95
 	if args.pct_id > 1.0 or args.pct_id < 0.0:
 		print('Error: --pct_id must be between 0.0 and 1.0, inclusive.')
 		sys.exit()
