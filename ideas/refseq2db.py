@@ -83,34 +83,56 @@ def parse_map(map_file):
 
 
 def split_and_process(input_file, output_dir, taxtree, acc2taxid, block_output):
-	outfile, acc2info = '', {}
-	suspend, unwanted = False, ['Chordata', 'Streptophyta', 'Arthropoda']
+	outfile, acc2info, taxids_processed = '', {}, {}
+	suspend = False
+	unwanted = ['Chordata', 'Streptophyta', 'Arthropoda', 'Echinodermata', 'Mollusca']
 	with(open(input_file, 'r')) as infile:
 		acc, final_acc, taxid, name_lin, tax_lin = '', '', '', '', ''
 		for line in infile:
 			if line.startswith('>'):
 				# get the new accession and its taxid and lineage information
-				acc = line.strip().split()[0][1:].split('|')[3]
+				acc, name = line.strip().split('|')[3:]
+				acc_prefix = acc[:7]  # heuristic for same strain
+				name = name.strip().split(',')[0]
 				taxid = acc2taxid[acc]
 				name_lin, tax_lin = trace_lineages(taxid, taxtree)
+
 				# if this is an unwanted taxon, suspend output
 				suspend = False
 				for unwanted_taxon in unwanted:
 					if unwanted_taxon in name_lin:
 						suspend = True
-						continue
+						break
+				if 'plasmid' in name or 'Plasmid' in name:
+					suspend = True
+				if suspend:
+					continue
 
-				# prevent duplicate accesions by adding '.X' with unique num. X
+				# prevent duplicate accesions/taxids by adding '.X' with unique num. X
 				final_acc, version = acc, 0
 				while final_acc in acc2info:
 					version += 1
 					final_acc = acc + '.' + str(version)
+				final_tax, version = taxid, 0
+				while final_tax in taxids_processed:
+					if acc_prefix == taxids_processed[final_tax]:
+						break
+					version += 1
+					final_tax = taxid + '.' + str(version)
+				if final_tax != taxid:
+					namesplits, taxsplits = name_lin.split('|'), tax_lin.split('|')
+					taxsplits[-1] = final_tax
+					namesplits[-1] = name
+					name_lin, tax_lin = '|'.join(namesplits), '|'.join(taxsplits)
+
 				line = line.replace(acc, final_acc)
-				acc2info[final_acc] = [0, taxid, name_lin, tax_lin]
+				acc2info[final_acc] = [0, final_tax, name_lin, tax_lin]
+				taxids_processed[final_tax] = acc_prefix
 
 				if not block_output:
 					#outfile = open(output_dir + 'acc_' + acc.replace('.', '-') + '_genomic.fna', 'w')
-					outfile = open(output_dir + 'taxid_' + taxid.replace('.', '_') + '_genomic.fna', 'a')
+					outfile = open(output_dir + 'taxid_' + final_tax.replace(
+						'.', '_') + '_genomic.fna', 'a')
 			elif not suspend:
 				acc2info[final_acc][0] += len(line.strip())
 			if not block_output and not suspend:
