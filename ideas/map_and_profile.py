@@ -39,11 +39,11 @@ def profile_parseargs():  # handle user arguments
 		help='Minimum percent identity from reference to count a hit.')
 	parser.add_argument('--no_quantify_unmapped', action='store_false',
 		help='Factor in unmapped reads in abundance estimation.')
-	parser.add_argument('--read_cutoff', type=int, default=1,
+	parser.add_argument('--read_cutoff', type=int, default=100,
 		help='Number of reads to count an organism as present.')
 	parser.add_argument('--sampleID', default='NONE',
 		help='Sample ID for output. Defaults to input file name(s).')
-	parser.add_argument('--strain_level', action='store_true',
+	parser.add_argument('--no_strain_level', action='store_true',
 		help='Write output at the strain level as well.')
 	parser.add_argument('--uniq_covg_cutoff', default = 0.2, type = float,
 		help='Coverage pct. by uniquely-mapped reads needed to count as present.')
@@ -212,7 +212,7 @@ def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, taxid2in
 		taxids_processed[this_taxid] = ''  # avoid re-processing this taxid
 		is_unique = (i <= lca_index)  # unique hit if LCA or an ancestor
 		if this_taxid in tax2abs:
-			if this_taxid in taxid2info:
+			if this_taxid in taxid2info:  # lowest level taxid
 				if is_unique:
 					tax2abs[this_taxid][0] += 1
 					tax2abs[this_taxid][1] += avg_hitlen
@@ -229,12 +229,12 @@ def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, taxid2in
 		else:
 			#read to [uniq_hits, uniq_hit_bases,
 			#  3rd field (see below), rank, name lineage, taxid lineage]
-			if this_taxid in taxid2info:
+			if this_taxid in taxid2info:  # lowest level taxid
 				# 3rd field is accession length -- for covg purposes
 				if is_unique:
 					tax2abs[this_taxid] = [1, avg_hitlen] + taxid2info[this_taxid]
-				else:
-					tax2abs[this_taxid] = [0, 0] + taxid2info[this_taxid]
+				#else:
+				#	tax2abs[this_taxid] = [0, 0] + taxid2info[this_taxid]
 			else:
 				# 3rd field is dict with counts of reads unique to this
 				#  taxa but multimapped to children, used as proxy
@@ -247,9 +247,9 @@ def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, taxid2in
 						this_rank, this_namelin, this_taxlin]
 					if taxid == 'multi':
 						tax2abs[this_taxid][2][acc] = [len(acc2hitpos[acc][1]) - 1]
-				else:
-					tax2abs[this_taxid] = [0, 0, {},
-						this_rank, this_namelin, this_taxlin]
+				#else:
+				#	tax2abs[this_taxid] = [0, 0, {},
+				#		this_rank, this_namelin, this_taxlin]
 	return tax2abs, taxids_processed, acc2hitpos
 
 
@@ -300,8 +300,8 @@ def map_and_process(args, infile, acc2info, taxid2info):
 		samfile = True
 		instream = open(infile, 'r')
 	else:  # run minimap2 and stream its output as input
-		mapper = subprocess.Popen(['./minimap2/minimap2', '-ax', 'sr',
-			'-t', '4', '-2', '-n' '1', '--secondary=yes',
+		mapper = subprocess.Popen([__location__ + 'minimap2/minimap2', '-ax',
+			'sr', '-t', '4', '-2', '-n' '1', '--secondary=yes',
 			args.db, infile], stdout=subprocess.PIPE, bufsize=1)
 		instream = iter(mapper.stdout.readline, "")
 
@@ -576,28 +576,29 @@ def mark_cutoff_taxa(args, tax2info, tax2abs, tax2covg, root = None):
 
 # ensure the children of pruned parents are also pruned, as well as childless parents
 def ensure_consistency(tax2info, tax2abs, del_list):
-	# ensure the children of pruned parents are also pruned
+	# ensure the children of pruned parents/ancestors are also pruned
 	for taxid in tax2abs:
 		taxlin = tax2abs[taxid][-1]
 		taxlin_splits = taxlin.split('|')
 		if len(taxlin_splits) == 1:  # superkingdom level should have no parent
 			continue
 		for i in range(2, len(taxlin_splits) + 1):
-			parent = taxlin.split('|')[-i]
-			if parent != '':
+			ancestor = taxlin.split('|')[-i]
+			if ancestor == '':
+				continue
+			if ancestor in del_list:
+				del_list[taxid] = True
 				break
-		if parent in del_list:
-			del_list[taxid] = True
-	# prune childless nodes
+	# prune nodes with no descendents
 	for i in range(len(RANKS)):  # do for each taxonomic rank
 		for taxid in tax2abs:
 			if tax2abs[taxid][3] != RANKS[len(RANKS) - i -1]:
 				continue
 			if taxid not in tax2info:  # not leaf node
 				taxlin = tax2abs[taxid][-1]
-				children = [node for node in tax2abs if taxlin + '|' in tax2abs[node][-1]]
-				children = [child for child in children if child not in del_list]
-				if len(children) == 0:
+				descendents = [node for node in tax2abs if taxlin + '|' in tax2abs[node][-1]]
+				descendents = [desc for desc in descendents if desc not in del_list]
+				if len(descendents) == 0:
 					del_list[taxid] = True
 	return del_list
 
@@ -686,8 +687,12 @@ def gather_results(args, acc2info, taxid2info):
 	rank_results = {i:[] for i in range(len(RANKS))}
 	for taxid in results:
 		ab = results[taxid][-1]  # avg over input files, truncate to 4 digits
-		results[taxid][-1] = float(math.trunc(
-			(ab / len(args.infiles)) * (10**4))) / (10**4)
+		if results[taxid][-1] < 0.00001:
+			results[taxid][-1] = '0.00001'
+		else:
+			results[taxid][-1] = str(float('%.5f' % results[taxid][-1]))
+		#results[taxid][-1] = float(math.trunc(
+		#	(ab / len(args.infiles)) * (10**4))) / (10**4)
 		rank = RANKS.index(results[taxid][1])
 		if rank == 7:  # strain; add extra CAMI genomeID and OTU fields
 			taxid = results[taxid][0]
@@ -712,8 +717,8 @@ def write_results(args, rank_results):
 			'PERCENTAGE\t_CAMI_genomeID\t_CAMI_OTU\n')
 
 		for i in range(len(RANKS)):
-			if not args.strain_level and i == len(RANKS)-1:
-				continue  # skip the strain level unless user wants it
+			if args.no_strain_level and i == len(RANKS)-1:
+				continue  # skip the strain level if user wants to
 			lines = rank_results[i]  # all lines to write for this tax level
 			# now sort taxids in rank by descending abundance
 			if i != 7:  # not strains, which have extra fields
