@@ -85,15 +85,19 @@ def parse_map(map_file):
 def split_and_process(input_file, output_dir, taxtree, acc2taxid, block_output):
 	outfile, acc2info, taxids_processed = '', {}, {}
 	suspend = False
-	unwanted = ['Chordata', 'Streptophyta', 'Arthropoda', 'Echinodermata', 'Mollusca']
+	unwanted = ['Chordata', 'Streptophyta', 'Arthropoda', 'Echinodermata', 'Mollusca', 'Hemichordata']
 	with(open(input_file, 'r')) as infile:
 		acc, final_acc, taxid, name_lin, tax_lin = '', '', '', '', ''
 		for line in infile:
 			if line.startswith('>'):
 				# get the new accession and its taxid and lineage information
-				acc, name = line.strip().split('|')[3:]
+				acc, name = line.strip().split('|')[3:5]
 				acc_prefix = acc[:7]  # heuristic for same strain
-				name = name.strip().split(',')[0]
+				name = name.strip()
+				if len(name) == 0:
+					name = 'unidentified'
+				else:
+					name = name.strip().split(',')[0]
 				taxid = acc2taxid[acc]
 				name_lin, tax_lin = trace_lineages(taxid, taxtree)
 
