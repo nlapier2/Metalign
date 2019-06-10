@@ -24,8 +24,11 @@ def parseargs():  # handle user arguments
 		description='Given samfile & profile, extract statistics for TP/FP taxa.')
 	parser.add_argument('samfile', help='sam file to process. Required.')
 	parser.add_argument('gold_standard', help='CAMI gold standard profile to use for TP/FP. Required.')
+	parser.add_argument('taxid', help='Taxid under which to compute unique regions. Required.')
+	parser.add_argument('organism_files', help='Dir with separated organism files. Required.')
 	parser.add_argument('--dbinfo', default='AUTO',
 		help = 'Location of db_info file. Default: data/subset_db_info.txt')
+	parser.add_argument('-k', type=int, default=100, help='Value of "k" for k-mers.')
 	parser.add_argument('--no_len_normalization', action='store_true',
 		help='Do not normalize abundances by genome length.')
 	parser.add_argument('--output', default='samfile_statistics.txt',
@@ -66,10 +69,13 @@ def get_acc2info(args):
 		infofile.readline()  # skip header line
 		for line in infofile:
 			acc, acclen, taxid, namelin, taxlin = line.strip().split('\t')
+			taxlin_splits = taxlin.split('|')
+			if args.taxid not in taxlin_splits:
+				continue
 			rank = get_taxid_rank(taxlin)
-			if rank == 'strain' and acc != 'Unmapped':
-				taxid += '.1'  # CAMI formatting specification
-				taxlin += '.1'
+			#if rank == 'strain' and acc != 'Unmapped':
+			#	taxid += '.1'  # CAMI formatting specification
+			#	taxlin += '.1'
 			acclen = int(acclen)
 			acc2info[acc] = [acclen, taxid, namelin, taxlin]
 			if taxid in taxid2info:
@@ -210,6 +216,8 @@ def process_samfile(args, acc2info, taxid2info):
 		# here we change accession to taxid since we want to
 		#  	profile by organisms, not accessions
 		acc = splits[2].split('|')[-2]
+		if acc not in acc2info:
+			continue  # not one of the accessions needed for args.taxid
 		splits[2] = acc2info[acc][1]
 		splits[7] = acc  # nevermind, save the accession over pnext which we don't use
 
@@ -340,7 +348,7 @@ def get_covg_stats(block_covg_dict, max_covg, acclen):
 	chi_expected = -2 * np.log(np.array(unif_dist))
 	ddof = len(base_covgs_scaled) - 3  # ensures 2 deg of freedom since method uses #vars-1-ddof
 	test_statistic, pvalue = chisquare(chi_observed, chi_expected, ddof = ddof)
-	return total_base_hits, total_bases_covd, avg_covg, covd_bases_pct, pvalue
+	return total_base_hits, total_bases_covd, avg_covg, covd_bases_pct, test_statistic
 
 
 # Given hit positions for accessions, calculate the covered blocks and their coverage
@@ -407,16 +415,17 @@ def compute_coverages(args, taxid2info, taxids2stats, acc2info, acc2hitpos):
 				continue
 			max_covg = acc2blocks[acc][j + 2]
 			acclen = acc2info[acc][0]
-			base_hits, covd_bases, avg_covg, covg_pct, pvalue = get_covg_stats(
+			base_hits, covd_bases, avg_covg, covg_pct, test_stat = get_covg_stats(
 				acc2blocks[acc][j], max_covg, acclen)
-			acc2coverage[acc][j] = [covg_pct, covd_bases, acclen, avg_covg, max_covg, base_hits, pvalue]
+			acc2coverage[acc][j] = [covg_pct, covd_bases, acclen, avg_covg,
+				max_covg, base_hits, test_stat, acc2blocks[acc][j]]
 
 	taxids2coverage = {}
 	for taxid in taxid2info:
 		if taxid not in taxids2stats:  # a taxid that wasn't mapped to
 			continue
 		# accs hit, total accs, bases covered, total bases in accs hit & in all accs,
-		#  	avgerage coverage, max coverage, average pvalue for uniform acc coverage
+		#  	avgerage coverage, max coverage, average test_stat for uniform acc coverage
 		taxids2coverage[taxid] = [[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]
 
 		taxid_len = taxid2info[taxid][0]
@@ -512,27 +521,30 @@ def compute_taxid_covg_quantiles(quantiles, taxids2covg, taxids2tpfp, true_posit
 	# taxid to [accs hit, total accs, bases covered, bases in accs hit & total, avg & max covg, pval sum]
 
 	if len(tax_covg) == 0:
-		sys.exit('Error: one or more classes is empty.')
-	all_covg_in_hits, all_covg_overall = [[],[]],[[],[]]
-	all_avg_covg, all_max_covg, all_pval = [[],[]], [[],[]], [[],[]]
-	for taxid in tax_covg:
-		for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
-			if len(tax_covg[taxid][j]) == 0 or tax_covg[taxid][j][0] == 0:
-				continue  # no hit accs for this mapping status for this taxid
-			hit_accs, total_accs, cov_bases, hit_acc_bases, total_bases = tax_covg[taxid][j][:5]
-			avg_covg_sum, max_covg_sum, pval_sum = tax_covg[taxid][j][5:]
-			pct_accs_hit = float(hit_accs) / float(total_accs)
-			# compute coverage % in only the accesions hit by reads, and overall bases covered
-			covg_in_hits = float(cov_bases) / float(hit_acc_bases)
-			covg_overall = float(cov_bases) / float(total_bases)
-			avg_covg = float(avg_covg_sum) / float(hit_accs)
-			max_covg = float(max_covg_sum) / float(hit_accs)
-			avg_pval = float(pval_sum) / float(hit_accs)
-			all_covg_in_hits[j].append(covg_in_hits)
-			all_covg_overall[j].append(covg_overall)
-			all_avg_covg[j].append(avg_covg)
-			all_max_covg[j].append(max_covg)
-			all_pval[j].append(avg_pval)
+		all_covg_in_hits, all_covg_overall = [[0],[0]],[[0],[0]]
+		all_avg_covg, all_max_covg, all_pval = [[0],[0]], [[0],[0]], [[0],[0]]
+		#sys.exit('Error: one or more classes is empty.')
+	else:
+		all_covg_in_hits, all_covg_overall = [[],[]],[[],[]]
+		all_avg_covg, all_max_covg, all_pval = [[],[]], [[],[]], [[],[]]
+		for taxid in tax_covg:
+			for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
+				if len(tax_covg[taxid][j]) == 0 or tax_covg[taxid][j][0] == 0:
+					continue  # no hit accs for this mapping status for this taxid
+				hit_accs, total_accs, cov_bases, hit_acc_bases, total_bases = tax_covg[taxid][j][:5]
+				avg_covg_sum, max_covg_sum, pval_sum = tax_covg[taxid][j][5:]
+				pct_accs_hit = float(hit_accs) / float(total_accs)
+				# compute coverage % in only the accesions hit by reads, and overall bases covered
+				covg_in_hits = float(cov_bases) / float(hit_acc_bases)
+				covg_overall = float(cov_bases) / float(total_bases)
+				avg_covg = float(avg_covg_sum) / float(hit_accs)
+				max_covg = float(max_covg_sum) / float(hit_accs)
+				avg_pval = float(pval_sum) / float(hit_accs)
+				all_covg_in_hits[j].append(covg_in_hits)
+				all_covg_overall[j].append(covg_overall)
+				all_avg_covg[j].append(avg_covg)
+				all_max_covg[j].append(max_covg)
+				all_pval[j].append(avg_pval)
 	all_covg_in_hits[0] = [float('%.5f'%(k)) for k in all_covg_in_hits[0]]
 	all_covg_in_hits[1] = [float('%.5f'%(k)) for k in all_covg_in_hits[1]]
 	all_covg_overall[0] = [float('%.5f'%(k)) for k in all_covg_in_hits[0]]
@@ -584,17 +596,19 @@ def compute_acc_covg_quantiles(quantiles, acc2covg, acc2tpfp, true_positives):
 	# acc_covg has [covg_pct, covd_bases, acclen, avg_covg, max_covg, base_hits, pvalue]
 
 	if len(acc_covg) == 0:
-		sys.exit('Error: one or more classes is empty.')
-	all_covg_pct, all_avg_covg, all_max_covg, all_pval = [[],[]], [[],[]], [[],[]], [[],[]]
-	for acc in acc_covg:
-		for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
-			if len(acc_covg[acc][j]) == 0 or acc_covg[acc][j][0] == 0.0:
-				continue  # no coverage for this accession for this mapping status
-			coverage, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue = acc_covg[acc][j]
-			all_covg_pct[j].append(coverage)
-			all_avg_covg[j].append(avg_covg)
-			all_max_covg[j].append(max_covg)
-			all_pval[j].append(pvalue)
+		all_covg_pct, all_avg_covg, all_max_covg, all_pval = [[0],[0]], [[0],[0]], [[0],[0]], [[0],[0]]
+		#sys.exit('Error: one or more classes is empty.')
+	else:
+		all_covg_pct, all_avg_covg, all_max_covg, all_pval = [[],[]], [[],[]], [[],[]], [[],[]]
+		for acc in acc_covg:
+			for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
+				if len(acc_covg[acc][j]) == 0 or acc_covg[acc][j][0] == 0.0:
+					continue  # no coverage for this accession for this mapping status
+				coverage, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue, covg_blocks = acc_covg[acc][j]
+				all_covg_pct[j].append(coverage)
+				all_avg_covg[j].append(avg_covg)
+				all_max_covg[j].append(max_covg)
+				all_pval[j].append(pvalue)
 	all_covg_pct[0] = [float('%.5f'%(k)) for k in all_covg_pct[0]]
 	all_covg_pct[1] = [float('%.5f'%(k)) for k in all_covg_pct[1]]
 	all_avg_covg[0] = [float('%.5f'%(k)) for k in all_avg_covg[0]]
@@ -738,17 +752,152 @@ def write_results(args, taxids2stats, taxids2covg, taxids2tpfp, acc2covg, acc2tp
 					outfile.write('Multimapped reads ')
 				if len(acc2covg[accession][j]) == 0:
 					#acc2coverage[acc][j] = [covg_pct, covd_bases, acclen, avg_covg, max_covg, base_hits, pvalue]
-					covg_pct, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue = 0.0,0,0,0.0,0.0,0.0,0.0
+					covg_pct, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue, covg_blocks = 0.0,0,0,0.0,0.0,0.0,0.0,{}
 				else:
-					covg_pct, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue = acc2covg[accession][j]
+					covg_pct, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue, covg_blocks = acc2covg[accession][j]
 				outfile.write('[Coverage pct., Avg. covg., Max covg., uniformity test p-value] == \n')
 				outfile.write(str([str(k) for k in [covg_pct, avg_covg, max_covg, pvalue]]) + '\n')
+				outfile.write('Coverage level blocks: ' + str(covg_blocks) + '\n')
 			outfile.write('\n')
+
+
+# Read in the genomic sequence for all accessions under args.taxid
+def read_genomes(tax2info, taxid2stats, target_taxid, organism_files):
+	acc_genomic, relevant_taxids = {}, []
+	for taxid in taxid2stats:
+		if taxid not in tax2info:  # not a lowest-level taxon
+			continue
+		taxlin = taxid2stats[taxid][-1].split('|')
+		if target_taxid not in taxlin:
+			continue
+		relevant_taxids.append(taxid)
+		fname = organism_files + 'taxid_' + taxid.replace('.', '_') + '_genomic.fna'
+		with(open(fname, 'r')) as infile:
+			for line in infile:
+				if line.startswith('>'):
+					if '|' in line:
+						acc = line.strip().split('|')[3]
+					else:
+						acc = line.split()[0][1:]
+						acc_genomic[acc] = ''
+				else:
+					if acc not in acc_genomic:
+						acc_genomic[acc] = ''
+					acc_genomic[acc] += line.strip()
+	return acc_genomic, relevant_taxids
+
+
+# get the kmers in the genomic sequence, mapping to accessions hit and locations
+def get_kmer_positions(acc_genomic, k_size):
+	kmer2accpos = {}
+	for acc in acc_genomic:
+		pos = 0
+		while (pos * k_size) < len(acc_genomic[acc]):
+			kmer = acc_genomic[acc][pos * k_size : (pos + 1) * k_size]
+			if kmer not in kmer2accpos:
+				kmer2accpos[kmer] = {}
+			if acc not in kmer2accpos[kmer]:
+				kmer2accpos[kmer][acc] = []
+			kmer2accpos[kmer][acc].append([pos * k_size, (pos + 1) * k_size])
+			pos += 1
+	return kmer2accpos
+
+
+# Returns locations of kmers in accessions that are unique to a TaxID
+def get_taxid_unique_positions(kmer2accpos, acc2info):
+	acc2uniqpos = {}
+	for kmer in kmer2accpos:
+		hit_taxids = [acc2info[acc][1] for acc in kmer2accpos[kmer]]
+		hit_taxids = list(set(hit_taxids))
+		if len(hit_taxids) != 1:
+			continue
+		for acc in kmer2accpos[kmer]:
+			if acc not in acc2uniqpos:
+				acc2uniqpos[acc] = []
+			acc2uniqpos[acc].extend(kmer2accpos[kmer][acc])
+	return acc2uniqpos
+
+
+# Combine the unique hit positions into blocks of contiguous unique hits
+def find_unique_blocks(acc2uniqpos):
+	acc2uniqblocks = {}
+	for acc in acc2uniqpos:
+		acc2uniqblocks[acc] = []
+		uniq_hits = acc2uniqpos[acc]
+		uniq_hits.sort()
+		for hit in uniq_hits:
+			start, end = hit
+			if len(acc2uniqblocks[acc]) == 0:
+				acc2uniqblocks[acc].append(hit)
+				continue
+			last_block_end = acc2uniqblocks[acc][-1][1]
+			if start > last_block_end + 1:
+				acc2uniqblocks[acc].append(hit)
+			elif start <= last_block_end + 1 and end > last_block_end:
+				acc2uniqblocks[acc][-1][1] = end
+	return acc2uniqblocks
+
+
+# Given the unique blocks for each accession, break the accessions into their
+#    unique blocks, create new names and acc2info entries for those blocks, and
+#    assign the appropriate hits to them, with new (relative) positions
+def break_accs_into_uniq_blocks(acc2hitpos, acc2info, taxid2info, taxids2stats, acc2uniqblocks):
+	# accs to delete and add to acc2hitpos, and new taxid lengths using just uniq blocks
+	del_list, add_list, taxid_lens = {}, {}, {}
+	for acc in acc2hitpos:
+		taxid = acc2info[acc][1]
+		if taxid not in taxid_lens:
+			taxid_lens[taxid] = 0
+		if acc not in acc2uniqblocks:
+			del_list[acc] = True
+			continue
+		block_num = 1  # unique block number for this accession
+		hitpos, hitlen = -1, -1
+		uniq_blks = acc2uniqblocks[acc]
+		for bl_start, bl_end in uniq_blks:
+			block_acc_name = acc + '.' + str(block_num)
+			hit_list = []
+			while len(acc2hitpos[acc][0]) > 0:
+				hitend = hitpos + hitlen
+				if hitpos > bl_end:
+					break
+				else:
+					if hitend >= bl_start:
+						hitpos -= bl_start  # get position relative to block
+						hit_list.append([hitpos, hitlen])
+					hitpos, hitlen = acc2hitpos[acc][0].pop(0)
+			#acc2hitpos[block_acc_name] = hit_list
+			add_list[block_acc_name] = hit_list
+			acc2info[block_acc_name] = acc2info[acc]
+			bl_size = bl_end - bl_start
+			acc2info[block_acc_name][0] = bl_size  # set block size
+			taxid_lens[taxid] += bl_size
+			block_num += 1
+		del_list[acc] = True
+
+	# update acc and taxid information using just unique blocks
+	for acc in del_list:
+		del acc2hitpos[acc]  # remove old entry so it isn't used
+		del acc2info[acc]
+	for acc in add_list:
+		acc2hitpos[acc] = [add_list[acc], [[0,1]]]  # uniq hits and multi hits (none in this case)
+	for taxid in taxids2stats:
+		if taxid not in taxid2info:  # not leaf node
+			continue
+		#if taxid not in taxid_lens:
+		#	taxid2info[taxid][0] = 0
+		#	taxids2stats[taxid][4] = 0
+		#else:
+		taxid2info[taxid][0] = taxid_lens[taxid]
+		taxids2stats[taxid][4] = taxid_lens[taxid]
+	return acc2hitpos, acc2info, taxid2info, taxids2stats
 
 
 def main(args = None):
 	if args == None:
 		args = profile_parseargs()
+	if not args.organism_files.endswith('/'):
+		args.organism_files += '/'
 	if args.pct_id > 1.0 or args.pct_id < 0.0:
 		print('Error: --pct_id must be between 0.0 and 1.0, inclusive.')
 		sys.exit()
@@ -760,9 +909,24 @@ def main(args = None):
 	acc2info, taxid2info = get_acc2info(args)
 	taxids2stats, acc2hitpos = process_samfile(args, acc2info, taxid2info)
 	taxids2stats = prune_tree(args, taxids2stats)
+	echo('Done reading input file.')
 
+	echo('Reading genomes in...')
+	acc_genomic, relevant_taxids = read_genomes(taxid2info,taxids2stats, args.taxid, args.organism_files)
+	echo('Identifying kmers...')
+	kmer2accpos = get_kmer_positions(acc_genomic, args.k)
+	echo('Finding unique kmer positions...;')
+	acc2uniqpos = get_taxid_unique_positions(kmer2accpos, acc2info)
+	acc2uniqblocks = find_unique_blocks(acc2uniqpos)
+	echo('Computing unique blocks for accessions...')
+	acc2hitpos, acc2info, taxid2info, taxids2stats = break_accs_into_uniq_blocks(
+		acc2hitpos, acc2info, taxid2info, taxids2stats, acc2uniqblocks)
+
+	echo('Computing coverages for unique blocks...')
 	acc2covg, taxids2covg = compute_coverages(args, taxid2info, taxids2stats, acc2info, acc2hitpos)
 	acc2tpfp, taxids2tpfp = compute_tpfp(args, taxids2stats, acc2covg, acc2info)
+
+	echo('Writing results...')
 	write_results(args, taxids2stats, taxids2covg, taxids2tpfp, acc2covg, acc2tpfp, acc2info)
 
 
