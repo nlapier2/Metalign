@@ -78,9 +78,9 @@ def get_acc2info(args):
 		for line in infofile:
 			acc, acclen, taxid, namelin, taxlin = line.strip().split('\t')
 			rank = get_taxid_rank(taxlin)
-			if rank == 'strain' and acc != 'Unmapped':
-				taxid += '.1'  # CAMI formatting specification
-				taxlin += '.1'
+			#if rank == 'strain' and acc != 'Unmapped':
+			#	taxid += '.1'  # CAMI formatting specification
+			#	taxlin += '.1'
 			acclen = int(acclen)
 			acc2info[acc] = [acclen, taxid, namelin, taxlin]
 			if taxid in taxid2info:
@@ -195,7 +195,7 @@ def get_lowest_common_ancestor(read_hits, taxid2info):
 def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, taxid2info):
 	taxids_processed = {}
 	# record position and hitlen for lowest level taxid hit
-	acc, pos, pct_id, hitlen = hit[2], hit[3], hit[5][0], hit[5][1]
+	acc, pos, pct_id, hitlen = hit[2], int(hit[3]), hit[5][0], hit[5][1]
 	if acc not in acc2hitpos:
 		acc2hitpos[acc] = [[],[]]
 	if taxid != 'multi':
@@ -323,8 +323,8 @@ def map_and_process(args, infile, acc2info, taxid2info):
 		if is_bad:  # unmapped or cigar string unavailable
 			continue
 		splits[1] = [pair1, pair2, chimer, is_bad]  # store flag fields
-		if '|' in line:
-			acc = splits[2].split('|')[-2]
+		if 'gi|' in splits[2]:
+			acc = splits[2].split('|')[3]
 			splits[2] = acc
 		else:
 			acc = splits[2]
@@ -544,7 +544,7 @@ def compute_coverages(taxid2info, tax2abs, acc2info, acc2hitpos):
 def mark_cutoff_taxa(args, tax2info, tax2abs, tax2covg, root = None):
 	del_list = {}
 	for taxid in tax2abs:
-		if taxid == 'Unmapped':
+		if taxid == 'Unmapped' or 'Unmapped' in taxid:
 			continue
 		taxinfo = tax2abs[taxid]
 		num_reads, taxlin = taxinfo[0], taxinfo[-1]
@@ -639,7 +639,17 @@ def prune_tree(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos):
 	del_list = mark_cutoff_taxa(args, tax2info, tax2abs, tax2covg)
 	del_list = ensure_consistency(tax2info, tax2abs, del_list)
 	del_list = rescue_higher_taxa(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos, del_list)
+
+	# delete taxids with insufficient evidence, keeping their reads in an
+	#    "Unmapped" entry for abundance estimation purposes
 	for taxid in del_list:
+		#rank = tax2abs[taxid][-3]
+		#unm_taxid = rank + '_Unmapped'
+		#if unm_taxid not in tax2abs:
+		#	tax2abs[unm_taxid] = tax2abs[taxid]
+		#else:
+		#	tax2abs[unm_taxid][0] += tax2abs[taxid][0]
+		#	tax2abs[unm_taxid][1] += tax2abs[taxid][1]
 		del tax2abs[taxid]
 	return tax2abs
 
@@ -686,11 +696,13 @@ def gather_results(args, acc2info, taxid2info):
 		echo('Compiling and writing results...')
 	rank_results = {i:[] for i in range(len(RANKS))}
 	for taxid in results:
+		if 'Unmapped' in taxid:
+			continue
 		ab = results[taxid][-1]  # avg over input files, truncate to 4 digits
 		if results[taxid][-1] < 0.00001:
 			results[taxid][-1] = '0.00001'
 		else:
-			results[taxid][-1] = str(float('%.5f' % results[taxid][-1]))
+			results[taxid][-1] = float('%.5f' % results[taxid][-1])
 		#results[taxid][-1] = float(math.trunc(
 		#	(ab / len(args.infiles)) * (10**4))) / (10**4)
 		rank = RANKS.index(results[taxid][1])
