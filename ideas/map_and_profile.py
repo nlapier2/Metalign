@@ -72,7 +72,7 @@ def get_taxid_rank(taxlin):
 def get_acc2info(args):
 	if args.verbose:
 		echo('Reading dbinfo file...')
-	acc2info, taxid2info = {}, {}
+	acc2info, tax2info = {}, {}
 	with(open(args.dbinfo, 'r')) as infofile:
 		infofile.readline()  # skip header line
 		for line in infofile:
@@ -83,13 +83,13 @@ def get_acc2info(args):
 			#	taxlin += '.1'
 			acclen = int(acclen)
 			acc2info[acc] = [acclen, taxid, namelin, taxlin]
-			if taxid in taxid2info:
-				taxid2info[taxid][0] += acclen
+			if taxid in tax2info:
+				tax2info[taxid][0] += acclen
 			else:
-				taxid2info[taxid] = [acclen, rank, namelin, taxlin]
+				tax2info[taxid] = [acclen, rank, namelin, taxlin]
 	if args.verbose:
 		echo('Done reading dbinfo file.')
-	return acc2info, taxid2info
+	return acc2info, tax2info
 
 
 # Get pct match of read hit using CIGAR string
@@ -174,10 +174,10 @@ def intersect_read_hits(args, read_hits, pair1, pair2, pair1maps, pair2maps):
 
 
 # Given all read hits for a read, return their lowest common ancestor (LCA)
-def get_lowest_common_ancestor(read_hits, taxid2info):
+def get_lowest_common_ancestor(read_hits, tax2info):
 	lca = ''
 	all_taxids = [hit[7] for hit in read_hits]
-	all_taxlins = [taxid2info[taxid][-1].split('|') for taxid in all_taxids]
+	all_taxlins = [tax2info[taxid][-1].split('|') for taxid in all_taxids]
 	for i in range(8):
 		# get all unique non-blank taxids for this rank
 		all_rank_taxids = [taxlin[7 - i] for taxlin in all_taxlins]
@@ -192,7 +192,7 @@ def get_lowest_common_ancestor(read_hits, taxid2info):
 
 
 # Given hit information and LCA, update abundance info for relevant taxa
-def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, taxid2info):
+def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, tax2info):
 	taxids_processed = {}
 	# record position and hitlen for lowest level taxid hit
 	acc, pos, pct_id, hitlen = hit[2], int(hit[3]), hit[5][0], hit[5][1]
@@ -203,8 +203,8 @@ def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, taxid2in
 	else:
 		acc2hitpos[acc][1].append([pos, hitlen])
 
-	taxlin = taxid2info[hit[7]][-1].split('|')
-	namelin = taxid2info[hit[7]][-2].split('|')
+	taxlin = tax2info[hit[7]][-1].split('|')
+	namelin = tax2info[hit[7]][-2].split('|')
 	for i in range(len(taxlin)):
 		this_taxid = taxlin[i]
 		if this_taxid == '' or this_taxid in taxids_processed:
@@ -212,7 +212,7 @@ def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, taxid2in
 		taxids_processed[this_taxid] = ''  # avoid re-processing this taxid
 		is_unique = (i <= lca_index)  # unique hit if LCA or an ancestor
 		if this_taxid in tax2abs:
-			if this_taxid in taxid2info:  # lowest level taxid
+			if this_taxid in tax2info:  # lowest level taxid
 				if is_unique:
 					tax2abs[this_taxid][0] += 1
 					tax2abs[this_taxid][1] += avg_hitlen
@@ -229,12 +229,12 @@ def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, taxid2in
 		else:
 			#read to [uniq_hits, uniq_hit_bases,
 			#  3rd field (see below), rank, name lineage, taxid lineage]
-			if this_taxid in taxid2info:  # lowest level taxid
+			if this_taxid in tax2info:  # lowest level taxid
 				# 3rd field is accession length -- for covg purposes
 				if is_unique:
-					tax2abs[this_taxid] = [1, avg_hitlen] + taxid2info[this_taxid]
+					tax2abs[this_taxid] = [1, avg_hitlen] + tax2info[this_taxid]
 				#else:
-				#	tax2abs[this_taxid] = [0, 0] + taxid2info[this_taxid]
+				#	tax2abs[this_taxid] = [0, 0] + tax2info[this_taxid]
 			else:
 				# 3rd field is dict with counts of reads unique to this
 				#  taxa but multimapped to children, used as proxy
@@ -254,7 +254,7 @@ def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, taxid2in
 
 
 # Given the possible read hits & info for this read, update accumulated global results
-def update_global_hits(args, hits, taxid, global_results, taxid2info, acc2info):
+def update_global_hits(args, hits, taxid, global_results, tax2info, acc2info):
 	tax2abs, multimapped, acc2hitpos = global_results
 	if taxid == 'Ambiguous':  # ambiguous mapping (see intersect_read_hits)
 		if not args.no_quantify_unmapped:
@@ -262,20 +262,20 @@ def update_global_hits(args, hits, taxid, global_results, taxid2info, acc2info):
 				tax2abs['Unmapped'][0] += 1.0  # reads hit
 			else:  # also store lineage for taxid
 				tax2abs['Unmapped'] = ([1.0, 0.0] +
-					taxid2info['Unmapped'])
+					tax2info['Unmapped'])
 		return tax2abs, multimapped, acc2hitpos
 	if taxid != 'multi' and args.length_normalization:
 		for i in range(len(hits)):
-			hits[i][5][1] /= taxid2info[hits[i][7]][0] # normalize by genome length
-	lca = get_lowest_common_ancestor(hits, taxid2info)
+			hits[i][5][1] /= tax2info[hits[i][7]][0] # normalize by genome length
+	lca = get_lowest_common_ancestor(hits, tax2info)
 	if lca == '':
 		lca_index = -1
 	else:
-		lca_index = taxid2info[hits[0][7]][-1].split('|').index(lca)
+		lca_index = tax2info[hits[0][7]][-1].split('|').index(lca)
 	avg_hitlen = float(sum([hit[5][1] for hit in hits])) / len(hits)
 	for hit in hits:
 		tax2abs, taxids_processed, acc2hitpos = process_hit(hit, taxid, lca_index,
-			avg_hitlen, acc2hitpos, tax2abs, taxid2info)
+			avg_hitlen, acc2hitpos, tax2abs, tax2info)
 
 	if taxid == 'multi':  # store taxids hit and length (in bases) of hits
 		#hits = [[hit[7], len(hit[9])] for hit in hits]
@@ -288,7 +288,7 @@ def update_global_hits(args, hits, taxid, global_results, taxid2info, acc2info):
 #  and multimapping and coverage information for post-processing.
 # This is the general iterator function; it calls subroutines to process
 #  individual lines of input
-def map_and_process(args, infile, acc2info, taxid2info):
+def map_and_process(args, infile, acc2info, tax2info):
 	# fields tracked through lines: current read, previous read, hits to current
 	#    read, hit counts for first and second paired ends, total reads
 	read, prev_read, read_hits, pair1maps, pair2maps, total_reads = '', '', [], 0, 0, 0
@@ -316,7 +316,7 @@ def map_and_process(args, infile, acc2info, taxid2info):
 				if 'Unmapped' in tax2abs:
 					tax2abs['Unmapped'][0] += 1.0  # reads hit
 				else:  # also store lineage for taxid
-					tax2abs['Unmapped'] = [1.0, 0.0] + taxid2info['Unmapped']
+					tax2abs['Unmapped'] = [1.0, 0.0] + tax2info['Unmapped']
 			continue
 		splits = line.strip().split()
 		pair1, pair2, chimer, is_bad = parse_flag(int(splits[1]), splits[5])
@@ -343,7 +343,7 @@ def map_and_process(args, infile, acc2info, taxid2info):
 			# update accumulated global results using the read hits information
 			global_results = [tax2abs, multimapped, acc2hitpos]
 			tax2abs, multimapped, acc2hitpos = update_global_hits(
-				args, intersect_hits, taxid, global_results, taxid2info, acc2info)
+				args, intersect_hits, taxid, global_results, tax2info, acc2info)
 			# reset these read-specific variables
 			prev_read, read_hits, pair1maps, pair2maps = read, [], 0, 0
 
@@ -364,7 +364,7 @@ def map_and_process(args, infile, acc2info, taxid2info):
 
 # Divide abundances of multimapped reads according to uniquely mapped reads
 #  	portion for each of the hit organisms
-def resolve_multi_prop(args, tax2abs, multimapped, taxid2info):
+def resolve_multi_prop(args, tax2abs, multimapped, tax2info):
 	# remove hits to pruned nodes, and exit if no multimapped reads remain
 	for i in range(len(multimapped)):
 		multimapped[i] = [multimapped[i][0]] + [
@@ -394,14 +394,14 @@ def resolve_multi_prop(args, tax2abs, multimapped, taxid2info):
 		for i in range(len(all_taxids)):
 			this_hitlen = proportions[i] * hitlen
 			if args.length_normalization:
-				this_hitlen /= taxid2info[all_taxids[i]][0]
+				this_hitlen /= tax2info[all_taxids[i]][0]
 			if all_taxids[i] in to_add:
 				to_add[all_taxids[i]] += this_hitlen
 			else:
 				to_add[all_taxids[i]] = this_hitlen
 
 	for taxid in to_add:  # add in the multimapped portions
-		taxlin = taxid2info[taxid][-1].split('|')
+		taxlin = tax2info[taxid][-1].split('|')
 		for tax in taxlin:
 			if tax != '':
 				tax2abs[tax][1] += to_add[taxid]
@@ -473,7 +473,7 @@ def format_cami(args, tax2abs):
 
 
 # Given accession hits, compute the coverage information for each accession
-def process_accession_coverages(taxid2info, tax2abs, acc2info, acc2hitpos):
+def process_accession_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
 	acc2blocks = {}  # collapse hits into blocks of coverage
 	for acc in acc2hitpos:
 		acc2blocks[acc] = [[],[]]
@@ -512,18 +512,18 @@ def process_accession_coverages(taxid2info, tax2abs, acc2info, acc2hitpos):
 
 # using the read hit positions in acc2hitpos, compute coverage for accesion for
 #  	both uniquely and multi mapped reads. then summarize into coverages for taxids.
-def compute_coverages(taxid2info, tax2abs, acc2info, acc2hitpos):
+def compute_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
 	# first use the accession hits to get coverage by accession
-	acc2covg = process_accession_coverages(taxid2info, tax2abs, acc2info, acc2hitpos)
+	acc2covg = process_accession_coverages(tax2info, tax2abs, acc2info, acc2hitpos)
 	# now aggregate these accessions under their TaxID
 	tax2covg = {}
-	for taxid in taxid2info:
+	for taxid in tax2info:
 		if taxid not in tax2abs:  # a taxid that wasn't mapped to
 			continue
 		# accs hit, total accs, bases covered, total bases in accs hit & in all accs, block lengths
 		tax2covg[taxid] = [[0, 0, 0, 0, 0, []], [0, 0, 0, 0, 0, []]]
 
-		taxid_len = taxid2info[taxid][0]
+		taxid_len = tax2info[taxid][0]
 		tax2covg[taxid][0][4] = taxid_len
 		tax2covg[taxid][1][4] = taxid_len
 		for acc in acc2covg:
@@ -680,12 +680,12 @@ def compute_abundances(args, infile, acc2info, tax2info):
 
 # Combines and averages results across all input files,
 #  	and packs information into easy-to-write form
-def gather_results(args, acc2info, taxid2info):
+def gather_results(args, acc2info, tax2info):
 	results = {}
 	for infile in args.infiles:
 		if args.verbose:
 			echo('Computing abundances for input file ' + infile + '...')
-		file_res = compute_abundances(args, infile, acc2info, taxid2info)
+		file_res = compute_abundances(args, infile, acc2info, tax2info)
 		for taxid in file_res:
 			if taxid not in results:
 				results[taxid] = file_res[taxid]
@@ -760,9 +760,9 @@ def map_main(args = None):
 	open(args.output, 'w').close()  # test to see if writeable
 
 	# maps NCBI accession to length, taxid, name lineage, taxid lineage
-	acc2info, taxid2info = get_acc2info(args)
+	acc2info, tax2info = get_acc2info(args)
 	# gathers results for all infiles, combines, and organizes into tax levels
-	rank_results = gather_results(args, acc2info, taxid2info)
+	rank_results = gather_results(args, acc2info, tax2info)
 	write_results(args, rank_results)
 
 
