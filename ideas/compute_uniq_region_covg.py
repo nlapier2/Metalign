@@ -1,6 +1,4 @@
-import argparse, math, os, random, subprocess, sys, time
-import numpy as np
-from scipy.stats import chisquare
+import argparse, math, os, subprocess, sys, time
 
 
 start = time.time()  # start a program timer
@@ -20,25 +18,35 @@ def echo(msg):
 
 
 def parseargs():  # handle user arguments
-	parser = argparse.ArgumentParser(
-		description='Given samfile & profile, extract statistics for TP/FP taxa.')
-	parser.add_argument('samfile', help='sam file to process. Required.')
+	parser = argparse.ArgumentParser(description='Compute read hit and coverage statistics.')
+	parser.add_argument('samfile', nargs='+', help='sam file to process. Required.')
 	parser.add_argument('gold_standard', help='CAMI gold standard profile to use for TP/FP. Required.')
-	parser.add_argument('taxid', help='Taxid under which to compute unique regions. Required.')
-	parser.add_argument('organism_files', help='Dir with separated organism files. Required.')
+	parser.add_argument('uniq_blocks_file', help='File with accesion unique blocks. Required.')
+	parser.add_argument('--db', default='NONE',
+		help='Path to database from select_db.py. Required if read files given.')
 	parser.add_argument('--dbinfo', default='AUTO',
 		help = 'Location of db_info file. Default: data/subset_db_info.txt')
-	parser.add_argument('-k', type=int, default=100, help='Value of "k" for k-mers.')
-	parser.add_argument('--no_len_normalization', action='store_true',
-		help='Do not normalize abundances by genome length.')
-	parser.add_argument('--output', default='samfile_statistics.txt',
-		help='Output file name. Default: samfile_statistics.txt')
+	parser.add_argument('--min_abundance', type=float, default=10**-100,
+		help='Minimum abundance for a taxa to be included in the results.')
+	parser.add_argument('--length_normalization', action='store_true',
+		help='Normalize abundances by genome length.')
+	parser.add_argument('--no_rank_renormalization', action='store_true',
+		help='Do not renormalize abundances to 100 percent at each rank,\
+				for instance if an organism has a species but not genus label.')
+	parser.add_argument('--output', default='abundances.tsv',
+		help='Output abundances file. Default: abundances.txt')
 	parser.add_argument('--pct_id', type=float, default=0.5,
-		help='Minimum percent identity from reference to count a hit. Default: 0.5')
-	parser.add_argument('--read_cutoff', type=int, default=-1,
+		help='Minimum percent identity from reference to count a hit.')
+	parser.add_argument('--no_quantify_unmapped', action='store_false',
+		help='Factor in unmapped reads in abundance estimation.')
+	parser.add_argument('--read_cutoff', type=int, default=0,
 		help='Number of reads to count an organism as present.')
-	#parser.add_argument('--strain_level', action='store_true',
-	#	help='Write output at the strain level as well.')
+	parser.add_argument('--sampleID', default='NONE',
+		help='Sample ID for output. Defaults to input file name(s).')
+	parser.add_argument('--no_strain_level', action='store_true',
+		help='Write output at the strain level as well.')
+	parser.add_argument('--uniq_covg_cutoff', default = 0.0, type = float,
+		help='Coverage pct. by uniquely-mapped reads needed to count as present.')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
 	args = parser.parse_args()
@@ -64,29 +72,27 @@ def get_taxid_rank(taxlin):
 def get_acc2info(args):
 	if args.verbose:
 		echo('Reading dbinfo file...')
-	acc2info, taxid2info = {}, {}
+	acc2info, tax2info = {}, {}
 	with(open(args.dbinfo, 'r')) as infofile:
 		infofile.readline()  # skip header line
 		for line in infofile:
 			acc, acclen, taxid, namelin, taxlin = line.strip().split('\t')
-			taxlin_splits = taxlin.split('|')
-			if args.taxid not in taxlin_splits:
-				continue
 			rank = get_taxid_rank(taxlin)
 			#if rank == 'strain' and acc != 'Unmapped':
 			#	taxid += '.1'  # CAMI formatting specification
 			#	taxlin += '.1'
 			acclen = int(acclen)
 			acc2info[acc] = [acclen, taxid, namelin, taxlin]
-			if taxid in taxid2info:
-				taxid2info[taxid][0] += acclen
+			if taxid in tax2info:
+				tax2info[taxid][0] += acclen
 			else:
-				taxid2info[taxid] = [acclen, rank, namelin, taxlin]
+				tax2info[taxid] = [acclen, rank, namelin, taxlin]
 	if args.verbose:
 		echo('Done reading dbinfo file.')
-	return acc2info, taxid2info
+	return acc2info, tax2info
 
 
+# Get pct match of read hit using CIGAR string
 def get_pct_id(args, splits):
 	cigar = splits[5]  # quality of mapping determined by CIGAR string
 	matched_len, total_len, cur = 0, 0, 0
@@ -98,7 +104,7 @@ def get_pct_id(args, splits):
 				matched_len += cur
 			total_len += cur
 			cur = 0
-	return float(matched_len) / float(total_len), total_len
+	return float(matched_len) / float(total_len), matched_len
 
 
 # Parses FLAG field in sam line
@@ -112,24 +118,9 @@ def parse_flag(flag, cigar):
 	return pair1, pair2, chimeric, is_bad
 
 
-# for paired end reads, return read hits to references that both paired ends hit
-def intersect_read_hits(read_hits, pair1maps, pair2maps):
-	if pair1maps == 0 or pair2maps == 0:  # one end unmapped means no intersect
-		return [], []
-	# gather all ref hits then partition into hits for each pair
-	all_ref_hits = [hit[2] for hit in read_hits]
-	pair1refs, pair2refs = all_ref_hits[:pair1maps], all_ref_hits[pair1maps:]
-	# now intersect the lists and return hits to references in the intersect
-	intersect = set([ref for ref in pair1refs if ref in pair2refs])
-	#intersect = set([ref for ref in all_ref_hits])
-	intersect_hits = [hit for hit in read_hits if hit[2] in intersect]
-	return [intersect, intersect_hits]
-
-
 # Given hits for a read, extract total hit length and quality scores for both
 #  	ends of a read pair (if paired), and filter reads using user specification
-def clean_read_hits(args, read_hits, pair1maps, pair2maps):
-	hitlen, readquals = 0, ''
+def filter_read_hits(args, read_hits, pair1maps, pair2maps):
 	filtered_hits = []
 	for hit in range(len(read_hits)):
 		pct_id, total_len = get_pct_id(args, read_hits[hit])
@@ -142,47 +133,51 @@ def clean_read_hits(args, read_hits, pair1maps, pair2maps):
 			elif read_hits[hit][1][1]:
 				pair2maps -= 1
 
-		if read_hits[hit][10] != '*':  # first hit for a read / paired end
-			readquals += read_hits[hit][10]
-			hitlen += len(read_hits[hit][10])
 	read_hits = [read_hits[i] for i in range(len(read_hits))
 					if i not in filtered_hits]
-	return read_hits, [pair1maps, pair2maps, hitlen, readquals]
+	return read_hits, pair1maps, pair2maps
 
 
 # Given all hits for a read, decide whether to use it and whether multimapped
 # Returns multimapped reads, and if not, taxid and hit length of uniq map
-def process_read(args, read_hits, pair1, pair2, pair1maps, pair2maps):
-	read_hits, properties = clean_read_hits(args,read_hits,pair1maps,pair2maps)
-	pair1maps, pair2maps, hitlen, readquals = properties
+def intersect_read_hits(args, read_hits, pair1, pair2, pair1maps, pair2maps):
 	if len(read_hits) == 0:  # all lines filtered
-		return [], 'Ambiguous', '', -1
+		return [], 'Ambiguous'
 	if pair1 or pair2:  # paired read
 		if pair1maps + pair2maps == 1:
 			# if uniq mapped to one end and unmapped to other, count mapped end
-			return read_hits, read_hits[0][2], readquals, hitlen
+			return read_hits, read_hits[0][7]
 
-		intersect, intersect_hits = intersect_read_hits(
-			read_hits, pair1maps, pair2maps)
+		# for paired end reads, find read hits to references that both paired ends hit
+		if pair1maps == 0 or pair2maps == 0:  # one end unmapped means no intersect
+			return [], 'Ambiguous'
+		# gather all ref hits then partition into hits for each pair
+		all_ref_hits = [hit[7] for hit in read_hits]
+		pair1refs, pair2refs = all_ref_hits[:pair1maps], all_ref_hits[pair1maps:]
+		# now intersect the lists and return hits to references in the intersect
+		intersect = set([ref for ref in pair1refs if ref in pair2refs])
+		#intersect = set([ref for ref in all_ref_hits])
+		intersect_hits = [hit for hit in read_hits if hit[7] in intersect]
+
 		if len(intersect) == 0:  # one end unmapped, other multimapped
-			return [], 'Ambiguous', '', -1  #we consider this case too ambiguous
+			return [], 'Ambiguous'  #we consider this case too ambiguous
 		elif len(intersect) == 1:  # read pairs only agree on one taxid
-			return intersect_hits, read_hits[0][2], readquals, hitlen  # considered uniq map
+			return intersect_hits, read_hits[0][7]  # considered uniq map
 		else:  # both ends multimapped, handle later
-			return intersect_hits, 'multi', readquals, hitlen
+			return intersect_hits, 'multi'
 
 	else:  # single end
 		if pair1maps > 1:  # multimapped
-			return read_hits, 'multi', readquals, hitlen  # multimapped
+			return read_hits, 'multi'  # multimapped
 		else:
-			return False, read_hits[0][2], readquals, hitlen
+			return False, read_hits[0][7]
 
 
 # Given all read hits for a read, return their lowest common ancestor (LCA)
-def get_lowest_common_ancestor(read_hits, taxid2info):
+def get_lowest_common_ancestor(read_hits, tax2info):
 	lca = ''
-	all_taxids = [hit[2] for hit in read_hits]
-	all_taxlins = [taxid2info[taxid][-1].split('|') for taxid in all_taxids]
+	all_taxids = [hit[7] for hit in read_hits]
+	all_taxlins = [tax2info[taxid][-1].split('|') for taxid in all_taxids]
 	for i in range(8):
 		# get all unique non-blank taxids for this rank
 		all_rank_taxids = [taxlin[7 - i] for taxlin in all_taxlins]
@@ -196,652 +191,472 @@ def get_lowest_common_ancestor(read_hits, taxid2info):
 	return lca
 
 
-# Main samfile processing function: parsing and extracting mapping data
-def process_samfile(args, acc2info, taxid2info):
-	taxids2stats = {}  # taxids to stats and information
-	acc2hitpos = {}  # accessions to positions hit, used to calculate coverage
-	prev_read, read_hits = '', [] # read tracker, all hits for read (full lines)
-	pair1maps, pair2maps = 0, 0  # reads mapped to each pair (single = pair1)
-	total_reads = 0
+# Given hit information and LCA, update abundance info for relevant taxa
+def process_hit(hit, taxid, lca_index, avg_hitlen, acc2hitpos, tax2abs, tax2info):
+	taxids_processed = {}
+	# record position and hitlen for lowest level taxid hit
+	acc, pos, pct_id, hitlen = hit[2], int(hit[3]), hit[5][0], hit[5][1]
+	if acc not in acc2hitpos:
+		acc2hitpos[acc] = [[],[]]
+	if taxid != 'multi':
+		acc2hitpos[acc][0].append([pos, hitlen])
+	else:
+		acc2hitpos[acc][1].append([pos, hitlen])
 
-	infile = open(args.samfile, 'r')
-	for line in infile:
+	taxlin = tax2info[hit[7]][-1].split('|')
+	namelin = tax2info[hit[7]][-2].split('|')
+	for i in range(len(taxlin)):
+		this_taxid = taxlin[i]
+		if this_taxid == '' or this_taxid in taxids_processed:
+			continue
+		taxids_processed[this_taxid] = ''  # avoid re-processing this taxid
+		is_unique = (i <= lca_index)  # unique hit if LCA or an ancestor
+		if this_taxid in tax2abs:
+			if this_taxid in tax2info:  # lowest level taxid
+				if is_unique:
+					tax2abs[this_taxid][0] += 1
+					tax2abs[this_taxid][1] += avg_hitlen
+			else:
+				if is_unique:
+					tax2abs[this_taxid][0] += 1
+					tax2abs[this_taxid][1] += avg_hitlen
+					if taxid == 'multi':
+						if acc not in tax2abs[this_taxid][2]:
+							tax2abs[this_taxid][2][acc] = [len(acc2hitpos[acc][1]) - 1]
+						else:
+							tax2abs[this_taxid][2][acc].append(len(acc2hitpos[acc][1]) - 1)
+			#else: tax2abs[this_taxid][1] += 1
+		else:
+			#read to [uniq_hits, uniq_hit_bases,
+			#  3rd field (see below), rank, name lineage, taxid lineage]
+			if this_taxid in tax2info:  # lowest level taxid
+				# 3rd field is accession length -- for covg purposes
+				if is_unique:
+					tax2abs[this_taxid] = [1, avg_hitlen] + tax2info[this_taxid]
+				#else:
+				#	tax2abs[this_taxid] = [0, 0] + tax2info[this_taxid]
+			else:
+				# 3rd field is dict with counts of reads unique to this
+				#  taxa but multimapped to children, used as proxy
+				#  evidence of unique read "coverage" for higher taxa
+				this_rank = RANKS[i]
+				this_taxlin = '|'.join(taxlin[:i+1])
+				this_namelin = '|'.join(namelin[:i+1])
+				if is_unique:
+					tax2abs[this_taxid] = [1, avg_hitlen, {},
+						this_rank, this_namelin, this_taxlin]
+					if taxid == 'multi':
+						tax2abs[this_taxid][2][acc] = [len(acc2hitpos[acc][1]) - 1]
+				#else:
+				#	tax2abs[this_taxid] = [0, 0, {},
+				#		this_rank, this_namelin, this_taxlin]
+	return tax2abs, taxids_processed, acc2hitpos
+
+
+# Given the possible read hits & info for this read, update accumulated global results
+def update_global_hits(args, hits, taxid, global_results, tax2info, acc2info):
+	tax2abs, multimapped, acc2hitpos = global_results
+	if taxid == 'Ambiguous':  # ambiguous mapping (see intersect_read_hits)
+		if not args.no_quantify_unmapped:
+			if 'Unmapped' in tax2abs:
+				tax2abs['Unmapped'][0] += 1.0  # reads hit
+			else:  # also store lineage for taxid
+				tax2abs['Unmapped'] = ([1.0, 0.0] +
+					tax2info['Unmapped'])
+		return tax2abs, multimapped, acc2hitpos
+	if taxid != 'multi' and args.length_normalization:
+		for i in range(len(hits)):
+			hits[i][5][1] /= tax2info[hits[i][7]][0] # normalize by genome length
+	lca = get_lowest_common_ancestor(hits, tax2info)
+	if lca == '':
+		lca_index = -1
+	else:
+		lca_index = tax2info[hits[0][7]][-1].split('|').index(lca)
+	avg_hitlen = float(sum([hit[5][1] for hit in hits])) / len(hits)
+	for hit in hits:
+		tax2abs, taxids_processed, acc2hitpos = process_hit(hit, taxid, lca_index,
+			avg_hitlen, acc2hitpos, tax2abs, tax2info)
+
+	if taxid == 'multi':  # store taxids hit and length (in bases) of hits
+		#hits = [[hit[7], len(hit[9])] for hit in hits]
+		hits = [avg_hitlen] + [hit[7] for hit in hits]
+		multimapped.append(hits)
+	return tax2abs, multimapped, acc2hitpos
+
+
+# Runs minimap2, processes output, and returns abundance information for taxids,
+#  and multimapping and coverage information for post-processing.
+# This is the general iterator function; it calls subroutines to process
+#  individual lines of input
+def map_and_process(args, infile, acc2info, tax2info):
+	# fields tracked through lines: current read, previous read, hits to current
+	#    read, hit counts for first and second paired ends, total reads
+	read, prev_read, read_hits, pair1maps, pair2maps, total_reads = '', '', [], 0, 0, 0
+	# dict of taxids to abundances, multimapped reads, read hit positions for accesions
+	tax2abs, multimapped, acc2hitpos = {}, [], {}
+
+	samfile = False  # whether reading from existing sam file
+	if infile.endswith('sam'):  # input stream from sam file
+		samfile = True
+		instream = open(infile, 'r')
+	else:  # run minimap2 and stream its output as input
+		mapper = subprocess.Popen([__location__ + 'minimap2/minimap2', '-ax',
+			'sr', '-t', '4', '-2', '-n' '1', '--secondary=yes',
+			args.db, infile], stdout=subprocess.PIPE, bufsize=1)
+		instream = iter(mapper.stdout.readline, "")
+
+	for line in instream:
+		if not samfile:
+			line = line.decode('utf-8')
+			if not line:  # process finished
+				break
+
 		if line.startswith('@'):
+			if not args.no_quantify_unmapped:
+				if 'Unmapped' in tax2abs:
+					tax2abs['Unmapped'][0] += 1.0  # reads hit
+				else:  # also store lineage for taxid
+					tax2abs['Unmapped'] = [1.0, 0.0] + tax2info['Unmapped']
 			continue
 		splits = line.strip().split()
 		pair1, pair2, chimer, is_bad = parse_flag(int(splits[1]), splits[5])
-		if chimer or is_bad:  # unmapped or cigar string unavailable
+		if is_bad:  # unmapped or cigar string unavailable
 			continue
 		splits[1] = [pair1, pair2, chimer, is_bad]  # store flag fields
-		# here we change accession to taxid since we want to
-		#  	profile by organisms, not accessions
-		acc = splits[2].split('|')[-2]
-		if acc not in acc2info:
-			continue  # not one of the accessions needed for args.taxid
-		splits[2] = acc2info[acc][1]
-		splits[7] = acc  # nevermind, save the accession over pnext which we don't use
+		if 'gi|' in splits[2]:
+			acc = splits[2].split('|')[3]
+			splits[2] = acc
+		else:
+			acc = splits[2]
+		splits[7] = acc2info[acc][1]  # replace PNEXT field (unused) w/ taxid
 
-		read, ref = splits[0], splits[2]
+		read = splits[0]
 		if read != prev_read:
 			total_reads += 1
 			if args.verbose and total_reads % 100000 == 0:
-				echo('Done processing ' + str(total_reads) + ' read segments.')
-			# get uniq hit taxid and hitlen, or multimapped hits intersect
-			intersect_hits, taxid, readquals, hitlen = process_read(
+				echo('Done processing ' + str(total_reads) + ' reads.')
+			# get uniq hit taxid or multimapped hits intersect
+			read_hits, pair1maps, pair2maps = filter_read_hits(
+				args, read_hits, pair1maps, pair2maps)
+			intersect_hits, taxid = intersect_read_hits(
 				args, read_hits, pair1, pair2, pair1maps, pair2maps)
+			# update accumulated global results using the read hits information
+			global_results = [tax2abs, multimapped, acc2hitpos]
+			tax2abs, multimapped, acc2hitpos = update_global_hits(
+				args, intersect_hits, taxid, global_results, tax2info, acc2info)
 			# reset these read-specific variables
 			prev_read, read_hits, pair1maps, pair2maps = read, [], 0, 0
-			if taxid == 'Ambiguous':  # ambiguous mapping (see process_read)
-				continue
-			lca = get_lowest_common_ancestor(intersect_hits, taxid2info)
-			if lca == '':
-				lca_index = -1
-			else:
-				lca_index = taxid2info[intersect_hits[0][2]][-1].split('|').index(lca)
-			avg_pctid = sum([hit[5][0] for hit in intersect_hits]) / len(intersect_hits)
-			taxids_processed = {}
-			for hit in intersect_hits:
-				taxlin = taxid2info[hit[2]][-1].split('|')
-				namelin = taxid2info[hit[2]][-2].split('|')
-				pos, pct_id, hitlen = int(hit[3]), hit[5][0], hit[5][1]
-
-				for i in range(len(taxlin)):
-					this_taxid = taxlin[i]
-					if this_taxid == '' or this_taxid in taxids_processed:
-						continue
-					taxids_processed[this_taxid] = ''  # avoid re-processing this taxid
-					is_unique = (i <= lca_index)  # unique hit if LCA or an ancestor
-					if this_taxid in taxids2stats:
-						if is_unique:
-							taxids2stats[this_taxid][0] += 1
-							taxids2stats[this_taxid][2] += avg_pctid
-						else:
-							taxids2stats[this_taxid][1] += 1
-							taxids2stats[this_taxid][3] += avg_pctid
-					else:
-						#read to [uniq_hits, multi_hits, uniq_pctid_sum, multi_pctid_sum,
-						#  genome length, rank, name lineage, taxid lineage]
-						this_rank = RANKS[i]
-						this_taxlin = '|'.join(taxlin[:i+1])
-						this_namelin = '|'.join(namelin[:i+1])
-						if is_unique:
-							taxids2stats[this_taxid] = [1, 0, pct_id, 0] + [0,
-								this_rank, this_namelin, this_taxlin]
-						else:
-							taxids2stats[this_taxid] = [0, 1, 0, pct_id] + [0,
-								this_rank, this_namelin, this_taxlin]
-				# record position and hitlen for lowest level taxid hit
-				acc = hit[7]
-				if acc not in acc2hitpos:
-					acc2hitpos[acc] = [[],[]]
-				if taxid != 'multi':
-					acc2hitpos[acc][0].append([pos, hitlen])
-				else:
-					acc2hitpos[acc][1].append([pos, hitlen])
 
 		pair1maps += pair1 or not(pair1 or pair2)  # pair1 or single
 		pair2maps += pair2  # unchanged if pair2 false
 		read_hits.append(splits)
 
-	infile.close()
-	return taxids2stats, acc2hitpos
+	if samfile:
+		instream.close()
+	else:
+		mapper.stdout.close()
+		mapper.wait()
+	# store percentage of unmapped reads
+	if not args.no_quantify_unmapped:
+		tax2abs['Unmapped'][1] = tax2abs['Unmapped'][0] / float(total_reads)
+	return tax2abs, multimapped, acc2hitpos
 
 
-# Apply read cutoff and min_abundance thresholds, but latter relative to parent taxa
-def prune_tree(args, taxids2stats):
-	del_list = []
-	for taxid in taxids2stats:
+# Renormalize each taxonomic rank so each rank sums to 100% abundance
+def rank_renormalize(args, tax2abs, only_strains=False):
+	rank_totals = {i:0.0 for i in RANKS}  # current rank abundance sums
+	mapped_pct = 100.0
+	if not args.no_quantify_unmapped:  # only normalize against the pct of mapped reads
+		mapped_pct = 100.0 - (100.0 * tax2abs['Unmapped'][-1])
+	for taxid in tax2abs:
 		if taxid == 'Unmapped':
 			continue
-		taxinfo = taxids2stats[taxid]
-		num_reads, taxlin = taxinfo[0], taxinfo[-1]
-		num_reads = taxinfo[0]
-		if num_reads < args.read_cutoff:
-			del_list.append(taxid)
+		rank, ab = tax2abs[taxid][1], tax2abs[taxid][-1]
+		if only_strains and rank != 'strain':
 			continue
+		rank_totals[rank] += ab  # add this to the rank sum total
 
-	# ensure the children of pruned parents are also pruned
-	for taxid in taxids2stats:
-		taxlin = taxids2stats[taxid][-1].split('|')
-		for tax in taxlin:
-			if tax in del_list:
-				del_list.append(taxid)
-	del_list = list(set(del_list))
-	for taxid in del_list:
-		del taxids2stats[taxid]
-	return taxids2stats
-
-
-def get_covg_stats(block_covg_dict, max_covg, acclen):
-	#if len(block_covg_dict) == 0:
-	#	return 0, 0, 0, 0, 'nan'
-	# first make a list of all base coverages from the block_covg_dict
-	# simultaneously compute average covg. amount and percent of bases covered at least once
-	base_covgs = np.zeros(acclen + 1)#[]
-	total_base_hits, total_bases_covd = 0, 0
-	for covg_amnt in range(1, max_covg + 1):
-		for block in block_covg_dict[covg_amnt]:
-			#if block[1] + 1 > len(base_covgs):
-			#	base_covgs.extend([0 for i in range(len(base_covgs), block[1] + 1)])
-			end = max(acclen + 1, block[1] + 1)
-			for i in range(block[0], end):
-				base_covgs[i] = covg_amnt
-			block_len = end - block[0]
-			total_bases_covd += block_len
-			total_base_hits += block_len * covg_amnt  # bases were hit covg_amnt times
-	avg_covg = float(total_base_hits) / float(acclen)
-	covd_bases_pct = float(total_bases_covd) / float(acclen)
-
-	# uniform coverage test
-	# if X~Unif(0,1) then -2 * ln(X) ~ chi-squared with 2 degrees of freedom
-	# transform to chi-quared so we can do chi-squared test
-	# first, scale the variables to (0,1) range
-	max_covg = float(max_covg)
-	#base_covgs_scaled = [float(i) / max_covg for i in base_covgs]
-	# avoid the hard (0, 1) boundaries
-	base_covgs_scaled = (base_covgs / max_covg) * 0.9999999 + 0.00000001
-	#base_covgs_scaled = [i * 0.9999999 + 0.00000001 for i in base_covgs_scaled]
-	avg_covg_scaled = np.mean(base_covgs_scaled)#float(sum(base_covgs_scaled)) / float(len(base_covgs_scaled))
-	unif_dist = np.full(len(base_covgs_scaled), avg_covg_scaled)#[avg_covg_scaled for i in base_covgs]
-	# now do chi_squared transform and perform the test
-	chi_observed = -2 * np.log(np.array(base_covgs_scaled))
-	chi_expected = -2 * np.log(np.array(unif_dist))
-	ddof = len(base_covgs_scaled) - 3  # ensures 2 deg of freedom since method uses #vars-1-ddof
-	test_statistic, pvalue = chisquare(chi_observed, chi_expected, ddof = ddof)
-	return total_base_hits, total_bases_covd, avg_covg, covd_bases_pct, test_statistic
+	for taxid in tax2abs:  # here's the normalization
+		if taxid == 'Unmapped':
+			continue
+		rank = tax2abs[taxid][1]
+		if only_strains and rank != 'strain':
+			continue
+		if rank_totals[tax2abs[taxid][1]] != 0.0:
+			tax2abs[taxid][-1] /= (rank_totals[tax2abs[taxid][1]] / mapped_pct)
+	return tax2abs
 
 
-# Given hit positions for accessions, calculate the covered blocks and their coverage
-def compute_blocks(acc2hitpos):
+# given initital tax2abs, some taxids will be higher than strain level;
+#  	we insert "unknown" taxa down to strain level for normalization purposes
+def gen_lower_taxa(tax2abs):
+	to_add = {}  # lower taxa to add after iteration
+	for taxid in tax2abs:
+		taxid, rank, taxlin, namelin, ab = tax2abs[taxid]
+		if rank == 'strain':  # already lowest level
+			continue
+		# make a new taxid and name for this strain indicating that it is a
+		#  	placeholder for a higher taxon that we cannot further narrow down
+		rankpos = RANKS.index(rank)
+		lowest_name = namelin.split('|')[rankpos]
+		new_name = lowest_name + ' unknown strain'
+		new_taxid = taxid+'.0'
+		to_add[new_taxid] = [new_taxid, 'strain', taxlin + '|' + new_taxid,
+			namelin + '|' + new_name, ab]
+
+	# add in the new taxa
+	for taxa in to_add:
+		tax2abs[taxa] = to_add[taxa]
+	# clean out higher taxa listings -- they will return when we fill the tree
+	#tax2abs = {k:v for k,v in tax2abs.items() if v[1] == 'strain'}
+	return tax2abs
+
+
+# Get abundances for all taxids in the tree and put in CAMI format
+def format_cami(args, tax2abs):
+	# rearrange fields to be in CAMI format
+	for taxid in tax2abs:
+		old = tax2abs[taxid]
+		tax2abs[taxid] = [taxid, old[3], old[5], old[4], old[1]]
+	#tax2abs = gen_lower_taxa(tax2abs)  # ensures everything strain level
+	# always renormalize strains, to ensure legitimate profile
+	#tax2abs = rank_renormalize(args, tax2abs, only_strains=True)
+	if not args.no_rank_renormalization:
+		tax2abs = rank_renormalize(args, tax2abs)
+	return tax2abs
+
+
+# Given accession hits, compute the coverage information for each accession
+def process_accession_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
 	acc2blocks = {}  # collapse hits into blocks of coverage
 	for acc in acc2hitpos:
-		acc2blocks[acc] = [{}, {}, 1, 1]  # uniq and multi blocks and max coverages
-		for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
-			hits = acc2hitpos[acc][j]
+		acc2blocks[acc] = [[],[]]
+		for type in range(1):#(2):  # type=0 --> uniq mapped, type=1 --> multi mapped
+			hits = acc2hitpos[acc][type]
 			if len(hits) == 0:
 				continue
 			hits.sort(key = lambda x: x[0])  # sort by increasing position
-			cur_covg = 1  # coverage level of current block
 			for hit_start, hit_len in hits:
 				hit_start, hit_len = int(hit_start), int(hit_len)
 				hit_end = hit_start + hit_len
-				# three cases: hit creates new block, extends it, or doesn't extend it
-				if len(acc2blocks[acc][j]) == 0:
-					acc2blocks[acc][j][1] = [[hit_start, hit_end]]
+				# three cases: create new block, extend it, or don't extend it
+				if len(acc2blocks[acc][type]) == 0:
+					acc2blocks[acc][type].append([hit_start, hit_end])
 				else:
-					blocks_end = acc2blocks[acc][j][cur_covg][-1][1]  # end of last covered block
-					if hit_start > blocks_end:  # hit outside of cur block, start new one
-						cur_covg = 1  # reset coverage level of current block
-						acc2blocks[acc][j][1].append([hit_start, hit_end])
+					blocks_end = acc2blocks[acc][type][-1][1]  # end of last block
+					if hit_start > blocks_end:
+						acc2blocks[acc][type].append([hit_start, hit_end])
+					elif hit_end > blocks_end:  # starts in block but extends it
+						acc2blocks[acc][type][-1][1] = hit_end
+					# last case: hit is subsumed by last block -- do nothing
 
-					elif hit_end > blocks_end:  # hit starts in block but extends it
-						# make cur_covg block end at hit_start
-						acc2blocks[acc][j][cur_covg][-1][1] = hit_start - 1
-						# then increase cur_covg by 1 and make hit block there
-						cur_covg += 1
-						if cur_covg not in acc2blocks[acc][j]:
-							acc2blocks[acc][j][cur_covg] = []
-						if cur_covg > acc2blocks[acc][j + 2]:
-							acc2blocks[acc][j + 2] = cur_covg
-						acc2blocks[acc][j][cur_covg].append([hit_start, blocks_end])
-						# finally the new part becomes its own new covg 1 block
-						cur_covg = 1
-						acc2blocks[acc][j][cur_covg].append([blocks_end + 1, hit_end])
-
-					else:  # hit is subsumed by current block
-						# possibly split current block, then create increased covg hit block
-						acc2blocks[acc][j][cur_covg][-1][1] = hit_start - 1
-						cur_covg += 1
-						if cur_covg not in acc2blocks[acc][j]:
-							acc2blocks[acc][j][cur_covg] = []
-						if cur_covg > acc2blocks[acc][j + 2]:
-							acc2blocks[acc][j + 2] = cur_covg
-						acc2blocks[acc][j][cur_covg].append([hit_start, hit_end])
-						if hit_end + 1 < blocks_end:
-							acc2blocks[acc][j][cur_covg].append([hit_end + 1, blocks_end])
-							cur_covg -= 1  # reset back to previous covg
-	return acc2blocks
+	acc2covg = {}
+	for acc in acc2blocks:
+		acc2covg[acc] = [[],[]]
+		for type in range(1):#(2):  # type=0 --> uniq mapped, type=1 --> multi mapped
+			if len(acc2blocks[acc][type]) == 0:
+				continue
+			block_lengths = [block[1] - block[0] for block in acc2blocks[acc][type]]
+			covered_bases = sum(block_lengths)
+			total_bases = acc2info[acc][0]
+			coverage = float(covered_bases) / float(total_bases)
+			acc2covg[acc][type] = [coverage, covered_bases, total_bases]#, block_lengths]
+	return acc2covg
 
 
 # using the read hit positions in acc2hitpos, compute coverage for accesion for
 #  	both uniquely and multi mapped reads. then summarize into coverages for taxids.
-def compute_coverages(args, taxid2info, taxids2stats, acc2info, acc2hitpos):
-	acc2blocks = compute_blocks(acc2hitpos)
-	acc2coverage = {}
-	for acc in acc2blocks:
-		acc2coverage[acc] = [[],[]]
-		for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
-			if len(acc2blocks[acc][j]) == 0:
-				continue
-			max_covg = acc2blocks[acc][j + 2]
-			acclen = acc2info[acc][0]
-			base_hits, covd_bases, avg_covg, covg_pct, test_stat = get_covg_stats(
-				acc2blocks[acc][j], max_covg, acclen)
-			acc2coverage[acc][j] = [covg_pct, covd_bases, acclen, avg_covg,
-				max_covg, base_hits, test_stat, acc2blocks[acc][j]]
-
-	taxids2coverage = {}
-	for taxid in taxid2info:
-		if taxid not in taxids2stats:  # a taxid that wasn't mapped to
+def compute_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
+	# first use the accession hits to get coverage by accession
+	acc2covg = process_accession_coverages(tax2info, tax2abs, acc2info, acc2hitpos)
+	# now aggregate these accessions under their TaxID
+	tax2covg = {}
+	for taxid in tax2info:
+		if taxid not in tax2abs:  # a taxid that wasn't mapped to
 			continue
-		# accs hit, total accs, bases covered, total bases in accs hit & in all accs,
-		#  	avgerage coverage, max coverage, average test_stat for uniform acc coverage
-		taxids2coverage[taxid] = [[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]
+		# accs hit, total accs, bases covered, total bases in accs hit & in all accs, block lengths
+		tax2covg[taxid] = [[0, 0, 0, 0, 0, []], [0, 0, 0, 0, 0, []]]
 
-		taxid_len = taxid2info[taxid][0]
-		taxids2coverage[taxid][0][4] = taxid_len
-		taxids2coverage[taxid][1][4] = taxid_len
-		for acc in acc2coverage:
+		taxid_len = tax2info[taxid][0]
+		tax2covg[taxid][0][4] = taxid_len
+		tax2covg[taxid][1][4] = taxid_len
+		for acc in acc2covg:
 			if acc2info[acc][1] != taxid:
 				continue
-			for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
-				taxids2coverage[taxid][j][1] += 1
-				#taxids2coverage[taxid][j][4] += acc2info[acc][0]
-				if acc in acc2coverage and len(acc2coverage[acc][j]) != 0:
-					taxids2coverage[taxid][j][0] += 1
-					taxids2coverage[taxid][j][2] += acc2coverage[acc][j][1]
-					taxids2coverage[taxid][j][3] += acc2coverage[acc][j][2]
-					taxids2coverage[taxid][j][5] += acc2coverage[acc][j][3]
-					taxids2coverage[taxid][j][6] += acc2coverage[acc][j][4]
-					taxids2coverage[taxid][j][7] += acc2coverage[acc][j][6]
-	return acc2coverage, taxids2coverage
+			for type in range(1):#(2):  # type=0 --> uniq mapped, type=1 --> multi mapped
+				tax2covg[taxid][type][1] += 1
+				#tax2covg[taxid][type][4] += acc2info[acc][0]
+				if acc in acc2covg and len(acc2covg[acc][type]) != 0:
+					tax2covg[taxid][type][0] += 1
+					tax2covg[taxid][type][2] += acc2covg[acc][type][1]
+					tax2covg[taxid][type][3] += acc2covg[acc][type][2]
+					#tax2covg[taxid][type][5].extend(acc2covg[acc][type][3])
+	return tax2covg
 
 
-# given a gold stanard profile, compute whether taxids are true or false positives
-def compute_tpfp(args, taxids2stats, acc2covg, acc2info):
-	tp_taxids = {}  # true positive taxIDs extracted from profile
-	with(open(args.gold_standard, 'r')) as infile:
-		for line in infile:
-			if line.startswith('@') or line.startswith('#') or len(line) < 5:
-				continue
-			taxlin = line.split('\t')[2].split('|')
-			for taxid in taxlin:
-				tp_taxids[taxid] = True
-
-	acc2tpfp, taxids2tpfp = {}, {}
-	for taxid in taxids2stats:
-		if taxid in tp_taxids:
-			taxids2tpfp[taxid] = True
-		else:
-			taxids2tpfp[taxid] = False
-	for acc in acc2covg:
-		acc_taxid = acc2info[acc][1]
-		if acc_taxid in tp_taxids:
-			acc2tpfp[acc] = True
-		else:
-			acc2tpfp[acc] = False
-	return acc2tpfp, taxids2tpfp
-
-
-# compute given quantile values for the stats for taxids in taxids2stats,
-#  	using either only true positives or false positives
-def compute_stats_quantiles(quantiles, taxids2stats, taxids2tpfp, true_positives):
-	if true_positives:
-		taxstats = {k: v for k,v in taxids2stats.items() if taxids2tpfp[k]}
-	else:
-		taxstats = {k: v for k,v in taxids2stats.items() if not taxids2tpfp[k]}
-	# taxid to [uniq_hits, multi_hits, uniq_pctid_sum, multi_pctid_sum, taxonomy info]
-
-	# gather and sort this info for tp or fp taxa
-	all_uniq_hits, all_multi_hits, all_uniq_pctid, all_multi_pctid = [], [], [], []
-	for taxid in taxstats:
-		uniq_hits, multi_hits, uniq_pctid_sum, multi_pctid_sum = taxstats[taxid][:4]
-		if uniq_hits > 0:
-			uniq_avg_pctid = uniq_pctid_sum / float(uniq_hits)
-		else:
-			uniq_avg_pctid = 0.0
-		if multi_hits > 0:
-			multi_avg_pctid = multi_pctid_sum / float(multi_hits)
-		else:
-			multi_avg_pctid = 0.0
-		all_uniq_hits.append(uniq_hits)
-		all_multi_hits.append(multi_hits)
-		all_uniq_pctid.append(uniq_avg_pctid)
-		all_multi_pctid.append(multi_avg_pctid)
-	all_uniq_pctid = [float('%.5f'%(k)) for k in all_uniq_pctid]
-	all_multi_pctid = [float('%.5f'%(k)) for k in all_multi_pctid]
-	all_uniq_hits.sort() ; all_multi_hits.sort() ; all_uniq_pctid.sort() ; all_multi_pctid.sort()
-
-	# compute quantile values: get indices for each quantile, extract info into dict
-	stats_quantiles = {}
-	quant_ind = [int(quantiles[i] * len(all_uniq_hits)) for i in range(len(quantiles))]
-	stats_quantiles['Unique hits'] = [all_uniq_hits[ind] for ind in quant_ind]
-	stats_quantiles['Multi hits'] = [all_multi_hits[ind] for ind in quant_ind]
-	stats_quantiles['Unique avg. pctid'] = [all_uniq_pctid[ind] for ind in quant_ind]
-	stats_quantiles['Multi avg. pctid'] = [all_multi_pctid[ind] for ind in quant_ind]
-	return stats_quantiles
-
-
-# Compute given quantile values for coverage statistics of TP/FP TaxIDs
-def compute_taxid_covg_quantiles(quantiles, taxids2covg, taxids2tpfp, true_positives):
-	if true_positives:
-		tax_covg = {k: v for k,v in taxids2covg.items() if taxids2tpfp[k]}
-	else:
-		tax_covg = {k: v for k,v in taxids2covg.items() if not taxids2tpfp[k]}
-	# taxid to [accs hit, total accs, bases covered, bases in accs hit & total, avg & max covg, pval sum]
-
-	if len(tax_covg) == 0:
-		all_covg_in_hits, all_covg_overall = [[0],[0]],[[0],[0]]
-		all_avg_covg, all_max_covg, all_pval = [[0],[0]], [[0],[0]], [[0],[0]]
-		#sys.exit('Error: one or more classes is empty.')
-	else:
-		all_covg_in_hits, all_covg_overall = [[],[]],[[],[]]
-		all_avg_covg, all_max_covg, all_pval = [[],[]], [[],[]], [[],[]]
-		for taxid in tax_covg:
-			for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
-				if len(tax_covg[taxid][j]) == 0 or tax_covg[taxid][j][0] == 0:
-					continue  # no hit accs for this mapping status for this taxid
-				hit_accs, total_accs, cov_bases, hit_acc_bases, total_bases = tax_covg[taxid][j][:5]
-				avg_covg_sum, max_covg_sum, pval_sum = tax_covg[taxid][j][5:]
-				pct_accs_hit = float(hit_accs) / float(total_accs)
-				# compute coverage % in only the accesions hit by reads, and overall bases covered
-				covg_in_hits = float(cov_bases) / float(hit_acc_bases)
-				covg_overall = float(cov_bases) / float(total_bases)
-				avg_covg = float(avg_covg_sum) / float(hit_accs)
-				max_covg = float(max_covg_sum) / float(hit_accs)
-				avg_pval = float(pval_sum) / float(hit_accs)
-				all_covg_in_hits[j].append(covg_in_hits)
-				all_covg_overall[j].append(covg_overall)
-				all_avg_covg[j].append(avg_covg)
-				all_max_covg[j].append(max_covg)
-				all_pval[j].append(avg_pval)
-	all_covg_in_hits[0] = [float('%.5f'%(k)) for k in all_covg_in_hits[0]]
-	all_covg_in_hits[1] = [float('%.5f'%(k)) for k in all_covg_in_hits[1]]
-	all_covg_overall[0] = [float('%.5f'%(k)) for k in all_covg_in_hits[0]]
-	all_covg_overall[1] = [float('%.5f'%(k)) for k in all_covg_in_hits[1]]
-	all_avg_covg[0] = [float('%.5f'%(k)) for k in all_avg_covg[0]]
-	all_avg_covg[1] = [float('%.5f'%(k)) for k in all_avg_covg[1]]
-	all_max_covg[0] = [float('%.5f'%(k)) for k in all_max_covg[0]]
-	all_max_covg[1] = [float('%.5f'%(k)) for k in all_max_covg[1]]
-	all_pval[0] = [float('%.5f'%(k)) for k in all_pval[0]]
-	all_pval[1] = [float('%.5f'%(k)) for k in all_pval[1]]
-	all_covg_in_hits[0].sort() ; all_covg_overall[0].sort()
-	all_avg_covg[0].sort() ; all_max_covg[0].sort() ; all_pval[0].sort()
-	all_covg_in_hits[1].sort() ; all_covg_overall[1].sort()
-	all_avg_covg[1].sort() ; all_max_covg[1].sort() ; all_pval[1].sort()
-
-	# compute quantile values: get indices for each quantile, extract info into dict
-	covg_quantiles = {}
-	quant_ind_uniq = [int(quantiles[i] * len(all_covg_in_hits[0])) for i in range(len(quantiles))]
-	quant_ind_multi = [int(quantiles[i] * len(all_covg_in_hits[1])) for i in range(len(quantiles))]
-	covg_quantiles['TaxID uniquely mapped reads coverage percent over hit accessions'] = [
-		all_covg_in_hits[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['TaxID uniquely mapped reads coverage percent over all accessions'] = [
-		all_covg_overall[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['TaxID uniquely mapped reads average mean coverage'] = [
-		all_avg_covg[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['TaxID uniquely mapped reads average max coverage'] = [
-		all_max_covg[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['TaxID uniquely mapped reads average uniform test p-value'] = [
-		all_pval[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['TaxID multimapped reads coverage percent over hit accessions'] = [
-		all_covg_in_hits[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['TaxID multimapped reads coverage percentover all accessions'] = [
-		all_covg_overall[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['TaxID multimapped reads average mean coverage'] = [
-		all_avg_covg[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['TaxID multimapped reads average max coverage'] = [
-		all_max_covg[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['TaxID multimapped reads average uniform test p-value'] = [
-		all_pval[1][ind] for ind in quant_ind_multi]
-	return covg_quantiles
-
-
-# Compute given quantile values for coverage statistics of TP/FP accessions
-def compute_acc_covg_quantiles(quantiles, acc2covg, acc2tpfp, true_positives):
-	if true_positives:
-		acc_covg = {k: v for k,v in acc2covg.items() if acc2tpfp[k]}
-	else:
-		acc_covg = {k: v for k,v in acc2covg.items() if not acc2tpfp[k]}
-	# acc_covg has [covg_pct, covd_bases, acclen, avg_covg, max_covg, base_hits, pvalue]
-
-	if len(acc_covg) == 0:
-		all_covg_pct, all_avg_covg, all_max_covg, all_pval = [[0],[0]], [[0],[0]], [[0],[0]], [[0],[0]]
-		#sys.exit('Error: one or more classes is empty.')
-	else:
-		all_covg_pct, all_avg_covg, all_max_covg, all_pval = [[],[]], [[],[]], [[],[]], [[],[]]
-		for acc in acc_covg:
-			for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
-				if len(acc_covg[acc][j]) == 0 or acc_covg[acc][j][0] == 0.0:
-					continue  # no coverage for this accession for this mapping status
-				coverage, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue, covg_blocks = acc_covg[acc][j]
-				all_covg_pct[j].append(coverage)
-				all_avg_covg[j].append(avg_covg)
-				all_max_covg[j].append(max_covg)
-				all_pval[j].append(pvalue)
-	all_covg_pct[0] = [float('%.5f'%(k)) for k in all_covg_pct[0]]
-	all_covg_pct[1] = [float('%.5f'%(k)) for k in all_covg_pct[1]]
-	all_avg_covg[0] = [float('%.5f'%(k)) for k in all_avg_covg[0]]
-	all_avg_covg[1] = [float('%.5f'%(k)) for k in all_avg_covg[1]]
-	all_max_covg[0] = [float('%.5f'%(k)) for k in all_max_covg[0]]
-	all_max_covg[1] = [float('%.5f'%(k)) for k in all_max_covg[1]]
-	all_pval[0] = [float('%.5f'%(k)) for k in all_pval[0]]
-	all_pval[1] = [float('%.5f'%(k)) for k in all_pval[1]]
-	all_covg_pct[0].sort() ; all_avg_covg[0].sort() ; all_max_covg[0].sort() ; all_pval[0].sort()
-	all_covg_pct[1].sort() ; all_avg_covg[1].sort() ; all_max_covg[1].sort() ; all_pval[1].sort()
-
-	# compute quantile values: get indices for each quantile, extract info into dict
-	covg_quantiles = {}
-	quant_ind_uniq = [int(quantiles[i] * len(all_covg_pct[0])) for i in range(len(quantiles))]
-	quant_ind_multi = [int(quantiles[i] * len(all_covg_pct[1])) for i in range(len(quantiles))]
-	covg_quantiles['Accesion uniquely mapped reads covered bases percent'] = [
-		all_covg_pct[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['Accession uniquely mapped reads average coverage'] = [
-		all_avg_covg[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['Accession uniquely mapped reads max coverage'] = [
-		all_max_covg[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['Accession uniquely mapped reads pvalue'] = [
-		all_pval[0][ind] for ind in quant_ind_uniq]
-	covg_quantiles['Accesion multimapped reads covered bases percent'] = [
-		all_covg_pct[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['Accession multimapped reads average coverage'] = [
-		all_avg_covg[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['Accession multimapped reads max coverage'] = [
-		all_max_covg[1][ind] for ind in quant_ind_multi]
-	covg_quantiles['Accession multimapped reads pvalue'] = [
-		all_pval[1][ind] for ind in quant_ind_multi]
-	return covg_quantiles
-
-
-# write the information out in a human-readable / user-friendly format
-def write_results(args, taxids2stats, taxids2covg, taxids2tpfp, acc2covg, acc2tpfp, acc2info):
-	# for given quantiles, compute quantiles for all these metrics for both TPs and FPs
-	prevent_oob = 0.999999999  # prevent index out of bounds error for list.index(len(list)*1)
-	#quantiles = [0.0, 0.25, 0.5, 0.75, prevent_oob]
-	quantiles = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, prevent_oob]
-	true_stats_quantiles = compute_stats_quantiles(quantiles, taxids2stats, taxids2tpfp, True)
-	false_stats_quantiles = compute_stats_quantiles(quantiles, taxids2stats, taxids2tpfp, False)
-	true_taxid_covg_quantiles = compute_taxid_covg_quantiles(quantiles, taxids2covg, taxids2tpfp, True)
-	false_taxid_covg_quantiles = compute_taxid_covg_quantiles(quantiles, taxids2covg, taxids2tpfp, False)
-	true_acc_covg_quantiles = compute_acc_covg_quantiles(quantiles, acc2covg, acc2tpfp, True)
-	false_acc_covg_quantiles = compute_acc_covg_quantiles(quantiles, acc2covg, acc2tpfp, False)
-
-	with(open(args.output, 'w')) as outfile:
-		if quantiles[0] == 0.0: quantiles[0] = 'min'  # for printing purposes
-		if quantiles[-1] == prevent_oob: quantiles[-1] = 'max'  # for printing purposes
-		# write the quantile results computed above
-		outfile.write('True positive results for quantiles: ' + str(quantiles) + '\n')
-		for metric in true_stats_quantiles:
-			outfile.write(metric + ': ' + str(true_stats_quantiles[metric]) + '\n')
-		for metric in true_taxid_covg_quantiles:
-			outfile.write(metric + ': ' + str(true_taxid_covg_quantiles[metric]) + '\n')
-		for metric in true_acc_covg_quantiles:
-			outfile.write(metric + ': ' + str(true_acc_covg_quantiles[metric]) + '\n')
-		outfile.write('\nFalse positive results for quantiles: ' + str(quantiles) + '\n')
-		for metric in false_stats_quantiles:
-			outfile.write(metric + ': ' + str(false_stats_quantiles[metric]) + '\n')
-		for metric in false_taxid_covg_quantiles:
-			outfile.write(metric + ': ' + str(false_taxid_covg_quantiles[metric]) + '\n')
-		for metric in false_acc_covg_quantiles:
-			outfile.write(metric + ': ' + str(false_acc_covg_quantiles[metric]) + '\n')
-
-		# write the per-taxid information
-		outfile.write('\n\n\nPer taxid information: \n\n')
-		rank_ordered_stats = [[] for i in range(len(RANKS))]
-		for i in range(len(RANKS)):
-			#if i == 7 and not args.strain_level:
-			#	continue
-			for taxid in taxids2stats:
-				rank, namelin, taxlin = taxids2stats[taxid][5:]
-				if rank != RANKS[i]:
-					continue
-				taxstats = taxids2stats[taxid][:4]
-				# convert pct id sums to averages
-				if taxstats[0] != 0:
-					taxstats[2] = taxstats[2] / float(taxstats[0])
-				if taxstats[1] != 0:
-					taxstats[3] = taxstats[3] / float(taxstats[1])
-				if taxids2tpfp[taxid]:
-					status = 'True Positive'
-				else:
-					status = 'False Positive'
-				# [taxid, rank, status, taxlin, namelin, uniq hits, multi hits, uniq pctid, multi pctid]
-				rank_ordered_stats[i].append([taxid, rank, status, taxlin, namelin] + taxstats)
-
-		for i in range(len(rank_ordered_stats)):
-			rank_ordered_stats[i].sort(key = lambda x: x[5], reverse=True)  # sort by uniq reads hit
-			for line in rank_ordered_stats[i]:
-				line = [str(k) for k in line]
-				outfile.write('\t'.join(line[:5]) + '\n')
-				outfile.write('[uniq hits, multi hits, uniq pctid, multi pctid] == ')
-				outfile.write('\t'.join(line[5:]) + '\n')
-				if line[0] in taxids2covg:
-					for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
-						if j == 0:
-							outfile.write('Uniquely mapped reads ')
-						else:
-							outfile.write('Multimapped reads ')
-						if len(taxids2covg[line[0]][j]) == 0 or taxids2covg[line[0]][j][0] == 0:
-							pct_accs_hit, covg_in_hits, covg_overall = 0.0, 0.0, 0.0
-							avg_covg, max_covg, pval_avg = 0.0, 0.0, 'nan'
-						else:
-							covg_info = taxids2covg[line[0]][j]
-							hit_accs, tot_accs, cov_bases, hit_acc_bases, tot_acc_bases = covg_info[:5]
-							avg_covg_sum, max_covg_sum, pval_sum = covg_info[5:]
-							pct_accs_hit = float(hit_accs) / float(tot_accs)
-							# compute coverage % in only the accs hit by reads, and overall bases covered
-							covg_in_hits = float(cov_bases) / float(hit_acc_bases)
-							covg_overall = float(cov_bases) / float(tot_acc_bases)
-							avg_covg = float(avg_covg_sum) / float(hit_accs)
-							max_covg = float(max_covg_sum) / float(hit_accs)
-							pval_avg = float(pval_sum) / float(hit_accs)
-						to_write = str([str(k) for k in
-							[pct_accs_hit, covg_in_hits, covg_overall, avg_covg, max_covg, pval_avg]])
-						outfile.write('[Pct. accs hit, Avg. covg. pct. in accs hit, ')
-						outfile.write('Avg. covg. pct. over all accs, Avg. covg., max covg. ')
-						outfile.write('Avg. p-value for uniform covg. test] == \n' + to_write + '\n')
-				outfile.write('\n\n')
-
-		# write the per-accession information
-		outfile.write('\n\n\nPer accession information: \n\n')
-		acc_covgs = [[acc] + acc2covg[acc] for acc in acc2covg]
-		acc_covgs.sort(key = lambda x: x[1], reverse=True)  # sort by coverage percentage
-		for acc_line in acc_covgs:
-			accession = acc_line[0]
-			if acc2tpfp[accession]:
-				status = 'True positive'
+# Mark taxa that are below user-set cutoff thresholds for deletion
+def mark_cutoff_taxa(args, tax2info, tax2abs, tax2covg, root = None):
+	del_list = {}
+	for taxid in tax2abs:
+		if taxid == 'Unmapped' or 'Unmapped' in taxid:
+			continue
+		taxinfo = tax2abs[taxid]
+		num_reads, taxlin = taxinfo[0], taxinfo[-1]
+		if num_reads < args.read_cutoff:
+			del_list[taxid] = True
+			continue
+		if taxid in tax2covg:
+			uniq_stats = tax2covg[taxid][0]
+			bases_covd, total_bases = uniq_stats[2], uniq_stats[3]
+			if total_bases == 0:
+				uniq_covg_pct = 0.0
 			else:
-				status = 'False positive'
-			acclen, taxid, namelin, taxlin = acc2info[accession]
-			outfile.write('\t'.join([accession, taxid, status, taxlin, namelin]) + '\n')
-			# acc_covgs has [coverage_pct, covered_bases, total_bases, block_lengths]
-			for j in range(2):  # j=0 --> uniq mapped, j=1 --> multi mapped
-				if j == 0:
-					outfile.write('Uniquely mapped reads ')
-				else:
-					outfile.write('Multimapped reads ')
-				if len(acc2covg[accession][j]) == 0:
-					#acc2coverage[acc][j] = [covg_pct, covd_bases, acclen, avg_covg, max_covg, base_hits, pvalue]
-					covg_pct, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue, covg_blocks = 0.0,0,0,0.0,0.0,0.0,0.0,{}
-				else:
-					covg_pct, cov_bases, acclen, avg_covg, max_covg, base_hits, pvalue, covg_blocks = acc2covg[accession][j]
-				outfile.write('[Coverage pct., Avg. covg., Max covg., uniformity test p-value] == \n')
-				outfile.write(str([str(k) for k in [covg_pct, avg_covg, max_covg, pvalue]]) + '\n')
-				outfile.write('Coverage level blocks: ' + str(covg_blocks) + '\n')
-			outfile.write('\n')
+				uniq_covg_pct = float(bases_covd) / float(total_bases)
+			if uniq_covg_pct < args.uniq_covg_cutoff:
+				del_list[taxid] = True
 
-
-# Read in the genomic sequence for all accessions under args.taxid
-def read_genomes(tax2info, taxid2stats, target_taxid, organism_files):
-	acc_genomic, relevant_taxids = {}, []
-	for taxid in taxid2stats:
-		if taxid not in tax2info:  # not a lowest-level taxon
+		taxlin_splits = taxlin.split('|')
+		if len(taxlin_splits) == 1 or taxid == root:  # no parent
 			continue
-		taxlin = taxid2stats[taxid][-1].split('|')
-		if target_taxid not in taxlin:
+		for i in range(2, len(taxlin_splits) + 1):
+			parent = taxlin.split('|')[-i]
+			if parent != '':
+				break
+		parent_reads = tax2abs[parent][0]
+		if float(num_reads) / float(parent_reads) < args.min_abundance:
+			del_list[taxid] = True
+	return del_list
+
+
+# ensure the children of pruned parents are also pruned, as well as childless parents
+def ensure_consistency(tax2info, tax2abs, del_list):
+	# ensure the children of pruned parents/ancestors are also pruned
+	for taxid in tax2abs:
+		taxlin = tax2abs[taxid][-1]
+		taxlin_splits = taxlin.split('|')
+		if len(taxlin_splits) == 1:  # superkingdom level should have no parent
 			continue
-		relevant_taxids.append(taxid)
-		fname = organism_files + 'taxid_' + taxid.replace('.', '_') + '_genomic.fna'
-		with(open(fname, 'r')) as infile:
-			for line in infile:
-				if line.startswith('>'):
-					if '|' in line:
-						acc = line.strip().split('|')[3]
-					else:
-						acc = line.split()[0][1:]
-						acc_genomic[acc] = ''
-				else:
-					if acc not in acc_genomic:
-						acc_genomic[acc] = ''
-					acc_genomic[acc] += line.strip()
-	return acc_genomic, relevant_taxids
+		for i in range(2, len(taxlin_splits) + 1):
+			ancestor = taxlin.split('|')[-i]
+			if ancestor == '':
+				continue
+			if ancestor in del_list:
+				del_list[taxid] = True
+				break
+	# prune nodes with no descendents
+	for i in range(len(RANKS)):  # do for each taxonomic rank
+		for taxid in tax2abs:
+			if tax2abs[taxid][3] != RANKS[len(RANKS) - i -1]:
+				continue
+			if taxid not in tax2info:  # not leaf node
+				taxlin = tax2abs[taxid][-1]
+				descendents = [node for node in tax2abs if taxlin + '|' in tax2abs[node][-1]]
+				descendents = [desc for desc in descendents if desc not in del_list]
+				if len(descendents) == 0:
+					del_list[taxid] = True
+	return del_list
 
 
-# get the kmers in the genomic sequence, mapping to accessions hit and locations
-def get_kmer_positions(acc_genomic, k_size):
-	kmer2accpos = {}
-	for acc in acc_genomic:
-		pos = 0
-		while (pos * k_size) < len(acc_genomic[acc]):
-			kmer = acc_genomic[acc][pos * k_size : (pos + 1) * k_size]
-			if kmer not in kmer2accpos:
-				kmer2accpos[kmer] = {}
-			if acc not in kmer2accpos[kmer]:
-				kmer2accpos[kmer][acc] = []
-			kmer2accpos[kmer][acc].append([pos * k_size, (pos + 1) * k_size])
-			pos += 1
-	return kmer2accpos
+# After marking all deletable taxa, see if parents of pruned children should survive
+#  when considering reads multimapped for children but unique mapped for parents
+def rescue_higher_taxa(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos, del_list):
+	for taxid in tax2abs:
+		if taxid in tax2info or taxid not in del_list:
+			continue  # skip leaf nodes or those not facing deletion
+		# hits that are unique to this taxa but multimapped in lower taxa
+		multi_hits_in_lower = tax2abs[taxid][2]
+		new_acc2hitpos = {}  # count those reads as unique in leaf nodes
+		for acc in multi_hits_in_lower:
+			new_acc2hitpos[acc] = [[],[]]
+			new_acc2hitpos[acc][0] = acc2hitpos[acc][0]
+			# indices of reads multimapped at lowest level that will count as unique now
+			indices_to_add = [acc2hitpos[acc][1][i] for i in multi_hits_in_lower[acc]
+				if len(acc2hitpos[acc][1]) != 0]
+			new_acc2hitpos[acc][0].extend(indices_to_add)
+
+		# generate this node's subtree, recompute coverages, and see if it would be pruned
+		this_tax2abs = {}
+		taxlin = tax2abs[taxid][-1]
+		this_tax2abs = {node: tax2abs[node] for node in tax2abs
+			if taxlin + '|' in tax2abs[node][-1]}
+		this_tax2abs[taxid] = tax2abs[taxid]  # put current node in there
+		new_tax2covg = compute_coverages(tax2info, this_tax2abs, acc2info, new_acc2hitpos)
+		new_del_list = mark_cutoff_taxa(args, tax2info, this_tax2abs, new_tax2covg, root = taxid)
+		new_del_list = ensure_consistency(tax2info, this_tax2abs, new_del_list)
+		if taxid not in new_del_list:
+			del del_list[taxid]
+	return del_list
 
 
-# Returns locations of kmers in accessions that are unique to a TaxID
-def get_taxid_unique_positions(kmer2accpos, acc2info):
-	acc2uniqpos = {}
-	for kmer in kmer2accpos:
-		hit_taxids = [acc2info[acc][1] for acc in kmer2accpos[kmer]]
-		hit_taxids = list(set(hit_taxids))
-		if len(hit_taxids) != 1:
-			continue
-		for acc in kmer2accpos[kmer]:
-			if acc not in acc2uniqpos:
-				acc2uniqpos[acc] = []
-			acc2uniqpos[acc].extend(kmer2accpos[kmer][acc])
-	return acc2uniqpos
+# Apply read cutoff and min_abundance thresholds, but latter relative to parent taxa
+def prune_tree(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos):
+	del_list = mark_cutoff_taxa(args, tax2info, tax2abs, tax2covg)
+	del_list = ensure_consistency(tax2info, tax2abs, del_list)
+	del_list = rescue_higher_taxa(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos, del_list)
+
+	# delete taxids with insufficient evidence, keeping their reads in an
+	#    "Unmapped" entry for abundance estimation purposes
+	for taxid in del_list:
+		#rank = tax2abs[taxid][-3]
+		#unm_taxid = rank + '_Unmapped'
+		#if unm_taxid not in tax2abs:
+		#	tax2abs[unm_taxid] = tax2abs[taxid]
+		#else:
+		#	tax2abs[unm_taxid][0] += tax2abs[taxid][0]
+		#	tax2abs[unm_taxid][1] += tax2abs[taxid][1]
+		del tax2abs[taxid]
+	return tax2abs
+
+
+# Writes results out in CAMI format
+def write_results(args, rank_results):
+	with(open(args.output, 'w')) as outfile:
+		# Print some CAMI format header lines
+		if args.sampleID == 'NONE':
+			outfile.write('@SampleID:' + ','.join(args.infiles) + '\n')
+		else:
+			outfile.write('@SampleID:' + args.sampleID + '\n')
+		outfile.write('@Version:MiCoP2-v0.1\n')
+		outfile.write('@Ranks: ' +
+			'superkingdom|phylum|class|order|family|genus|species|strain\n\n')
+		outfile.write('@@TAXID\tRANK\tTAXPATH\tTAXPATHSN\t' +
+			'PERCENTAGE\t_CAMI_genomeID\t_CAMI_OTU\n')
+
+		for i in range(len(RANKS)):
+			if args.no_strain_level and i == len(RANKS)-1:
+				continue  # skip the strain level if user wants to
+			lines = rank_results[i]  # all lines to write for this tax level
+			# now sort taxids in rank by descending abundance
+			if i != 7:  # not strains, which have extra fields
+				lines.sort(key=lambda x: 100.0-x[-1])
+			else:  # strains
+				lines.sort(key=lambda x: 100.0-x[-3])
+			if lines == None or len(lines) < 1:
+				continue
+			for line in lines:
+				if line[4] < 0.0001:  # args.min_abundance:
+					continue
+				line = [str(i) for i in line]
+				outfile.write('\t'.join(line)+'\n')
 
 
 # Combine the unique hit positions into blocks of contiguous unique hits
-def find_unique_blocks(acc2uniqpos):
+def read_unique_blocks(uniq_blocks_file):
 	acc2uniqblocks = {}
-	for acc in acc2uniqpos:
-		acc2uniqblocks[acc] = []
-		uniq_hits = acc2uniqpos[acc]
-		uniq_hits.sort()
-		for hit in uniq_hits:
-			start, end = hit
-			if len(acc2uniqblocks[acc]) == 0:
-				acc2uniqblocks[acc].append(hit)
-				continue
-			last_block_end = acc2uniqblocks[acc][-1][1]
-			if start > last_block_end + 1:
-				acc2uniqblocks[acc].append(hit)
-			elif start <= last_block_end + 1 and end > last_block_end:
-				acc2uniqblocks[acc][-1][1] = end
+	with(open(uniq_blocks_file, 'r')) as infile:
+		for line in infile:
+			splits = line.strip().split('\t')
+			if len(splits) == 1:
+				acc2uniqblocks[splits[0]] = []
+			else:
+				acc2uniqblocks[splits[0]] = splits[1:]
 	return acc2uniqblocks
 
 
 # Given the unique blocks for each accession, break the accessions into their
 #    unique blocks, create new names and acc2info entries for those blocks, and
 #    assign the appropriate hits to them, with new (relative) positions
-def break_accs_into_uniq_blocks(acc2hitpos, acc2info, taxid2info, taxids2stats, acc2uniqblocks):
+def break_accs_into_uniq_blocks(acc2hitpos, acc2info, tax2info, tax2abs, acc2uniqblocks):
 	# accs to delete and add to acc2hitpos, and new taxid lengths using just uniq blocks
 	del_list, add_list, taxid_lens = {}, {}, {}
 	for acc in acc2hitpos:
@@ -881,53 +696,43 @@ def break_accs_into_uniq_blocks(acc2hitpos, acc2info, taxid2info, taxids2stats, 
 		del acc2info[acc]
 	for acc in add_list:
 		acc2hitpos[acc] = [add_list[acc], [[0,1]]]  # uniq hits and multi hits (none in this case)
-	for taxid in taxids2stats:
-		if taxid not in taxid2info:  # not leaf node
+	for taxid in tax2abs:
+		if taxid not in tax2info:  # not leaf node
 			continue
 		#if taxid not in taxid_lens:
-		#	taxid2info[taxid][0] = 0
-		#	taxids2stats[taxid][4] = 0
+		#	tax2info[taxid][0] = 0
+		#	tax2abs[taxid][4] = 0
 		#else:
-		taxid2info[taxid][0] = taxid_lens[taxid]
-		taxids2stats[taxid][4] = taxid_lens[taxid]
-	return acc2hitpos, acc2info, taxid2info, taxids2stats
+		tax2info[taxid][0] = taxid_lens[taxid]
+		tax2abs[taxid][4] = taxid_lens[taxid]
+	return acc2hitpos, acc2info, tax2info, tax2abs
 
 
 def main(args = None):
 	if args == None:
-		args = profile_parseargs()
-	if not args.organism_files.endswith('/'):
-		args.organism_files += '/'
+		args = parseargs()
 	if args.pct_id > 1.0 or args.pct_id < 0.0:
 		print('Error: --pct_id must be between 0.0 and 1.0, inclusive.')
 		sys.exit()
+	if args.db == 'NONE' and not args.infiles[0].endswith('sam'):
+		print('Error: --db must be specified unless .sam files are provided.')
+		sys.exit()
 	if args.dbinfo == 'AUTO':
-		args.dbinfo = __location__ + 'data/db_info.txt'
+		args.dbinfo = __location__ + 'data/subset_db_info.txt'
 	open(args.output, 'w').close()  # test to see if writeable
 
 	# maps NCBI accession to length, taxid, name lineage, taxid lineage
-	acc2info, taxid2info = get_acc2info(args)
-	taxids2stats, acc2hitpos = process_samfile(args, acc2info, taxid2info)
-	taxids2stats = prune_tree(args, taxids2stats)
-	echo('Done reading input file.')
+	acc2info, tax2info = get_acc2info(args)
+	tax2abs, acc2hitpos = process_samfile(args, acc2info, tax2info)
 
-	echo('Reading genomes in...')
-	acc_genomic, relevant_taxids = read_genomes(taxid2info,taxids2stats, args.taxid, args.organism_files)
-	echo('Identifying kmers...')
-	kmer2accpos = get_kmer_positions(acc_genomic, args.k)
-	echo('Finding unique kmer positions...;')
-	acc2uniqpos = get_taxid_unique_positions(kmer2accpos, acc2info)
-	acc2uniqblocks = find_unique_blocks(acc2uniqpos)
-	echo('Computing unique blocks for accessions...')
-	acc2hitpos, acc2info, taxid2info, taxids2stats = break_accs_into_uniq_blocks(
-		acc2hitpos, acc2info, taxid2info, taxids2stats, acc2uniqblocks)
+	echo('Breaking accessions into unique blocks...')
+	acc2uniqblocks = read_unique_blocks(args.uniq_blocks_file)
+	acc2hitpos, acc2info, tax2info, tax2abs = break_accs_into_uniq_blocks(
+		acc2hitpos, acc2info, tax2info, tax2abs, acc2uniqblocks)
 
-	echo('Computing coverages for unique blocks...')
-	acc2covg, taxids2covg = compute_coverages(args, taxid2info, taxids2stats, acc2info, acc2hitpos)
-	acc2tpfp, taxids2tpfp = compute_tpfp(args, taxids2stats, acc2covg, acc2info)
-
-	echo('Writing results...')
-	write_results(args, taxids2stats, taxids2covg, taxids2tpfp, acc2covg, acc2tpfp, acc2info)
+	tax2covg = compute_coverages(tax2info, tax2abs, acc2info, acc2hitpos)
+	# prune tree based on user cutoff settings
+	tax2abs = prune_tree(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos)
 
 
 if __name__ == '__main__':
