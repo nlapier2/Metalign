@@ -116,10 +116,10 @@ def make_db_and_dbinfo(args, organisms_to_include, taxid2info):
 		for organism in organisms_to_include:
 			taxid = organism.split('taxid_')[1].split(
 				'_genomic.fna')[0].replace('_', '.')
-			len = taxid2info[taxid][1]
+			length = taxid2info[taxid][1]
 			namelin, taxlin = taxid2info[taxid][2], taxid2info[taxid][3]
 			for acc in taxid2info[taxid][0]:
-				outfile.write('\t'.join([acc,len,taxid,namelin,taxlin]) + '\n')
+				outfile.write('\t'.join([acc,length,taxid,namelin,taxlin]) + '\n')
 
 
 def select_main(args = None):
