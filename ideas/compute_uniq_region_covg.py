@@ -1,4 +1,6 @@
-import argparse, math, os, subprocess, sys, time
+import argparse, ast, math, os, subprocess, sys, time
+import numpy as np
+from scipy.stats import kstest
 
 
 start = time.time()  # start a program timer
@@ -19,7 +21,7 @@ def echo(msg):
 
 def parseargs():  # handle user arguments
 	parser = argparse.ArgumentParser(description='Compute read hit and coverage statistics.')
-	parser.add_argument('samfile', nargs='+', help='sam file to process. Required.')
+	parser.add_argument('samfile', help='sam file to process. Required.')
 	parser.add_argument('gold_standard', help='CAMI gold standard profile to use for TP/FP. Required.')
 	parser.add_argument('uniq_blocks_file', help='File with accesion unique blocks. Required.')
 	parser.add_argument('--db', default='NONE',
@@ -33,16 +35,14 @@ def parseargs():  # handle user arguments
 	parser.add_argument('--no_rank_renormalization', action='store_true',
 		help='Do not renormalize abundances to 100 percent at each rank,\
 				for instance if an organism has a species but not genus label.')
-	parser.add_argument('--output', default='abundances.tsv',
-		help='Output abundances file. Default: abundances.txt')
+	parser.add_argument('--output', default='uniq_covg_info.txt',
+		help='Output file name. Default: uniq_covg_info.txt')
 	parser.add_argument('--pct_id', type=float, default=0.5,
 		help='Minimum percent identity from reference to count a hit.')
 	parser.add_argument('--no_quantify_unmapped', action='store_false',
 		help='Factor in unmapped reads in abundance estimation.')
 	parser.add_argument('--read_cutoff', type=int, default=0,
 		help='Number of reads to count an organism as present.')
-	parser.add_argument('--sampleID', default='NONE',
-		help='Sample ID for output. Defaults to input file name(s).')
 	parser.add_argument('--no_strain_level', action='store_true',
 		help='Write output at the strain level as well.')
 	parser.add_argument('--uniq_covg_cutoff', default = 0.0, type = float,
@@ -70,8 +70,6 @@ def get_taxid_rank(taxlin):
 # Also maps all lowest-level taxids to organism length, which is the sum of
 #  	accession lengths for accessions with that taxid, and lineage info
 def get_acc2info(args):
-	if args.verbose:
-		echo('Reading dbinfo file...')
 	acc2info, tax2info = {}, {}
 	with(open(args.dbinfo, 'r')) as infofile:
 		infofile.readline()  # skip header line
@@ -87,8 +85,6 @@ def get_acc2info(args):
 				tax2info[taxid][0] += acclen
 			else:
 				tax2info[taxid] = [acclen, rank, namelin, taxlin]
-	if args.verbose:
-		echo('Done reading dbinfo file.')
 	return acc2info, tax2info
 
 
@@ -426,11 +422,26 @@ def format_cami(args, tax2abs):
 	return tax2abs
 
 
+# Performs a Kolmogorov-Smirnov goodness-of-fit test for uniform hit positions
+def uniform_startpos_test(acc_hitpos, acclen):
+	if len(acc_hitpos) == 0:
+		return 'nan', 'nan'
+	acc_hitpos.sort()
+	acc_hitpos = np.array([float(hitpos) / acclen for hitpos, hitlen in acc_hitpos])
+	test_statistic, pvalue = kstest(acc_hitpos, 'uniform')
+	return test_statistic, pvalue
+
+
 # Given accession hits, compute the coverage information for each accession
 def process_accession_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
 	acc2blocks = {}  # collapse hits into blocks of coverage
+	acc2basehits = {}  # track total base hits for acc, counting multiple coverage
+	acc2unif_test = {}  # track test results for uniformity test (see: uniform_startpos_test)
 	for acc in acc2hitpos:
+		test_statistic, pvalue = uniform_startpos_test(acc2hitpos[acc][0], acc2info[acc][0])
+		acc2unif_test[acc] = [test_statistic, pvalue]
 		acc2blocks[acc] = [[],[]]
+		base_hit_count = 0  # total base hits, including multiple coverage
 		for type in range(1):#(2):  # type=0 --> uniq mapped, type=1 --> multi mapped
 			hits = acc2hitpos[acc][type]
 			if len(hits) == 0:
@@ -439,6 +450,7 @@ def process_accession_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
 			for hit_start, hit_len in hits:
 				hit_start, hit_len = int(hit_start), int(hit_len)
 				hit_end = hit_start + hit_len
+				base_hit_count += hit_len
 				# three cases: create new block, extend it, or don't extend it
 				if len(acc2blocks[acc][type]) == 0:
 					acc2blocks[acc][type].append([hit_start, hit_end])
@@ -449,6 +461,7 @@ def process_accession_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
 					elif hit_end > blocks_end:  # starts in block but extends it
 						acc2blocks[acc][type][-1][1] = hit_end
 					# last case: hit is subsumed by last block -- do nothing
+		acc2basehits[acc] = base_hit_count
 
 	acc2covg = {}
 	for acc in acc2blocks:
@@ -459,8 +472,11 @@ def process_accession_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
 			block_lengths = [block[1] - block[0] for block in acc2blocks[acc][type]]
 			covered_bases = sum(block_lengths)
 			total_bases = acc2info[acc][0]
-			coverage = float(covered_bases) / float(total_bases)
-			acc2covg[acc][type] = [coverage, covered_bases, total_bases]#, block_lengths]
+			covg_pct = float(covered_bases) / float(total_bases)
+			base_hit_count = acc2basehits[acc]
+			avg_covg = float(base_hit_count) / float(total_bases)
+			pval = acc2unif_test[acc][1]
+			acc2covg[acc][type] = [covg_pct, covered_bases, total_bases, base_hit_count, avg_covg, pval]
 	return acc2covg
 
 
@@ -475,7 +491,7 @@ def compute_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
 		if taxid not in tax2abs:  # a taxid that wasn't mapped to
 			continue
 		# accs hit, total accs, bases covered, total bases in accs hit & in all accs, block lengths
-		tax2covg[taxid] = [[0, 0, 0, 0, 0, []], [0, 0, 0, 0, 0, []]]
+		tax2covg[taxid] = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
 
 		taxid_len = tax2info[taxid][0]
 		tax2covg[taxid][0][4] = taxid_len
@@ -491,7 +507,7 @@ def compute_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
 					tax2covg[taxid][type][2] += acc2covg[acc][type][1]
 					tax2covg[taxid][type][3] += acc2covg[acc][type][2]
 					#tax2covg[taxid][type][5].extend(acc2covg[acc][type][3])
-	return tax2covg
+	return tax2covg, acc2covg
 
 
 # Mark taxa that are below user-set cutoff thresholds for deletion
@@ -592,7 +608,7 @@ def rescue_higher_taxa(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos, 
 def prune_tree(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos):
 	del_list = mark_cutoff_taxa(args, tax2info, tax2abs, tax2covg)
 	del_list = ensure_consistency(tax2info, tax2abs, del_list)
-	del_list = rescue_higher_taxa(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos, del_list)
+	#del_list = rescue_higher_taxa(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos, del_list)
 
 	# delete taxids with insufficient evidence, keeping their reads in an
 	#    "Unmapped" entry for abundance estimation purposes
@@ -608,40 +624,113 @@ def prune_tree(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos):
 	return tax2abs
 
 
-# Writes results out in CAMI format
-def write_results(args, rank_results):
-	with(open(args.output, 'w')) as outfile:
-		# Print some CAMI format header lines
-		if args.sampleID == 'NONE':
-			outfile.write('@SampleID:' + ','.join(args.infiles) + '\n')
-		else:
-			outfile.write('@SampleID:' + args.sampleID + '\n')
-		outfile.write('@Version:MiCoP2-v0.1\n')
-		outfile.write('@Ranks: ' +
-			'superkingdom|phylum|class|order|family|genus|species|strain\n\n')
-		outfile.write('@@TAXID\tRANK\tTAXPATH\tTAXPATHSN\t' +
-			'PERCENTAGE\t_CAMI_genomeID\t_CAMI_OTU\n')
-
-		for i in range(len(RANKS)):
-			if args.no_strain_level and i == len(RANKS)-1:
-				continue  # skip the strain level if user wants to
-			lines = rank_results[i]  # all lines to write for this tax level
-			# now sort taxids in rank by descending abundance
-			if i != 7:  # not strains, which have extra fields
-				lines.sort(key=lambda x: 100.0-x[-1])
-			else:  # strains
-				lines.sort(key=lambda x: 100.0-x[-3])
-			if lines == None or len(lines) < 1:
+# given a gold stanard profile, compute whether taxids are true or false positives
+def compute_tpfp(args, tax2abs, acc2covg, acc2info):
+	tp_taxids = {}  # true positive taxIDs extracted from profile
+	with(open(args.gold_standard, 'r')) as infile:
+		for line in infile:
+			if line.startswith('@') or line.startswith('#') or len(line) < 5:
 				continue
-			for line in lines:
-				if line[4] < 0.0001:  # args.min_abundance:
+			taxlin = line.split('\t')[2].split('|')
+			for taxid in taxlin:
+				tp_taxids[taxid] = True
+
+	acc2tpfp, taxids2tpfp = {}, {}
+	for taxid in tax2abs:
+		if taxid in tp_taxids:
+			taxids2tpfp[taxid] = True
+		else:
+			taxids2tpfp[taxid] = False
+	for acc in acc2covg:
+		acc_taxid = acc2info[acc][1]
+		if acc_taxid in tp_taxids:
+			acc2tpfp[acc] = True
+		else:
+			acc2tpfp[acc] = False
+	return acc2tpfp, taxids2tpfp
+
+
+# write the information out in a human-readable / user-friendly format
+def write_results(args, tax2abs, tax2covg, taxids2tpfp, acc2covg, acc2tpfp, acc2info):
+	with(open(args.output, 'w')) as outfile:
+		# write the per-taxid information
+		outfile.write('\n\n\nPer taxid information: \n\n')
+		rank_ordered_stats = [[] for i in range(len(RANKS))]
+		for i in range(len(RANKS)):
+			#if i == 7 and not args.strain_level:
+			#	continue
+			for taxid in tax2abs:
+				rank, namelin, taxlin = tax2abs[taxid][3:]
+				if rank != RANKS[i]:
 					continue
-				line = [str(i) for i in line]
-				outfile.write('\t'.join(line)+'\n')
+				taxstats = tax2abs[taxid][:2]
+				if taxids2tpfp[taxid]:
+					status = 'True Positive'
+				else:
+					status = 'False Positive'
+				# [taxid, rank, status, taxlin, namelin, uniq hits, multi hits, uniq pctid, multi pctid]
+				rank_ordered_stats[i].append([taxid, rank, status, taxlin, namelin] + taxstats)
+
+		for i in range(len(rank_ordered_stats)):
+			rank_ordered_stats[i].sort(key = lambda x: x[5], reverse=True)  # sort by uniq reads hit
+			for line in rank_ordered_stats[i]:
+				line = [str(k) for k in line]
+				outfile.write('\t'.join(line[:5]) + '\n')
+				outfile.write('[uniq hits, uniq bases] == ')
+				outfile.write('\t'.join(line[5:]) + '\n')
+				if line[0] in tax2covg:
+					for type in range(1):#(2):  # type=0 --> uniq mapped, type=1 --> multi mapped
+						if type == 0:
+							outfile.write('Uniquely mapped reads ')
+						else:
+							outfile.write('Multimapped reads ')
+						if len(tax2covg[line[0]][type]) == 0 or tax2covg[line[0]][type][0] == 0:
+							pct_accs_hit, covg_in_hits, covg_overall = 0.0, 0.0, 0.0
+						else:
+							hit_accs, tot_accs, cov_bases, hit_bases, tot_bases = tax2covg[line[0]][type]
+							pct_accs_hit = float(hit_accs) / float(tot_accs)
+							# compute coverage % in only the accs hit by reads, and overall bases covered
+							covg_in_hits = float(cov_bases) / float(hit_bases)
+							covg_overall = float(cov_bases) / float(tot_bases)
+						to_write = str([str(k) for k in
+							[pct_accs_hit, covg_in_hits, covg_overall]])
+						outfile.write('[Pct. accs hit, Avg. covg. in accs hit, ')
+						outfile.write('Avg. covg. over all accs] == \n' + to_write + '\n')
+				outfile.write('\n\n')
+
+		# write the per-accession information
+		outfile.write('\n\n\nPer accession information: \n\n')
+		acc_covgs = [[acc] + acc2covg[acc] for acc in acc2covg]
+		acc_covgs.sort(key = lambda x: x[1], reverse=True)  # sort by coverage percentage
+		for acc_line in acc_covgs:
+			accession = acc_line[0]
+			if acc2tpfp[accession]:
+				status = 'True positive'
+			else:
+				status = 'False positive'
+			acclen, taxid, namelin, taxlin = acc2info[accession]
+			outfile.write('\t'.join([accession, taxid, status, taxlin, namelin]) + '\n')
+			# acc_covgs has [coverage_pct, covered_bases, total_bases, block_lengths]
+			for type in range(1):#(2):  # type=0 --> uniq mapped, type=1 --> multi mapped
+				if type == 0:
+					outfile.write('Uniquely mapped reads ')
+				else:
+					outfile.write('Multimapped reads ')
+				#[covg_pct, covered_bases, total_bases, base_hit_count, avg_covg, pval]
+				if len(acc2covg[accession][type]) == 0:
+					covg_pct, cov_bases, hit_count, avg_covg, pval = 0, 0, 0, 0, 0
+					tot_bases = acc2info[accession][0]
+				else:
+					covg_pct, cov_bases, tot_bases, hit_count, avg_covg, pval = acc2covg[accession][type]
+				outfile.write('[Coverage pct., Covd. bases, Accession length, ')
+				outfile.write('Total base hits, Avg. coverage, uniformity pvalue] == \n')
+				outfile.write(str([str(k) for k in [covg_pct, cov_bases, tot_bases,
+					hit_count, avg_covg, pval]]) + '\n')
+			outfile.write('\n')
 
 
 # Combine the unique hit positions into blocks of contiguous unique hits
-def read_unique_blocks(uniq_blocks_file):
+def read_unique_blocks(uniq_blocks_file, acc2info):
 	acc2uniqblocks = {}
 	with(open(uniq_blocks_file, 'r')) as infile:
 		for line in infile:
@@ -649,7 +738,8 @@ def read_unique_blocks(uniq_blocks_file):
 			if len(splits) == 1:
 				acc2uniqblocks[splits[0]] = []
 			else:
-				acc2uniqblocks[splits[0]] = splits[1:]
+				blocks = [ast.literal_eval(i) for i in splits[1:]]
+				acc2uniqblocks[splits[0]] = blocks
 	return acc2uniqblocks
 
 
@@ -670,7 +760,7 @@ def break_accs_into_uniq_blocks(acc2hitpos, acc2info, tax2info, tax2abs, acc2uni
 		hitpos, hitlen = -1, -1
 		uniq_blks = acc2uniqblocks[acc]
 		for bl_start, bl_end in uniq_blks:
-			block_acc_name = acc + '.' + str(block_num)
+			block_acc_name = acc + '.block' + str(block_num)
 			hit_list = []
 			while len(acc2hitpos[acc][0]) > 0:
 				hitend = hitpos + hitlen
@@ -683,7 +773,7 @@ def break_accs_into_uniq_blocks(acc2hitpos, acc2info, tax2info, tax2abs, acc2uni
 					hitpos, hitlen = acc2hitpos[acc][0].pop(0)
 			#acc2hitpos[block_acc_name] = hit_list
 			add_list[block_acc_name] = hit_list
-			acc2info[block_acc_name] = acc2info[acc]
+			acc2info[block_acc_name] = acc2info[acc][0:]
 			bl_size = bl_end - bl_start
 			acc2info[block_acc_name][0] = bl_size  # set block size
 			taxid_lens[taxid] += bl_size
@@ -714,25 +804,33 @@ def main(args = None):
 	if args.pct_id > 1.0 or args.pct_id < 0.0:
 		print('Error: --pct_id must be between 0.0 and 1.0, inclusive.')
 		sys.exit()
-	if args.db == 'NONE' and not args.infiles[0].endswith('sam'):
-		print('Error: --db must be specified unless .sam files are provided.')
+	if args.db == 'NONE':
+		print('Error: --db must be specified.')
 		sys.exit()
 	if args.dbinfo == 'AUTO':
 		args.dbinfo = __location__ + 'data/subset_db_info.txt'
 	open(args.output, 'w').close()  # test to see if writeable
 
+	echo('Reading in accessions and unique blocks...')
 	# maps NCBI accession to length, taxid, name lineage, taxid lineage
 	acc2info, tax2info = get_acc2info(args)
-	tax2abs, acc2hitpos = process_samfile(args, acc2info, tax2info)
+	acc2uniqblocks = read_unique_blocks(args.uniq_blocks_file, acc2info)
+
+	echo('Processing sam file...')
+	tax2abs, multimapped, acc2hitpos = map_and_process(args, args.samfile, acc2info, tax2info)
 
 	echo('Breaking accessions into unique blocks...')
-	acc2uniqblocks = read_unique_blocks(args.uniq_blocks_file)
 	acc2hitpos, acc2info, tax2info, tax2abs = break_accs_into_uniq_blocks(
 		acc2hitpos, acc2info, tax2info, tax2abs, acc2uniqblocks)
 
-	tax2covg = compute_coverages(tax2info, tax2abs, acc2info, acc2hitpos)
+	echo('Computing coverage information and pruning tree accordingly...')
+	tax2covg, acc2covg = compute_coverages(tax2info, tax2abs, acc2info, acc2hitpos)
 	# prune tree based on user cutoff settings
 	tax2abs = prune_tree(args, tax2info, tax2abs, tax2covg, acc2info, acc2hitpos)
+
+	echo('Writing results...')
+	acc2tpfp, taxids2tpfp = compute_tpfp(args, tax2abs, acc2covg, acc2info)
+	write_results(args, tax2abs, tax2covg, taxids2tpfp, acc2covg, acc2tpfp, acc2info)
 
 
 if __name__ == '__main__':
