@@ -425,11 +425,17 @@ def format_cami(args, tax2abs):
 # Performs a Kolmogorov-Smirnov goodness-of-fit test for uniform hit positions
 def uniform_startpos_test(acc_hitpos, acclen):
 	if len(acc_hitpos) == 0:
-		return 'nan', 'nan'
+		return 'nan', 'nan', 'nan'
 	acc_hitpos.sort()
-	acc_hitpos = np.array([float(hitpos) / acclen for hitpos, hitlen in acc_hitpos])
+	acc_hitpos = [float(hitpos) / acclen for hitpos, hitlen in acc_hitpos]
+	buckets = [0 for i in range(100)]
+	for hitpos in acc_hitpos:
+		percentile = int(hitpos * 100)
+		if percentile >= 100:
+			continue
+		buckets[percentile] += 1
 	test_statistic, pvalue = kstest(acc_hitpos, 'uniform')
-	return test_statistic, pvalue
+	return test_statistic, pvalue, buckets  # acc_hitpos
 
 
 # Given accession hits, compute the coverage information for each accession
@@ -438,8 +444,8 @@ def process_accession_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
 	acc2basehits = {}  # track total base hits for acc, counting multiple coverage
 	acc2unif_test = {}  # track test results for uniformity test (see: uniform_startpos_test)
 	for acc in acc2hitpos:
-		test_statistic, pvalue = uniform_startpos_test(acc2hitpos[acc][0], acc2info[acc][0])
-		acc2unif_test[acc] = [test_statistic, pvalue]
+		test_statistic, pvalue, acc_buckets = uniform_startpos_test(acc2hitpos[acc][0], acc2info[acc][0])
+		acc2unif_test[acc] = [test_statistic, pvalue, acc_buckets]
 		acc2blocks[acc] = [[],[]]
 		base_hit_count = 0  # total base hits, including multiple coverage
 		for type in range(1):#(2):  # type=0 --> uniq mapped, type=1 --> multi mapped
@@ -475,8 +481,9 @@ def process_accession_coverages(tax2info, tax2abs, acc2info, acc2hitpos):
 			covg_pct = float(covered_bases) / float(total_bases)
 			base_hit_count = acc2basehits[acc]
 			avg_covg = float(base_hit_count) / float(total_bases)
-			pval = acc2unif_test[acc][1]
-			acc2covg[acc][type] = [covg_pct, covered_bases, total_bases, base_hit_count, avg_covg, pval]
+			tstat, pval, hitpos = acc2unif_test[acc]
+			acc2covg[acc][type] = [covg_pct, covered_bases, total_bases,
+				base_hit_count, avg_covg, pval, tstat, hitpos]
 	return acc2covg
 
 
@@ -718,14 +725,17 @@ def write_results(args, tax2abs, tax2covg, taxids2tpfp, acc2covg, acc2tpfp, acc2
 					outfile.write('Multimapped reads ')
 				#[covg_pct, covered_bases, total_bases, base_hit_count, avg_covg, pval]
 				if len(acc2covg[accession][type]) == 0:
-					covg_pct, cov_bases, hit_count, avg_covg, pval = 0, 0, 0, 0, 0
+					covg_pct, cov_bases, hit_count, avg_covg, pval, tstat, hitpos = 0, 0, 0, 0, 0, 0, []
 					tot_bases = acc2info[accession][0]
 				else:
-					covg_pct, cov_bases, tot_bases, hit_count, avg_covg, pval = acc2covg[accession][type]
+					vals = acc2covg[accession][type]
+					covg_pct, cov_bases, tot_bases, hit_count, avg_covg, pval, tstat, buckets = vals
 				outfile.write('[Coverage pct., Covd. bases, Accession length, ')
-				outfile.write('Total base hits, Avg. coverage, uniformity pvalue] == \n')
+				outfile.write('Total base hits, Avg. coverage, uniformity pvalue, ')
+				outfile.write('unif. test stat.] == \n')
 				outfile.write(str([str(k) for k in [covg_pct, cov_bases, tot_bases,
-					hit_count, avg_covg, pval]]) + '\n')
+					hit_count, avg_covg, pval, tstat]]) + '\n')
+				outfile.write('Hit position percentile buckets:   ' + str(buckets) + '\n')
 			outfile.write('\n')
 
 

@@ -26,10 +26,14 @@ def parseargs():  # handle user arguments
 		help='Temporary working directory (must already exist).')
 	parser.add_argument('--max_neighbors', type=int, default=10,
 		help='Max neighbors for each taxid to run nucmer against.')
+	parser.add_argument('--nucmer_files_exist', action='store_true',
+		help='Use this flag if nucmer output files already exist.')
 	parser.add_argument('--num_procs', type=int, default=10,
 		help='Size of multiprocessing pool.')
 	parser.add_argument('--output', default='uniq_regions.txt',
 		help='Output file. Default: uniq_regions.txt')
+	parser.add_argument('--print_only', action='store_true',
+		help='Instead of running MUMmer, just write the lines that would be run.')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
 	args = parser.parse_args()
@@ -133,6 +137,19 @@ def run_mummer_mp(tax_to_neighbors, org_files, temp_dir, num_procs):
 			pool.apply_async(nucmer_show_coords_proc, (org_files, temp_dir, taxid, neigh,))
 	pool.close()
 	pool.join()
+
+
+def print_runlines(tax_to_neighbors, org_files, temp_dir, output):
+	with(open(args.output, 'w')) as outfile:
+		for taxid in tax_to_neighbors:
+			for neighbor in tax_to_neighbors[taxid]:
+				ref_file = org_files + 'taxid_' + taxid.replace('.', '_') + '_genomic.fna'
+				query_file = org_files + 'taxid_' + neighbor.replace('.', '_') + '_genomic.fna'
+				nucmer_outfile = temp_dir + 'nucmer-' + taxid + '-' + neighbor + '.txt'
+				coords_outfile = temp_dir + 'coords-' + taxid + '-' + neighbor + '.txt'
+				nucmer_runline = ' '.join(['nucmer', ref_file, query_file, '--delta=' + nucmer_outfile])
+				coords_runline = ' '.join(['show-coords', nucmer_outfile, '>', coords_outfile])
+				outfile.write(nucmer_runline + '\n' + coords_runline + '\n')
 
 
 # Parses show-coords output for each taxid-neighbor pair for a single taxid,
@@ -242,10 +259,15 @@ def main(args = None):
 	tax_to_leaves = get_taxid_to_leaves(tax_to_info)
 	echo('Getting neighbors for each leaf node...', args.verbose)
 	tax_to_neighbors = get_neighbors(tax_to_info, tax_to_leaves, args.max_neighbors)
-	echo('Running MUMmer processes...', args.verbose)
-	run_mummer_mp(tax_to_neighbors, args.organism_files, args.temp_dir, args.num_procs)
-	echo('Calculating unique blocks and writing output...', args.verbose)
-	write_acc_uniq_blocks(args.output, tax_to_neighbors, acc_to_info, args.temp_dir)
+	if not args.print_only:
+		if not args.nucmer_files_exist:
+			echo('Running MUMmer processes...', args.verbose)
+			run_mummer_mp(tax_to_neighbors, args.organism_files, args.temp_dir, args.num_procs)
+		echo('Calculating unique blocks and writing output...', args.verbose)
+		write_acc_uniq_blocks(args.output, tax_to_neighbors, acc_to_info, args.temp_dir)
+	else:
+		echo('Printing nucmer/show-coords run lines to --output...', args.verbose)
+		print_runlines(tax_to_neighbors, args.organism_files, args.temp_dir, args.output)
 
 
 if __name__ == '__main__':
