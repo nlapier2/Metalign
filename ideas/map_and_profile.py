@@ -34,7 +34,7 @@ def profile_parseargs():  # handle user arguments
 		help='Do not renormalize abundances to 100 percent at each rank,\
 				for instance if an organism has a species but not genus label.')
 	parser.add_argument('--output', default='abundances.tsv',
-		help='Output abundances file. Default: abundances.txt')
+		help='Output abundances file. Default: abundances.tsv')
 	parser.add_argument('--pct_id', type=float, default=0.5,
 		help='Minimum percent identity from reference to count a hit.')
 	parser.add_argument('--no_quantify_unmapped', action='store_false',
