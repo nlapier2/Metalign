@@ -90,8 +90,17 @@ def get_taxid_to_leaves(tax_to_info):
 
 
 # Get nearest neighbors of the taxid up to max_neighbors
-def get_neighbors(tax_to_info, tax_to_leaves, max_neighbors):
+def get_neighbors(tax_to_info, tax_to_leaves, max_neighbors, nucmer_files_exist, temp_dir):
 	tax_to_neighbors = {}
+	if nucmer_files_exist:  # just generate from nucmer file names
+		for fname in glob.glob(temp_dir + 'coords*'):
+			taxid, neighbor = fname.split('/')[-1].split('-')[1:3]
+			neighbor = neighbor.split('.txt')[0]
+			if taxid not in tax_to_neighbors:
+				tax_to_neighbors[taxid] = []
+			tax_to_neighbors[taxid].append(neighbor)
+		return tax_to_neighbors
+
 	for leaf in tax_to_info:
 		tax_to_neighbors[leaf] = []
 		cur_neighbors = 0
@@ -154,9 +163,11 @@ def print_runlines(tax_to_neighbors, org_files, temp_dir, output):
 
 # Parses show-coords output for each taxid-neighbor pair for a single taxid,
 #    extracting the shared blocks for each accession
-def get_acc_shared_blocks(taxid, temp_dir):
+def get_acc_shared_blocks(taxid, temp_dir, tax_to_neighbors):
 	acc_to_shared_blocks = {}
-	for fname in glob.glob(temp_dir + 'coords-' + taxid + '*'):
+	#for fname in glob.glob(temp_dir + 'coords-' + taxid + '*'):
+	for neighbor in tax_to_neighbors[taxid]:
+		fname = temp_dir + 'coords-' + taxid + '-' + neighbor + '.txt'
 		with(open(fname, 'r')) as coords_outfile:
 			for i in range(5):
 				coords_outfile.readline()  # skip headers
@@ -227,7 +238,9 @@ def write_acc_uniq_blocks(output, tax_to_neighbors, acc_to_info, temp_dir):
 	with(open(output, 'w')) as outfile:
 		accs_written = {}
 		for taxid in tax_to_neighbors:
-			acc_to_shared_blocks = get_acc_shared_blocks(taxid, temp_dir)
+			if taxid == 'Unmapped':
+				continue
+			acc_to_shared_blocks = get_acc_shared_blocks(taxid, temp_dir, tax_to_neighbors)
 			fused_blocks = fuse_shared_blocks(acc_to_shared_blocks)
 			acc_to_uniq_blocks = get_acc_uniq_blocks(fused_blocks, acc_to_info)
 			for acc in acc_to_uniq_blocks:
@@ -258,7 +271,8 @@ def main(args = None):
 	echo('Getting leaf nodes for each taxid...', args.verbose)
 	tax_to_leaves = get_taxid_to_leaves(tax_to_info)
 	echo('Getting neighbors for each leaf node...', args.verbose)
-	tax_to_neighbors = get_neighbors(tax_to_info, tax_to_leaves, args.max_neighbors)
+	tax_to_neighbors = get_neighbors(tax_to_info, tax_to_leaves,
+		args.max_neighbors, args.nucmer_files_exist, args.temp_dir)
 	if not args.print_only:
 		if not args.nucmer_files_exist:
 			echo('Running MUMmer processes...', args.verbose)
