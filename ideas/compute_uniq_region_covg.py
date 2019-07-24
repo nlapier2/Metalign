@@ -804,7 +804,7 @@ def break_accs_into_uniq_blocks(acc2hitpos, acc2info, tax2info, tax2abs, acc2uni
 		#	tax2abs[taxid][4] = 0
 		#else:
 		tax2info[taxid][0] = taxid_lens[taxid]
-		tax2abs[taxid][4] = taxid_lens[taxid]
+		tax2abs[taxid][2] = taxid_lens[taxid]
 	return acc2hitpos, acc2info, tax2info, tax2abs
 
 
