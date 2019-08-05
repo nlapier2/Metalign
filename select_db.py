@@ -135,6 +135,8 @@ def select_main(args = None):
 		args.db_dir += '/'
 	if not args.temp_dir.endswith('/'):
 		args.temp_dir += '/'
+	if not os.path.exists(args.temp_dir):
+		os.makedirs(args.temp_dir)
 	if args.dbinfo_in == 'AUTO':
 		args.dbinfo_in = __location__ + 'data/db_info.txt'
 	if args.dbinfo_out == 'AUTO':
