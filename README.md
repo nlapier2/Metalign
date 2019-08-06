@@ -15,7 +15,7 @@ Note that this will run some python package installations via "pip install --use
 
 ### Paper
 
-The Metalign paper is currently available on bioRxiv: (Not yet) 
+The Metalign paper is currently available on bioRxiv: (Not yet)
 
 If you use Metalign, please cite the paper. For instance:
 
@@ -30,9 +30,9 @@ cd ContainEM/
 ./setup.sh
 ```
 
-This will download this repository, change into the directory, and run the setup script. 
+This will download this repository, change into the directory, and run the setup script.
 
-This step should take about 2-15 minutes, depending on your network connection and how many of the CMash dependenies you already have installed.
+This step should take a few minutes up to an hour or so, depending on your network connection and how many of the CMash dependenies you already have installed.
 
 (Describe alternate steps here)
 
