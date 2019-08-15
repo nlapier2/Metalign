@@ -33,14 +33,14 @@ def profile_parseargs():  # handle user arguments
 	parser.add_argument('--length_normalize', action='store_true',
 		help='Normalize abundances by genome length.')
 	parser.add_argument('--rank_renormalize', action='store_true',
-		help='Do not renormalize abundances to 100 percent at each rank,\
+		help='Renormalize abundances to 100 percent at each rank,\
 				for instance if an organism has a species but not genus label.')
 	parser.add_argument('--output', default='abundances.tsv',
 		help='Output abundances file. Default: abundances.txt')
-	parser.add_argument('--pct_id', type=float, default=-1,
+	parser.add_argument('--pct_id', type=float, default=0.5,
 		help='Minimum percent identity from reference to count a hit.')
 	parser.add_argument('--no_quantify_unmapped', action='store_true',
-		help='Factor in unmapped reads in abundance estimation.')
+		help='Do not factor in unmapped reads in abundance estimation.')
 	parser.add_argument('--read_cutoff', type=int, default=1,
 		help='Number of reads to count an organism as present.')
 	parser.add_argument('--sampleID', default='NONE',
@@ -537,8 +537,6 @@ def write_results(args, rank_results):
 def map_main(args = None):
 	if args == None:
 		args = profile_parseargs()
-	if args.pct_id == -1:  # not set by user
-		args.pct_id = 0.5  # 0.95
 	if args.pct_id > 1.0 or args.pct_id < 0.0:
 		print('Error: --pct_id must be between 0.0 and 1.0, inclusive.')
 		sys.exit()

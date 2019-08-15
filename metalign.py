@@ -24,22 +24,18 @@ def metalign_parseargs():  # handle user arguments
 		help='Keep temporary files instead of deleting after this script finishes.')
 	parser.add_argument('--min_abundance', type=float, default=10**-4,
 		help='Minimum abundance for a taxa to be included in the results.')
-	parser.add_argument('--min_map', type=int, default=-1,
-		help='Minimum bases mapped to count a hit.')
-	parser.add_argument('--max_ed', type=int, default=999999999,
-		help='Maximum edit distance from a reference to count a hit.')
-	parser.add_argument('--no_len_normalization', action='store_true',
-		help='Do not normalize abundances by genome length.')
-	parser.add_argument('--no_rank_renormalization', action='store_true',
-		help='Do not renormalize abundances to 100 percent at each rank,\
+	parser.add_argument('--length_normalize', action='store_true',
+		help='Normalize abundances by genome length.')
+	parser.add_argument('--rank_renormalize', action='store_true',
+		help='Renormalize abundances to 100 percent at each rank,\
 				for instance if an organism has a species but not genus label.')
 	parser.add_argument('--output', default='abundances.tsv',
 		help='Output abundances file. Default: abundances.txt')
-	parser.add_argument('--pct_id', type=float, default=-1,
+	parser.add_argument('--pct_id', type=float, default=0.5,
 		help='Minimum percent identity from reference to count a hit.')
-	parser.add_argument('--quantify_unmapped', action='store_true',
-		help='Factor in unmapped reads in abundance estimation.')
-	parser.add_argument('--read_cutoff', type=int, default=-1,
+	parser.add_argument('--no_quantify_unmapped', action='store_true',
+		help='Do not factor in unmapped reads in abundance estimation.')
+	parser.add_argument('--read_cutoff', type=int, default=1,
 		help='Number of reads to count an organism as present.')
 	parser.add_argument('--sampleID', default='NONE',
 		help='Sample ID for output. Defaults to input file name(s).')
@@ -59,7 +55,7 @@ def main():
 	if args.dbinfo_in == 'AUTO':
 		__location__ + 'data/db_info.txt'
 	if args.db_dir == 'AUTO':
-		__location__ + 'data/database/'
+		__location__ + 'data/organism_files/'
 
 	# Ensure that arguments agree between scripts
 	if not args.temp_dir.endswith('/'):
@@ -68,7 +64,6 @@ def main():
 	args.dbinfo = args.temp_dir + 'subset_db_info.txt'
 	args.dbinfo_out = args.dbinfo
 	args.infiles = [args.reads]  # map_and_profile expects a list
-	args.assignment = 'proportional'
 	args.cmash_results = 'NONE'
 
 	# Run the database selection and map/profile routines
