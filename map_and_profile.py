@@ -1,6 +1,4 @@
-import argparse, math, os, random, subprocess, sys, time
-from operator import mul
-from functools import reduce
+import argparse, os, subprocess, sys, time
 
 
 start = time.time()  # start a program timer
@@ -10,7 +8,9 @@ RANKS = ['superkingdom', 'phylum', 'class', 'order',
 		'family', 'genus', 'species', 'strain']
 
 
-def echo(msg):
+def echo(msg, verbose):
+	if not verbose:  # only print if args.verbose flag was used
+		return
 	global start
 	seconds = time.time() - start
 	m, s = divmod(seconds, 60)
@@ -25,7 +25,7 @@ def profile_parseargs():  # handle user arguments
 	parser.add_argument('infiles', nargs='+',
 		help='sam or reads file(s) (space-delimited if multiple). Required.')
 	parser.add_argument('--db', default='NONE',
-		help='Path to database from select_db.py. Required if read files given.')
+		help='Path to database from select_db.py. Required if read files given')
 	parser.add_argument('--dbinfo', default='AUTO',
 		help = 'Location of db_info file. Default: data/subset_db_info.txt')
 	parser.add_argument('--min_abundance', type=float, default=10**-4,
@@ -70,8 +70,7 @@ def get_taxid_rank(taxlin):
 # Also maps all lowest-level taxids to organism length, which is the sum of
 #  	accession lengths for accessions with that taxid, and lineage info
 def get_acc2info(args):
-	if args.verbose:
-		echo('Reading dbinfo file...')
+	echo('Reading dbinfo file...', args.verbose)
 	acc2info, taxid2info = {}, {}
 	with(open(args.dbinfo, 'r')) as infofile:
 		infofile.readline()  # skip header line
@@ -87,8 +86,6 @@ def get_acc2info(args):
 				taxid2info[taxid][0] += acclen
 			else:
 				taxid2info[taxid] = [acclen, rank, namelin, taxlin]
-	if args.verbose:
-		echo('Done reading dbinfo file.')
 	return acc2info, taxid2info
 
 
@@ -187,55 +184,6 @@ def process_read(args, read_hits, pair1, pair2, pair1maps, pair2maps):
 			return [], read_hits[0][2], readquals, hitlen
 
 
-# Computes the likelihood estimate for a read mapping using base quality scores
-#  	and CIGAR string
-def single_read_likelihood(probs, cigar):
-	# curval = current cigar letter amount, cur_ind = base probs. index
-	base_likelihoods, curval, cur_ind = [], 0, 0
-	for ch in cigar:
-		if ch.isdigit():
-			curval = (curval * 10) + int(ch)
-		else:
-			if ch != 'D':  # deletions do not consume base quality scores
-				if ch == 'M' or ch == '=':  # base likelihoods for matched bases
-					base_likelihoods.extend(
-						[1-probs[i] for i in range(cur_ind, cur_ind + curval)])
-				else:  # base likelihoods for mismatched base
-					base_likelihoods.extend(
-						[probs[i]/3.0 for i in range(cur_ind, cur_ind+curval)])
-				cur_ind = cur_ind + curval
-			curval = 0
-	return reduce(mul, base_likelihoods, 1)  # product of base likelihoods
-
-
-# computes likelihood of read being assigned to each hit taxid based on CIGAR
-#  	string and base quality scores
-def compute_read_likelihoods(read_hits):
-	base_quals, hitlen = read_hits[0][10], len(read_hits[0][10])
-	hit_dict = {}  # used to group reads by reference hit, needed for paired end
-	for hit in read_hits:
-		if hit[2] in hit_dict:
-			hit_dict[hit[2]].append(hit)
-		else:
-			hit_dict[hit[2]] = [hit]
-
-	likelihoods = {}
-	for taxid in hit_dict:
-		cigars = hit_dict[taxid][0][5]
-		if len(hit_dict[taxid]) == 2:  # paired end
-			cigars += hit_dict[taxid][1][5]
-		else:
-			# eliminates unfair advantages for one end mapped reads caused by
-			#  	having less probabilities to multiply over than both ends mapped
-			cigars += hit_dict[taxid][0][5]
-		# compute prob. of each base being wrong, then this read's likelihood
-		prob_bases_wrong = [10 ** (-(ord(ch) - 33) / 10) for ch in base_quals]
-		read_likelihood = single_read_likelihood(prob_bases_wrong, cigars)
-		if read_likelihood  < 10 ** -300:  # minimum likelihood filter
-			likelihoods[taxid] = read_likelihood
-	return [likelihoods, hitlen]
-
-
 # Remove hits to taxids not in taxids2abs (no unique mappings to that taxid)
 def preprocess_multimapped(args, multimapped, taxids2abs):
 	for i in range(len(multimapped)):
@@ -254,7 +202,7 @@ def map_and_process(args, samfile, instream, acc2info, taxid2info):
 	taxids2abs, multimapped = {}, []  # taxids to abundances, multimapped reads
 	prev_read, read_hits = '', [] # read tracker, all hits for read (full lines)
 	pair1maps, pair2maps = 0, 0  # reads mapped to each pair (single = pair1)
-	total_reads = 0
+	tot_rds = 0  # total number of reads in the file
 
 	for line in instream:
 		if not samfile:
@@ -274,9 +222,9 @@ def map_and_process(args, samfile, instream, acc2info, taxid2info):
 
 		read, ref = splits[0], splits[2]
 		if read != prev_read:
-			total_reads += 1
-			if args.verbose and total_reads % 100000 == 0:
-				echo('Done processing ' + str(total_reads) + ' read segments.')
+			tot_rds += 1
+			if tot_rds % 100000 == 0:
+				echo('Processed ' + str(tot_rds) + ' read hits.', args.verbose)
 			# get uniq hit taxid and hitlen, or multimapped hits intersect
 			intersect_hits, taxid, readquals, hitlen = process_read(
 				args, read_hits, pair1, pair2, pair1maps, pair2maps)
@@ -310,7 +258,7 @@ def map_and_process(args, samfile, instream, acc2info, taxid2info):
 		pair2maps += pair2  # unchanged if pair2 false
 		read_hits.append(splits)
 	if not args.no_quantify_unmapped:
-		taxids2abs['Unmapped'][1] = taxids2abs['Unmapped'][0] / float(total_reads)
+		taxids2abs['Unmapped'][1] = taxids2abs['Unmapped'][0] / float(tot_rds)
 	return taxids2abs, multimapped
 
 
@@ -350,7 +298,9 @@ def resolve_multi_prop(args, taxids2abs, multimapped, taxid2info):
 
 # Renormalize each taxonomic rank so each rank sums to 100% abundance
 def rank_renormalize(args, clades2abs, only_strains=False):
-	rank_totals = {i:0.0 for i in RANKS}  # current rank abundance sums
+	rank_totals = {}
+	for i in RANKS:
+		rank_totals[i] = 0.0
 	mapped_pct = 100.0
 	if not args.no_quantify_unmapped:  # normalize using pct of mapped reads
 		mapped_pct = 100.0 - (100.0 * clades2abs['Unmapped'][-1])
@@ -437,8 +387,7 @@ def tree_results_cami(args, taxids2abs):
 def compute_abundances(args, infile, acc2info, tax2info):
 	# taxids and higher clades to abundances, and multimapped reads dict
 	taxids2abs, clades2abs, multimapped = {}, {}, {}
-	if args.verbose:
-		echo('Reading input file ' + infile)
+	echo('Reading input file ' + infile, args.verbose)
 	# run mapping and process to get uniq map abundances & multimapped reads
 	#taxids2abs, multimapped = map_and_process(args, infile, acc2info, tax2info)
 
@@ -451,7 +400,8 @@ def compute_abundances(args, infile, acc2info, tax2info):
 			'-t', '4', '-2', '-n' '1', '--secondary=yes',
 			args.db, infile], stdout=subprocess.PIPE, bufsize=1)
 		instream = iter(mapper.stdout.readline, "")
-	taxids2abs, multimapped = map_and_process(args, samfile, instream, acc2info, tax2info)
+	taxids2abs, multimapped = map_and_process(args, samfile,
+		instream, acc2info, tax2info)
 	if samfile:
 		instream.close()
 	else:
@@ -462,11 +412,11 @@ def compute_abundances(args, infile, acc2info, tax2info):
 
 	# filter out organisms below the read cutoff set by the user, if applicable
 	taxids2abs = {k:v for k,v in taxids2abs.items() if v[0] > args.read_cutoff}
-	if args.verbose:  echo('Assigning multimapped reads...')
+	echo('Assigning multimapped reads...', args.verbose)
 	if len(multimapped) > 0:
 		taxids2abs = resolve_multi_prop(args, taxids2abs, multimapped, tax2info)
 	results = tree_results_cami(args, taxids2abs)
-	if args.verbose:  echo('Done computing abundances for input file ' + infile)
+	echo('Done computing abundances for input file ' + infile, args.verbose)
 	return results
 
 
@@ -475,8 +425,7 @@ def compute_abundances(args, infile, acc2info, tax2info):
 def gather_results(args, acc2info, taxid2info):
 	results = {}
 	for infile in args.infiles:
-		if args.verbose:
-			echo('Computing abundances for input file ' + infile + '...')
+		echo('Computing abundances for input file: ' + infile, args.verbose)
 		file_res = compute_abundances(args, infile, acc2info, taxid2info)
 		for clade in file_res:
 			if clade not in results:
@@ -486,13 +435,12 @@ def gather_results(args, acc2info, taxid2info):
 
 	if 'Unmapped' in results:
 		del results['Unmapped']
-	if args.verbose:
-		echo('Compiling and writing results...')
-	rank_results = {i:[] for i in range(len(RANKS))}
+	echo('Compiling and writing results...', args.verbose)
+	rank_results = {}
+	for i in range(len(RANKS)):
+		rank_results[i] = []
 	for clade in results:
-		ab = results[clade][-1]  # avg over input files, truncate to 4 digits
-		results[clade][-1] = float(math.trunc(
-			(ab / len(args.infiles)) * (10**4))) / (10**4)
+		ab = results[clade][4] / len(args.infiles)  # avg over input files
 		rank = RANKS.index(results[clade][1])
 		if rank == 7:  # strain; add extra CAMI genomeID and OTU fields
 			taxid = results[clade][0]
@@ -521,15 +469,16 @@ def write_results(args, rank_results):
 				continue  # skip the strain level unless user wants it
 			lines = rank_results[i]  # all lines to write for this tax level
 			# now sort clades in rank by descending abundance
-			if i != 7:  # not strains, which have extra fields
-				lines.sort(key=lambda x: 100.0-x[-1])
-			else:  # strains
-				lines.sort(key=lambda x: 100.0-x[-3])
-			if lines == None or len(lines) < 1:
+			lines.sort(key=lambda x: 100.0-x[4])
+			if lines == None:
 				continue
 			for line in lines:
 				if line[4] < args.min_abundance:
 					continue
+				if line[4] < 0.00001:
+					line[4] = 0.00001
+				else:
+					line[4] = float('%.5f' % line[4])
 				line = [str(i) for i in line]
 				outfile.write('\t'.join(line)+'\n')
 
@@ -538,11 +487,9 @@ def map_main(args = None):
 	if args == None:
 		args = profile_parseargs()
 	if args.pct_id > 1.0 or args.pct_id < 0.0:
-		print('Error: --pct_id must be between 0.0 and 1.0, inclusive.')
-		sys.exit()
+		sys.exit('Error: --pct_id must be between 0.0 and 1.0, inclusive.')
 	if args.db == 'NONE' and not args.infiles[0].endswith('sam'):
-		print('Error: --db must be specified unless .sam files are provided.')
-		sys.exit()
+		sys.exit('Error: --db must be specified unless sam files are provided.')
 	if args.dbinfo == 'AUTO':
 		args.dbinfo = __location__ + 'data/subset_db_info.txt'
 	open(args.output, 'w').close()  # test to see if writeable

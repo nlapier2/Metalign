@@ -1,9 +1,7 @@
-import argparse, math, os, random, subprocess, sys, time
-from operator import mul
-from functools import reduce
+import argparse, os, subprocess, sys, time
 # Import metalign modules
-import map_and_profile as mapper
 import select_db as select
+import map_and_profile as mapper
 
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(),
@@ -21,7 +19,7 @@ def metalign_parseargs():  # handle user arguments
 	parser.add_argument('--dbinfo_in', default='AUTO',
 		help = 'Location of db_info file. Default: data/db_info.txt')
 	parser.add_argument('--keep_temp_files', action = 'store_true',
-		help='Keep temporary files instead of deleting after this script finishes.')
+		help='Keep KMC files instead of deleting after this script finishes.')
 	parser.add_argument('--min_abundance', type=float, default=10**-4,
 		help='Minimum abundance for a taxa to be included in the results.')
 	parser.add_argument('--length_normalize', action='store_true',
