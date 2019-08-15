@@ -45,8 +45,6 @@ def profile_parseargs():  # handle user arguments
 		help='Number of reads to count an organism as present.')
 	parser.add_argument('--sampleID', default='NONE',
 		help='Sample ID for output. Defaults to input file name(s).')
-	parser.add_argument('--strain_level', action='store_true',
-		help='Write output at the strain level as well.')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
 	args = parser.parse_args()
@@ -465,8 +463,6 @@ def write_results(args, rank_results):
 			'PERCENTAGE\t_CAMI_genomeID\t_CAMI_OTU\n')
 
 		for i in range(len(RANKS)):
-			if not args.strain_level and i == len(RANKS)-1:
-				continue  # skip the strain level unless user wants it
 			lines = rank_results[i]  # all lines to write for this tax level
 			# now sort clades in rank by descending abundance
 			lines.sort(key=lambda x: 100.0-x[4])
