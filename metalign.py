@@ -1,17 +1,15 @@
-import argparse, os, math, subprocess, sys, time
+import argparse, math, subprocess, sys, time
 # Import metalign modules
 import select_db as select
 import map_and_profile as mapper
-
-
-__location__ = os.path.realpath(os.path.join(os.getcwd(),
-								os.path.dirname(__file__))) + '/'
 
 
 def metalign_parseargs():  # handle user arguments
 	parser = argparse.ArgumentParser(
 		description='Runs full metalign pipeline on input reads file(s).')
 	parser.add_argument('reads', help='Path to reads file.')
+	parser.add_argument('data',
+		help='Path to data/ directory with the files from setup_data.sh')
 	parser.add_argument('--cutoff', type=float, default=-1.0,
 		help='CMash cutoff value. Default is 1/(log10(reads file bytes)**2).')
 	parser.add_argument('--db_dir', default = 'AUTO',
@@ -39,7 +37,7 @@ def metalign_parseargs():  # handle user arguments
 		help='Sample ID for output. Defaults to input file name(s).')
 	parser.add_argument('--strain_level', action='store_true',
 		help='Use this flag to profile strains (off by default).')
-	parser.add_argument('--temp_dir', default = 'TEMP_metalign',
+	parser.add_argument('--temp_dir', default = 'TEMP_metalign/',
 		help='Directory to write temporary files to.')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
@@ -49,15 +47,17 @@ def metalign_parseargs():  # handle user arguments
 
 def main():
 	args = metalign_parseargs()
-	# Set arguments that default to AUTO
-	if args.dbinfo_in == 'AUTO':
-		__location__ + 'data/db_info.txt'
-	if args.db_dir == 'AUTO':
-		__location__ + 'data/organism_files/'
-
-	# Ensure that arguments agree between scripts
 	if not args.temp_dir.endswith('/'):
 		args.temp_dir += '/'
+	if not args.data.endswith('/'):
+		args.data += '/'
+	# Set arguments that default to AUTO
+	if args.dbinfo_in == 'AUTO':
+		args.data + 'db_info.txt'
+	if args.db_dir == 'AUTO':
+		args.data + 'organism_files/'
+
+	# Ensure that arguments agree between scripts
 	args.db = args.temp_dir + 'cmashed_db.fna'
 	args.dbinfo = args.temp_dir + 'subset_db_info.txt'
 	args.dbinfo_out = args.dbinfo
