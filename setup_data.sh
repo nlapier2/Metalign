@@ -11,16 +11,21 @@ curl -c ./cookie -s -L "https://drive.google.com/uc?export=download&id=${fileid}
 curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk '/download/ {print $NF}' ./cookie`&id=${fileid}" -o ${filename}
 rm cookie
 
-mv db_info.txt.zip cmash_db.zip data/
+fileid="1dwO4Cjxx2EmjpP0uXiWNpOJvF5F8_jgY"
+filename="organism_files.zip"
+curl -c ./cookie -s -L "https://drive.google.com/uc?export=download&id=${fileid}" > /dev/null
+curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk '/download/ {print $NF}' ./cookie`&id=${fileid}" -o ${filename}
+rm cookie
+
+mv db_info.txt.zip cmash_db.zip organism_files.zip data/
 cd data
 unzip db_info.txt.zip
 unzip cmash_db.zip
-rm db_info.txt.zip cmash_db.zip
+unzip organism_files.zip
+rm db_info.txt.zip cmash_db.zip organism_files.zip
 cd ..
 
-git clone https://github.com/lh3/minimap2.git && cd minimap2 && make && cd ..
-git clone https://github.com/dkoslicki/CMash.git && cd CMash && pip install --user -r requirements.txt && cd ..
-
 #
-# Adapted from the following under the Creative Commons License: https://stackoverflow.com/questions/48133080/how-to-download-a-google-drive-url-via-curl-or-wget
+# Google drive download method adapted from the following under the Creative Commons License:
+#   https://stackoverflow.com/questions/48133080/how-to-download-a-google-drive-url-via-curl-or-wget
 #
