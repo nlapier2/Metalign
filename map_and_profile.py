@@ -198,6 +198,7 @@ def preprocess_multimapped(args, multimapped, taxids2abs):
 #  	uniquely mapped reads & bases for that taxid, & a list of multimapped reads.
 def map_and_process(args, samfile, instream, acc2info, taxid2info):
 	taxids2abs, multimapped = {}, []  # taxids to abundances, multimapped reads
+	taxids2abs['Unmapped'] = ([0.0, 0.0] + taxid2info['Unmapped'])  #placeholder
 	prev_read, read_hits = '', [] # read tracker, all hits for read (full lines)
 	pair1maps, pair2maps = 0, 0  # reads mapped to each pair (single = pair1)
 	tot_rds = 0  # total number of reads in the file
@@ -230,11 +231,7 @@ def map_and_process(args, samfile, instream, acc2info, taxid2info):
 			prev_read, read_hits, pair1maps, pair2maps = read, [], 0, 0
 			if taxid == 'Ambiguous':  # ambiguous mapping (see process_read)
 				if not args.no_quantify_unmapped:
-					if 'Unmapped' in taxids2abs:
-						taxids2abs['Unmapped'][0] += 1.0  # reads hit
-					else:  # also store lineage for taxid
-						taxids2abs['Unmapped'] = ([1.0, 0.0] +
-							taxid2info['Unmapped'])
+					taxids2abs['Unmapped'][0] += 1.0  # reads hit
 				continue
 			if taxid != '' and args.length_normalize:
 				hitlen /= taxid2info[taxid][0]  # normalize by genome length
