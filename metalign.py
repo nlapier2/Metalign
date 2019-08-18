@@ -1,4 +1,4 @@
-import argparse, math, subprocess, sys, time
+import argparse, math, os, subprocess, sys, time
 # Import metalign modules
 import select_db as select
 import map_and_profile as mapper
