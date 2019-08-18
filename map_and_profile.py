@@ -1,9 +1,7 @@
-import argparse, os, subprocess, sys, time
+import argparse, subprocess, sys, time
 
 
 start = time.time()  # start a program timer
-__location__ = os.path.realpath(os.path.join(os.getcwd(),
-								os.path.dirname(__file__))) + '/'
 RANKS = ['superkingdom', 'phylum', 'class', 'order',
 		'family', 'genus', 'species', 'strain']
 
@@ -24,6 +22,8 @@ def profile_parseargs():  # handle user arguments
 		description='Compute abundance estimations for species in a sample.')
 	parser.add_argument('infiles', nargs='+',
 		help='sam or reads file(s) (space-delimited if multiple). Required.')
+	parser.add_argument('data',
+		help='Path to data/ directory with the files from setup_data.sh')
 	parser.add_argument('--db', default='NONE',
 		help='Path to database from select_db.py. Required if read files given')
 	parser.add_argument('--dbinfo', default='AUTO',
@@ -483,8 +483,10 @@ def map_main(args = None):
 		sys.exit('Error: --pct_id must be between 0.0 and 1.0, inclusive.')
 	if args.db == 'NONE' and not args.infiles[0].endswith('sam'):
 		sys.exit('Error: --db must be specified unless sam files are provided.')
+	if not args.data.endswith('/'):
+		args.data += '/'
 	if args.dbinfo == 'AUTO':
-		args.dbinfo = __location__ + 'data/subset_db_info.txt'
+		args.dbinfo = args.data + 'subset_db_info.txt'
 	open(args.output, 'w').close()  # test to see if writeable
 
 	# maps NCBI accession to length, taxid, name lineage, taxid lineage

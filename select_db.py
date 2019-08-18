@@ -9,16 +9,16 @@ def select_parseargs():    # handle user arguments
 	parser = argparse.ArgumentParser(description="Run CMash and" +
 				" select a subset of the whole database to align to.")
 	parser.add_argument('reads', help='Path to reads file.')
-	parser.add_argument('db_dir',
-		help='Directory with all organism files in the full database.')
-	parser.add_argument('temp_dir',
-		help='Directory to write temporary KMC files to.')
+	parser.add_argument('data',
+		help='Path to data/ directory with the files from setup_data.sh')
 	parser.add_argument('--cmash_results', default='NONE',
 		help='Can specfily location of CMash query results if already done.')
 	parser.add_argument('--cutoff', type=float, default=-1.0,
 		help='CMash cutoff value. Default is 1/(log10(reads file bytes)**2).')
 	parser.add_argument('--db', default='cmashed_db.fna',
 		help='Path to where to write the output database.')
+	parser.add_argument('--db_dir',
+		help='Directory with all organism files in the full database.')
 	parser.add_argument('--dbinfo_in', default='AUTO',
 		help='Specify location of db_info file. Default is data/db_info.txt')
 	parser.add_argument('--dbinfo_out', default='AUTO',
@@ -27,6 +27,8 @@ def select_parseargs():    # handle user arguments
 		help='Keep KMC files instead of deleting after this script finishes.')
 	parser.add_argument('--strain_level', action='store_true',
 		help='Include all strains above cutoff. Default: 1 strain per species.')
+	parser.add_argument('--temp_dir', default = 'TEMP_metalign/',
+		help='Directory to write temporary files to.')
 	args = parser.parse_args()
 	return args
 
@@ -49,7 +51,7 @@ def read_dbinfo(args):
 
 def run_kmc_steps(args):
 	kmc_loc = __location__ + 'kmc/kmc'
-	db_60mers_loc = __location__ + 'data/cmash_db_n1000_k60_dump'
+	db_60mers_loc = args.data + 'cmash_db_n1000_k60_dump'
 
 	subprocess.Popen([kmc_loc, '-v', '-k60', '-m200', '-sm', '-fq', '-ci2',
 		'-cs3', '-t48', '-jlog_sample', args.reads,
@@ -70,8 +72,8 @@ def run_kmc_steps(args):
 
 
 def run_cmash_and_cutoff(args, taxid2info):
-	cmash_db_loc = __location__ + 'data/cmash_db_n1000_k60.h5'
-	cmash_filter_loc = __location__ + 'data/cmash_filter_n1000_k60_30-60-10.bf'
+	cmash_db_loc = args.data + 'cmash_db_n1000_k60.h5'
+	cmash_filter_loc = args.data + 'cmash_filter_n1000_k60_30-60-10.bf'
 	if args.cmash_results == 'NONE':
 		cmash_out = args.temp_dir + 'cmash_query_results.csv'
 		script_loc = __location__ + 'CMash/scripts/StreamingQueryDNADatabase.py'
@@ -131,6 +133,10 @@ def select_main(args = None):
 	elif args.cutoff < 0.0 or args.cutoff > 1.0:
 		print('Error: args.cutoff must be between 0 and 1, inclusive.')
 		sys.exit()
+	if not args.data.endswith('/'):
+		args.data += '/'
+	if args.db_dir == 'AUTO':
+		args.db_dir = args.data + 'organism_files/'
 	if not args.db_dir.endswith('/'):
 		args.db_dir += '/'
 	if not args.temp_dir.endswith('/'):
@@ -138,9 +144,9 @@ def select_main(args = None):
 	if not os.path.exists(args.temp_dir):
 		os.makedirs(args.temp_dir)
 	if args.dbinfo_in == 'AUTO':
-		args.dbinfo_in = __location__ + 'data/db_info.txt'
+		args.dbinfo_in = args.data + 'db_info.txt'
 	if args.dbinfo_out == 'AUTO':
-		args.dbinfo_out = __location__ + 'data/subset_db_info.txt'
+		args.dbinfo_out = args.data + 'subset_db_info.txt'
 
 	taxid2info = read_dbinfo(args)
 	if args.cmash_results == 'NONE':
