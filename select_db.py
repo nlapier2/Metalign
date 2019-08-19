@@ -17,7 +17,7 @@ def select_parseargs():    # handle user arguments
 		help='CMash cutoff value. Default is 1/(log10(reads file bytes)**2).')
 	parser.add_argument('--db', default='cmashed_db.fna',
 		help='Path to where to write the output database.')
-	parser.add_argument('--db_dir',
+	parser.add_argument('--db_dir', default='AUTO',
 		help='Directory with all organism files in the full database.')
 	parser.add_argument('--dbinfo_in', default='AUTO',
 		help='Specify location of db_info file. Default is data/db_info.txt')

@@ -11,7 +11,7 @@ RUN apt-get -qq update
 RUN apt-get install -y curl build-essential git libz-dev vim zip
 RUN apt-get install -y python-dev python-setuptools python-pip python-tk python3-dev
 RUN python -m pip install numpy scipy
-RUN git clone https://github.com/nlapier2/Metalign.git && cd Metalign && ./setup_libraries.sh && cd .. && cd .
+RUN git clone https://github.com/nlapier2/Metalign.git && cd Metalign && ./setup_libraries.sh
 
-ENTRYPOINT ["python3", "Metalign/metalign.py"]
+ENTRYPOINT ["python3"]
 #
