@@ -29,7 +29,7 @@ def profile_parseargs():  # handle user arguments
 	parser.add_argument('--db', default='NONE',
 		help='Path to database from select_db.py. Required if read files given')
 	parser.add_argument('--dbinfo', default='AUTO',
-		help = 'Location of db_info file. Default: data/subset_db_info.txt')
+		help = 'Location of db_info file. Default: data/db_info.txt')
 	parser.add_argument('--min_abundance', type=float, default=10**-4,
 		help='Minimum abundance for a taxa to be included in the results.')
 	parser.add_argument('--length_normalize', action='store_true',
@@ -393,7 +393,7 @@ def compute_abundances(args, infile, acc2info, tax2info):
 		samfile = True
 		instream = open(infile, 'r')
 	else:  # run minimap2 and stream its output as input
-		mapper = subprocess.Popen([__location__ + 'minimap2/minimap2', '-ax', 
+		mapper = subprocess.Popen([__location__ + 'minimap2/minimap2', '-ax',
 			'sr', '-t', '4', '-2', '-n' '1', '--secondary=yes',
 			args.db, infile], stdout=subprocess.PIPE, bufsize=1)
 		instream = iter(mapper.stdout.readline, "")
@@ -488,7 +488,7 @@ def map_main(args = None):
 	if not args.data.endswith('/'):
 		args.data += '/'
 	if args.dbinfo == 'AUTO':
-		args.dbinfo = args.data + 'subset_db_info.txt'
+		args.dbinfo = args.data + 'db_info.txt'
 	open(args.output, 'w').close()  # test to see if writeable
 
 	# maps NCBI accession to length, taxid, name lineage, taxid lineage
