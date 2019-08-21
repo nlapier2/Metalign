@@ -455,7 +455,7 @@ def write_results(args, rank_results):
 			outfile.write('@SampleID:' + ','.join(args.infiles) + '\n')
 		else:
 			outfile.write('@SampleID:' + args.sampleID + '\n')
-		outfile.write('@Version:MiCoP2-v0.1\n')
+		outfile.write('@Version:Metalign-v0.2\n')
 		outfile.write('@Ranks: ' +
 			'superkingdom|phylum|class|order|family|genus|species|strain\n\n')
 		outfile.write('@@TAXID\tRANK\tTAXPATH\tTAXPATHSN\t' +
