@@ -300,7 +300,8 @@ def rank_renormalize(args, clades2abs, only_strains=False):
 		rank_totals[i] = 0.0
 	mapped_pct = 100.0
 	if not args.no_quantify_unmapped:  # normalize using pct of mapped reads
-		mapped_pct = 100.0 - (100.0 * clades2abs['Unmapped'][-1])
+		if 'Unmapped' in clades2abs:
+			mapped_pct = 100.0 - (100.0 * clades2abs['Unmapped'][-1])
 	for clade in clades2abs:
 		if clade == 'Unmapped':
 			continue
