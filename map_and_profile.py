@@ -437,7 +437,7 @@ def gather_results(args, acc2info, taxid2info):
 	for i in range(len(RANKS)):
 		rank_results[i] = []
 	for clade in results:
-		ab = results[clade][4] / len(args.infiles)  # avg over input files
+		results[taxon][4] = results[taxon][4] / num_profiles  #avg over profiles
 		rank = RANKS.index(results[clade][1])
 		if rank == 7:  # strain; add extra CAMI genomeID and OTU fields
 			taxid = results[clade][0]
