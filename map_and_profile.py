@@ -213,6 +213,8 @@ def map_and_process(args, samfile, instream, acc2info, taxid2info):
 		if line.startswith('@'):
 			continue
 		splits = line.strip().split()
+		if len(splits) < 6:
+			continue
 		pair1, pair2, chimer, is_bad = parse_flag(int(splits[1]), splits[5])
 		if is_bad:  # unmapped or cigar string unavailable
 			continue
