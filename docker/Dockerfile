@@ -12,6 +12,8 @@ RUN apt-get install -y curl build-essential git libz-dev vim zip
 RUN apt-get install -y python-dev python-setuptools python-pip python-tk python3-dev
 RUN python -m pip install numpy scipy
 RUN git clone https://github.com/nlapier2/Metalign.git && cd Metalign && ./setup_libraries.sh
+# A quick way to update the dockerfile
+RUN cd Metalign/ && git pull origin master && echo "Metalign docker version 0.2.3"
 
 ENTRYPOINT ["python3"]
 #
