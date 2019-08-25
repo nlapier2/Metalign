@@ -29,7 +29,9 @@ def profile_parseargs():  # handle user arguments
 	parser.add_argument('--db', default='NONE',
 		help='Path to database from select_db.py. Required if read files given')
 	parser.add_argument('--dbinfo', default='AUTO',
-		help = 'Location of db_info file. Default: data/db_info.txt')
+		help='Location of db_info file. Default: data/db_info.txt')
+	parser.add_argument('--low_mem', action='store_true',
+		help='Run in low memory mode, with inexact multimapped processing.')
 	parser.add_argument('--min_abundance', type=float, default=10**-4,
 		help='Minimum abundance for a taxa to be included in the results.')
 	parser.add_argument('--length_normalize', action='store_true',
@@ -200,6 +202,7 @@ def preprocess_multimapped(args, multimapped, taxids2abs):
 #  	uniquely mapped reads & bases for that taxid, & a list of multimapped reads.
 def map_and_process(args, samfile, instream, acc2info, taxid2info):
 	taxids2abs, multimapped = {}, []  # taxids to abundances, multimapped reads
+	low_mem_mmap = {}  # tracks multimapped read hits per taxon in low_mem mode
 	taxids2abs['Unmapped'] = ([0.0, 0.0] + taxid2info['Unmapped'])  #placeholder
 	prev_read, read_hits = '', [] # read tracker, all hits for read (full lines)
 	pair1maps, pair2maps = 0, 0  # reads mapped to each pair (single = pair1)
@@ -249,21 +252,43 @@ def map_and_process(args, samfile, instream, acc2info, taxid2info):
 				# store taxids hit and length (in bases) of hits
 				#intersect_hits = [[hit[2], len(hit[9])]
 				#	for hit in intersect_hits]
-				intersect_hits = [[hit[2]] for hit in intersect_hits]
-				intersect_hits[0].append(len(readquals))  # total hit length
-				multimapped.append(intersect_hits)
+				if not args.low_mem:  # store set of taxids per multimapped read
+					intersect_hits = [[hit[2]] for hit in intersect_hits]
+					intersect_hits[0].append(len(readquals))  # total hit length
+					multimapped.append(intersect_hits)
+				else:  # low_mem just stores overall num. of hit bases per taxid
+					for hit in intersect_hits:
+						taxid = hit[2]
+						if taxid in low_mem_mmap:
+							low_mem_mmap[taxid] += len(readquals)
+						else:
+							low_mem_mmap[taxid] = len(readquals)
 		#else:
 		pair1maps += pair1 or not(pair1 or pair2)  # pair1 or single
 		pair2maps += pair2  # unchanged if pair2 false
 		read_hits.append(splits)
 	if not args.no_quantify_unmapped:
 		taxids2abs['Unmapped'][1] = taxids2abs['Unmapped'][0] / float(tot_rds)
-	return taxids2abs, multimapped
+	return taxids2abs, multimapped, low_mem_mmap
 
 
 # Assign multimapped reads to specific organisms via proportional method,
 #  	e.g. proportional to uniquely mapped reads; method used by MiCoP1
-def resolve_multi_prop(args, taxids2abs, multimapped, taxid2info):
+def resolve_multi_prop(args, taxids2abs, multimapped, low_mem_mmap, taxid2info):
+	echo('Assigning multimapped reads...', args.verbose)
+	# handle low_mem case: simply add hits weighted by unique abundance
+	if args.low_mem:
+		sum_abs = float(sum([taxids2abs[tax][1] for tax in taxids2abs]))
+		for taxid in low_mem_mmap:
+			if taxid not in taxids2abs:  # no uniquely-mapped reads
+				continue
+			proportion = taxids2abs[taxid][1] / sum_abs
+			weighted_hits = low_mem_mmap[taxid] * proportion
+			if args.length_normalize:  # normalize by genome length if requested
+				weighted_hits /= taxid2info[taxid][0]
+			taxids2abs[taxid][1] += weighted_hits
+		return taxids2abs
+
 	# ensures early read assignments don't affect proportions of later ones
 	to_add = {}
 	for read_hits in multimapped:
@@ -386,8 +411,7 @@ def tree_results_cami(args, taxids2abs):
 #  	uniquely-mapped abundances and multimapped read information
 def compute_abundances(args, infile, acc2info, tax2info):
 	# taxids and higher clades to abundances, and multimapped reads dict
-	taxids2abs, clades2abs, multimapped = {}, {}, {}
-	echo('Reading input file ' + infile, args.verbose)
+	taxids2abs, clades2abs, multimapped, low_mem_mmap = {}, [], {}, {}
 	# run mapping and process to get uniq map abundances & multimapped reads
 	#taxids2abs, multimapped = map_and_process(args, infile, acc2info, tax2info)
 
@@ -400,7 +424,7 @@ def compute_abundances(args, infile, acc2info, tax2info):
 			'sr', '-t', '4', '-2', '-n' '1', '--secondary=yes',
 			args.db, infile], stdout=subprocess.PIPE, bufsize=1)
 		instream = iter(mapper.stdout.readline, "")
-	taxids2abs, multimapped = map_and_process(args, samfile,
+	taxids2abs, multimapped, low_mem_mmap = map_and_process(args, samfile,
 		instream, acc2info, tax2info)
 	if samfile:
 		instream.close()
@@ -412,11 +436,10 @@ def compute_abundances(args, infile, acc2info, tax2info):
 
 	# filter out organisms below the read cutoff set by the user, if applicable
 	taxids2abs = {k:v for k,v in taxids2abs.items() if v[0] > args.read_cutoff}
-	echo('Assigning multimapped reads...', args.verbose)
-	if len(multimapped) > 0:
-		taxids2abs = resolve_multi_prop(args, taxids2abs, multimapped, tax2info)
+	if len(multimapped) > 0 or len(low_mem_mmap) > 0:
+		taxids2abs = resolve_multi_prop(args, taxids2abs,
+			multimapped, low_mem_mmap, tax2info)
 	results = tree_results_cami(args, taxids2abs)
-	echo('Done computing abundances for input file ' + infile, args.verbose)
 	return results
 
 
