@@ -189,11 +189,11 @@ def process_read(args, read_hits, pair1, pair2, pair1maps, pair2maps):
 # Remove hits to taxids not in taxids2abs (no unique mappings to that taxid)
 def preprocess_multimapped(args, multimapped, taxids2abs):
 	for i in range(len(multimapped)):
-		hitlen = multimapped[i][0][-1]
-		multimapped[i] = [hit for hit in multimapped[i]
-			if hit[0] in taxids2abs]
-		if len(multimapped[i]) > 0 and len(multimapped[i][0]) == 1:
-			multimapped[i][0].append(hitlen)  # ensure hitlen is kept
+		hitlen = multimapped[i][-1]
+		multimapped[i] = [hit for hit in multimapped[i][:-1]
+			if hit in taxids2abs]
+		if len(multimapped[i]) > 0:
+			multimapped[i].append(hitlen)  # ensure hitlen is kept
 	multimapped = [read for read in multimapped if len(read) > 0]
 	return multimapped
 
@@ -253,8 +253,8 @@ def map_and_process(args, samfile, instream, acc2info, taxid2info):
 				#intersect_hits = [[hit[2], len(hit[9])]
 				#	for hit in intersect_hits]
 				if not args.low_mem:  # store set of taxids per multimapped read
-					intersect_hits = [[hit[2]] for hit in intersect_hits]
-					intersect_hits[0].append(len(readquals))  # total hit length
+					intersect_hits = [hit[2] for hit in intersect_hits]
+					intersect_hits.append(len(readquals))  # total hit length
 					multimapped.append(intersect_hits)
 				else:  # low_mem just stores overall num. of hit bases per taxid
 					for hit in intersect_hits:
@@ -293,8 +293,8 @@ def resolve_multi_prop(args, taxids2abs, multimapped, low_mem_mmap, taxid2info):
 	to_add = {}
 	for read_hits in multimapped:
 		# get abundances of all taxids in read_hits
-		all_taxids = list(set([hit[0] for hit in read_hits
-			if hit[0] in taxids2abs]))
+		all_taxids = list(set([hit for hit in read_hits[:-1]
+			if hit in taxids2abs]))
 		if len(all_taxids) == 0:  # all hits were to taxids with no unique hits
 			continue
 		taxid_abs = [taxids2abs[tax][1] for tax in all_taxids]
@@ -304,7 +304,7 @@ def resolve_multi_prop(args, taxids2abs, multimapped, low_mem_mmap, taxid2info):
 		if sumabs == 0.0:
 			continue
 		proportions = [ab / sumabs for ab in taxid_abs]
-		hitlen = read_hits[0][-1]
+		hitlen = read_hits[-1]
 
 		# divide hit length proportionally among hit taxids; divided assignment
 		for i in range(len(all_taxids)):
@@ -421,7 +421,7 @@ def compute_abundances(args, infile, acc2info, tax2info):
 		instream = open(infile, 'r')
 	else:  # run minimap2 and stream its output as input
 		mapper = subprocess.Popen([__location__ + 'minimap2/minimap2', '-ax',
-			'sr', '-t', '4', '-2', '-n' '1', '--secondary=yes',
+			'sr', '-t', '4', '-2', '-n' '1', '--secondary=yes', '--cap-sw-mem=4g',
 			args.db, infile], stdout=subprocess.PIPE, bufsize=1)
 		instream = iter(mapper.stdout.readline, "")
 	taxids2abs, multimapped, low_mem_mmap = map_and_process(args, samfile,
