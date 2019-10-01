@@ -3,13 +3,13 @@
 
 
 This is a specification for the db_info.txt file, which supplies the information
-necessary for MiCoP2 to build the final abundance profile from the raw alignment
+necessary for Metalign to build the final abundance profile from the raw alignment
 results. It may be of interest to users to know how this file is formatted, in
-case they are interested in building their own db_info.txt file for a custom 
+case they are interested in building their own db_info.txt file for a custom
 database.
 
 
-There is one header line consisting of the tab-deliminted column titles: 
+There is one header line consisting of the tab-deliminted column titles:
 "Accession", "Length", "TaxID", "Lineage", and "TaxID_Lineage". These explain
 the information contained in the columns below; each column below consists of 5
 tab-delimited fields correpsonding to these header fields. However, they are
@@ -27,7 +27,7 @@ one line per FASTA entry. Note that the accession value should only correspond
 to the portion of the FASTA line after the initial ">" and before any
 whitespace; for instance the FASTA header
 ">NZ_LMVM01000001.1 Methanobacterium bryantii strain M.o.H. contig_1, whole..."
-is simply represented as NZ_LMVM01000001.1 in the first column. 
+is simply represented as NZ_LMVM01000001.1 in the first column.
 
 
 The second column, "Length" refers to the length of the FASTA entry, whether it
@@ -48,16 +48,16 @@ correspond to the lineage information in the fifth column (see next paragraph).
 
 The full lineage of an accession is specified in terms of taxonomic names in the
 fouth column, "Lineage", and in terms of the TaxIDs in the fifth column,
-"TaxID Lineage". MiCoP2 doesn't care about the text that you enter for these
+"TaxID Lineage". Metalign doesn't care about the text that you enter for these
 fields, but it does care that the fourth and fifth column contain 7 pipes each
 (this character: "|") separating 8 different strings which may be empty (in case
 there is no taxonomic classification at that level, as is often the case with
 viruses). There must be no tabs in any column.
 
 
-If you wish to adhere to CAMI format, which MiCoP2 does and we strongly
+If you wish to adhere to CAMI format, which Metalign does and we strongly
 recommend, you must also follow these instructions:
-https://github.com/CAMI-challenge/contest_information/blob/master/file_formats/CAMI_TP_specification.mkd 
+https://github.com/CAMI-challenge/contest_information/blob/master/file_formats/CAMI_TP_specification.mkd
 Most notably, for strain level annotation, the last TaxID lineage should be
 appended with ".1", ".2", etc for each strain from the species TaxID above. For
 instance, a species with the TaxID 5232 may contain two strains in your
@@ -74,6 +74,6 @@ and these five tab-separated columns per line.
 
 
 Following these specifications should lead to successful profiling in the
-standard CAMI format. 
+standard CAMI format.
 
 #
