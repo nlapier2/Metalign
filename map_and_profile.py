@@ -49,6 +49,8 @@ def profile_parseargs():  # handle user arguments
 		help='Number of reads to count an organism as present.')
 	parser.add_argument('--sampleID', default='NONE',
 		help='Sample ID for output. Defaults to input file name(s).')
+    parser.add_argument('--threads', type=int, default=4,
+        help='How many compute threads for Minimap2 to use. Default: 4')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
 	args = parser.parse_args()
@@ -421,7 +423,7 @@ def compute_abundances(args, infile, acc2info, tax2info):
 		instream = open(infile, 'r')
 	else:  # run minimap2 and stream its output as input
 		mapper = subprocess.Popen([__location__ + 'minimap2/minimap2', '-ax',
-			'sr', '-t', '4', '-2', '-n' '1', '--secondary=yes', '--cap-sw-mem=4g',
+			'sr', '-t', str(args.threads), '-2', '-n' '1', '--secondary=yes',
 			args.db, infile], stdout=subprocess.PIPE, bufsize=1)
 		instream = iter(mapper.stdout.readline, "")
 	taxids2abs, multimapped, low_mem_mmap = map_and_process(args, samfile,
