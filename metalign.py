@@ -46,6 +46,8 @@ def metalign_parseargs():  # handle user arguments
 		help='Use this flag to profile strains (off by default).')
 	parser.add_argument('--temp_dir', default = 'TEMP_metalign/',
 		help='Directory to write temporary files to.')
+    parser.add_argument('--threads', type=int, default=4,
+        help='How many compute threads for Minimap2 to use. Default: 4')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
 	args = parser.parse_args()
