@@ -49,8 +49,8 @@ def profile_parseargs():  # handle user arguments
 		help='Number of reads to count an organism as present.')
 	parser.add_argument('--sampleID', default='NONE',
 		help='Sample ID for output. Defaults to input file name(s).')
-    parser.add_argument('--threads', type=int, default=4,
-        help='How many compute threads for Minimap2 to use. Default: 4')
+	parser.add_argument('--threads', type=int, default=4,
+		help='How many compute threads for Minimap2 to use. Default: 4')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
 	args = parser.parse_args()
