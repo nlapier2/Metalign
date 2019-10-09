@@ -2,7 +2,7 @@ data/cmash_db*
 data/db_info*
 minimap2/
 CMash/
-utility/
+personal_utils/
 bak/
 ideas/
 __pycache__/
