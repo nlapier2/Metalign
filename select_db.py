@@ -109,7 +109,7 @@ def make_db_and_dbinfo(args, organisms_to_include, taxid2info):
 		for organism in organisms_to_include:
 			organism_fname = args.db_dir + organism
 			# write organisms to full db via cat to append-mode file handler
-			subprocess.Popen(['cat', organism_fname], stdout=outfile).wait()
+			subprocess.Popen(['zcat', organism_fname], stdout=outfile).wait()
 
 	with(open(args.dbinfo_out, 'w')) as outfile:
 		# write header lines
