@@ -1,11 +1,9 @@
-# Takes in a filename pattern matching two or more CAMI-format metagenome
-#  	profiles, averages the taxa abundances across all files, and writes results
 import argparse, glob
 
 
 def parseargs():
 	parser = argparse.ArgumentParser(description="Given filename pattern" +
-				" for CAMI-format profiles, average abundances & output.")
+				" for bracken or metaphlan input files.")
 	parser.add_argument('--pattern', required=True,
 		help='Pattern to match, e.g. "/path/to/profiles/*pattern*". Required.')
 	parser.add_argument('--output', required=True,
@@ -25,7 +23,7 @@ def parse_profile(profile):
 	return profile_results
 
 
-# Writes results out in CAMI format
+# Writes results out in simple format
 def write_results(output, results):
 	with(open(output, 'w')) as outfile:
 		for taxon in results:
