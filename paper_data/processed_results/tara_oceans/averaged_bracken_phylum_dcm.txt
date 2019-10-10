@@ -1,0 +1,45 @@
+Proteobacteria	0.432244
+Cyanobacteria	0.303996
+Firmicutes	0.067648
+Actinobacteria	0.014888
+Tenericutes	0.010237999999999999
+Deinococcus-Thermus	0.000302
+Chloroflexi	0.00029
+Armatimonadetes	6.6e-05
+Bacteroidetes	0.058444
+Ignavibacteriae	0.000308
+Chlorobi	0.000286
+Balneolaeota	3.0000000000000004e-05
+Gemmatimonadetes	7.400000000000001e-05
+Candidatus Cloacimonetes	6.2e-05
+Fibrobacteres	2.0000000000000005e-05
+Fusobacteria	0.006232
+Planctomycetes	0.00208
+Chlamydiae	0.00074
+Verrucomicrobia	0.0005300000000000001
+Lentisphaerae	2.0000000000000005e-05
+Kiritimatiellaeota	2.4000000000000004e-05
+Spirochaetes	0.0040999999999999995
+Thermotogae	0.0014299999999999998
+Aquificae	0.000692
+Deferribacteres	0.00053
+Candidatus Gracilibacteria	0.000282
+Candidatus Saccharibacteria	5e-05
+Candidatus Bipolaricaulota	8.400000000000001e-05
+Thermodesulfobacteria	0.00038199999999999996
+Nitrospirae	0.000258
+Acidobacteria	0.000174
+Dictyoglomi	0.00019999999999999998
+Elusimicrobia	0.000152
+Synergistetes	0.000108
+Calditrichaeota	6.6e-05
+Caldiserica	4.8e-05
+Coprothermobacterota	3.0000000000000004e-05
+Chrysiogenetes	1.4000000000000003e-05
+Chordata	0.043202
+Euryarchaeota	0.005102000000000001
+Thaumarchaeota	0.007952
+Crenarchaeota	0.000856
+Candidatus Korarchaeota	0.000114
+Candidatus Micrarchaeota	0.035154
+Negarnaviricota	0.00048799999999999994
