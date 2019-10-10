@@ -6,3 +6,4 @@ personal_utils/
 bak/
 ideas/
 __pycache__/
+.DS_Store
