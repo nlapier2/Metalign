@@ -25,8 +25,8 @@ LaPierre, N., Koslicki, D., Alser, M., Eskin, E., & Mangul, S. (2019). Metalign:
 
 Simply run:
 ```
-git clone https://github.com/nlapier2/ContainEM.git
-cd ContainEM/
+git clone https://github.com/nlapier2/Metalign.git
+cd Metalign/
 ./setup.sh
 ```
 
