@@ -1,0 +1,2194 @@
+*************
+
+********** Used parameters: **********
+No. of input files           : 1
+Output file name             : TEMP_metalign/reads_60mers
+No. of working directories   : 1
+Input format                 : FASTQ
+
+k-mer length                 : 60
+Max. k-mer length            : 256
+Signature length             : 9
+Min. count threshold         : 2
+Max. count threshold         : 1000000000
+Max. counter value           : 3
+Both strands                 : true
+RAM only mode                : false
+
+******* Stage 1 configuration: *******
+
+No. of bins                  : 512
+Bin part size                : 65536
+Input buffer size            : 25165824
+
+No. of readers               : 1
+No. of splitters             : 47
+
+Max. mem. size               : 200000MB
+Max. mem. per storer         : 146597MB
+Max. mem. for single package :   572MB
+
+Max. mem. for PMM (bin parts): 195462MB
+Max. mem. for PMM (FASTQ)    :  3633MB
+Max. mem. for PMM (reads)    :    49MB
+Max. mem. for PMM (b. reader):   805MB
+
+Stage 1: 0%Stage 1: 1%Stage 1: 2%Stage 1: 3%Stage 1: 4%Stage 1: 5%Stage 1: 6%Stage 1: 7%Stage 1: 8%Stage 1: 9%Stage 1: 10%Stage 1: 11%Stage 1: 12%Stage 1: 13%Stage 1: 14%Stage 1: 15%Stage 1: 16%Stage 1: 17%Stage 1: 18%Stage 1: 19%Stage 1: 20%Stage 1: 21%Stage 1: 22%Stage 1: 23%Stage 1: 24%Stage 1: 25%Stage 1: 26%Stage 1: 27%Stage 1: 28%Stage 1: 29%Stage 1: 30%Stage 1: 31%Stage 1: 32%Stage 1: 33%Stage 1: 34%Stage 1: 35%Stage 1: 36%Stage 1: 37%Stage 1: 38%Stage 1: 39%Stage 1: 40%Stage 1: 41%Stage 1: 42%Stage 1: 43%Stage 1: 44%Stage 1: 45%Stage 1: 46%Stage 1: 47%Stage 1: 48%Stage 1: 49%Stage 1: 50%Stage 1: 51%Stage 1: 52%Stage 1: 53%Stage 1: 54%Stage 1: 55%Stage 1: 56%Stage 1: 57%Stage 1: 58%Stage 1: 59%Stage 1: 60%Stage 1: 61%Stage 1: 62%Stage 1: 63%Stage 1: 64%Stage 1: 65%Stage 1: 66%Stage 1: 67%Stage 1: 68%Stage 1: 69%Stage 1: 70%Stage 1: 71%Stage 1: 72%Stage 1: 73%Stage 1: 74%Stage 1: 75%Stage 1: 76%Stage 1: 77%Stage 1: 78%Stage 1: 79%Stage 1: 80%Stage 1: 81%Stage 1: 82%Stage 1: 83%Stage 1: 84%Stage 1: 85%Stage 1: 86%Stage 1: 87%Stage 1: 88%Stage 1: 89%Stage 1: 90%Stage 1: 91%Stage 1: 92%Stage 1: 93%Stage 1: 94%Stage 1: 95%Stage 1: 96%Stage 1: 97%Stage 1: 98%Stage 1: 99%Stage 1: 100%
+
+******* Stage 2 configuration: *******
+No. of threads               : 48
+
+Max. mem. for 2nd stage      : 142923MB
+
+Stage 2: 0%Stage 2: 1%Stage 2: 2%Stage 2: 3%Stage 2: 4%Stage 2: 5%Stage 2: 6%Stage 2: 7%Stage 2: 8%Stage 2: 9%Stage 2: 10%Stage 2: 11%Stage 2: 12%Stage 2: 13%Stage 2: 14%Stage 2: 15%Stage 2: 16%Stage 2: 17%Stage 2: 18%Stage 2: 19%Stage 2: 20%Stage 2: 21%Stage 2: 22%Stage 2: 23%Stage 2: 24%Stage 2: 25%Stage 2: 26%Stage 2: 27%Stage 2: 28%Stage 2: 29%Stage 2: 30%Stage 2: 31%Stage 2: 32%Stage 2: 33%Stage 2: 34%Stage 2: 35%Stage 2: 36%Stage 2: 37%Stage 2: 38%Stage 2: 39%Stage 2: 40%Stage 2: 41%Stage 2: 42%Stage 2: 43%Stage 2: 44%Stage 2: 45%Stage 2: 46%Stage 2: 47%Stage 2: 48%Stage 2: 49%Stage 2: 50%Stage 2: 51%Stage 2: 52%Stage 2: 53%Stage 2: 54%Stage 2: 55%Stage 2: 56%Stage 2: 57%Stage 2: 58%Stage 2: 59%Stage 2: 60%Stage 2: 61%Stage 2: 62%Stage 2: 63%Stage 2: 64%Stage 2: 65%Stage 2: 66%Stage 2: 67%Stage 2: 68%Stage 2: 69%Stage 2: 70%Stage 2: 71%Stage 2: 72%Stage 2: 73%Stage 2: 74%Stage 2: 75%Stage 2: 76%Stage 2: 77%Stage 2: 78%Stage 2: 79%Stage 2: 80%Stage 2: 81%Stage 2: 82%Stage 2: 83%Stage 2: 84%Stage 2: 85%Stage 2: 86%Stage 2: 87%Stage 2: 88%Stage 2: 89%Stage 2: 90%Stage 2: 91%Stage 2: 92%Stage 2: 93%Stage 2: 94%Stage 2: 95%Stage 2: 96%Stage 2: 97%Stage 2: 98%Stage 2: 99%Stage 2: 100%
+
+in1: 0% in1: 0% in2: 0% in1: 2% in2: 0% in1: 2% in2: 1% in1: 4% in2: 1% in1: 4% in2: 2% in1: 4% in2: 3% in1: 7% in2: 3% in1: 7% in2: 4% in1: 7% in2: 5% in1: 9% in2: 5% in1: 9% in2: 6% in1: 12% in2: 6% in1: 12% in2: 7% in1: 12% in2: 8% in1: 12% in2: 9% in1: 14% in2: 9% in1: 14% in2: 10% in1: 17% in2: 10% in1: 17% in2: 11% in1: 17% in2: 12% in1: 19% in2: 12% in1: 19% in2: 13% in1: 19% in2: 14% in1: 19% in2: 15% in1: 22% in2: 15% in1: 22% in2: 16% in1: 22% in2: 17% in1: 22% in2: 18% in1: 24% in2: 18% in1: 24% in2: 19% in1: 24% in2: 20% in1: 27% in2: 20% in1: 27% in2: 21% in1: 27% in2: 22% in1: 29% in2: 22% in1: 29% in2: 23% in1: 29% in2: 24% in1: 29% in2: 25% in1: 32% in2: 25% in1: 32% in2: 26% in1: 32% in2: 27% in1: 32% in2: 28% in1: 35% in2: 28% in1: 35% in2: 29% in1: 35% in2: 30% in1: 37% in2: 30% in1: 37% in2: 31% in1: 37% in2: 32% in1: 40% in2: 32% in1: 40% in2: 33% in1: 40% in2: 34% in1: 42% in2: 34% in1: 42% in2: 35% in1: 42% in2: 36% in1: 44% in2: 36% in1: 44% in2: 37% in1: 44% in2: 38% in1: 47% in2: 38% in1: 47% in2: 39% in1: 47% in2: 40% in1: 50% in2: 40% in1: 50% in2: 41% in1: 50% in2: 42% in1: 50% in2: 43% in1: 52% in2: 43% in1: 52% in2: 44% in1: 52% in2: 45% in1: 55% in2: 45% in1: 55% in2: 46% in1: 55% in2: 47% in1: 55% in2: 48% in1: 57% in2: 48% in1: 57% in2: 49% in1: 57% in2: 50% in1: 57% in2: 51% in1: 57% in2: 52% in1: 60% in2: 52% in1: 60% in2: 53% in1: 60% in2: 54% in1: 60% in2: 55% in1: 60% in2: 56% in1: 62% in2: 56% in1: 62% in2: 57% in1: 62% in2: 58% in1: 62% in2: 59% in1: 62% in2: 60% in1: 65% in2: 60% in1: 65% in2: 61% in1: 65% in2: 62% in1: 65% in2: 63% in1: 65% in2: 64% in1: 67% in2: 64% in1: 67% in2: 65% in1: 67% in2: 66% in1: 67% in2: 67% in1: 70% in2: 67% in1: 70% in2: 68% in1: 70% in2: 69% in1: 70% in2: 70% in1: 73% in2: 70% in1: 73% in2: 71% in1: 73% in2: 72% in1: 73% in2: 73% in1: 75% in2: 73% in1: 75% in2: 74% in1: 75% in2: 75% in1: 77% in2: 75% in1: 77% in2: 76% in1: 77% in2: 77% in1: 77% in2: 78% in1: 80% in2: 78% in1: 80% in2: 79% in1: 80% in2: 80% in1: 80% in2: 81% in1: 82% in2: 81% in1: 82% in2: 82% in1: 82% in2: 83% in1: 85% in2: 83% in1: 85% in2: 84% in1: 85% in2: 85% in1: 85% in2: 86% in1: 85% in2: 87% in1: 88% in2: 87% in1: 88% in2: 88% in1: 88% in2: 89% in1: 88% in2: 90% in1: 90% in2: 90% in1: 90% in2: 91% in1: 90% in2: 92% in1: 90% in2: 93% in1: 93% in2: 93% in1: 93% in2: 94% in1: 93% in2: 95% in1: 95% in2: 95% in1: 95% in2: 96% in1: 98% in2: 96% in1: 98% in2: 97% in1: 98% in2: 98% in1: 99% in2: 98% in1: 99% in2: 99% in1: 99% in2: 100% [M::mm_idx_gen::78.248*1.86] collected minimizers
+[M::mm_idx_gen::94.345*2.21] sorted minimizers
+[WARNING][1;31m For a multi-part index, no @SQ lines will be outputted. Please use --split-prefix.[0m
+[M::main::94.345*2.21] loaded/built the index for 134095 target sequence(s)
+[M::mm_mapopt_update::94.345*2.21] mid_occ = 1000
+[M::mm_idx_stat] kmer size: 21; skip: 11; is_hpc: 0; #seq: 134095
+[M::mm_idx_stat::99.070*2.15] distinct minimizers: 331604762 (72.97% are singletons); average occurrences: 2.015; average spacing: 6.011
+[M::worker_pipeline::110.693*2.35] mapped 333334 sequences
+[M::worker_pipeline::116.799*2.45] mapped 333334 sequences
+[M::worker_pipeline::122.397*2.54] mapped 333334 sequences
+[M::worker_pipeline::129.100*2.63] mapped 333334 sequences
+[M::worker_pipeline::135.494*2.71] mapped 333334 sequences
+[M::worker_pipeline::141.210*2.77] mapped 333334 sequences
+[M::worker_pipeline::147.384*2.83] mapped 333334 sequences
+[M::worker_pipeline::153.038*2.88] mapped 333334 sequences
+[M::worker_pipeline::158.893*2.92] mapped 333334 sequences
+[M::worker_pipeline::164.546*2.96] mapped 333334 sequences
+[M::worker_pipeline::170.322*3.00] mapped 333334 sequences
+[M::worker_pipeline::177.313*3.02] mapped 333334 sequences
+[M::worker_pipeline::182.828*3.05] mapped 333334 sequences
+[M::worker_pipeline::188.423*3.08] mapped 333334 sequences
+[M::worker_pipeline::194.878*3.10] mapped 333334 sequences
+[M::worker_pipeline::201.663*3.13] mapped 333334 sequences
+[M::worker_pipeline::207.374*3.16] mapped 333334 sequences
+[M::worker_pipeline::213.885*3.18] mapped 333334 sequences
+[M::worker_pipeline::219.816*3.20] mapped 333334 sequences
+[M::worker_pipeline::226.514*3.21] mapped 333334 sequences
+[M::worker_pipeline::232.799*3.23] mapped 333334 sequences
+[M::worker_pipeline::239.023*3.25] mapped 333334 sequences
+[M::worker_pipeline::245.634*3.26] mapped 333334 sequences
+[M::worker_pipeline::251.670*3.28] mapped 333334 sequences
+[M::worker_pipeline::258.359*3.29] mapped 333334 sequences
+[M::worker_pipeline::264.813*3.31] mapped 333334 sequences
+[M::worker_pipeline::270.957*3.34] mapped 333334 sequences
+[M::worker_pipeline::277.364*3.36] mapped 333334 sequences
+[M::worker_pipeline::284.648*3.36] mapped 333334 sequences
+[M::worker_pipeline::290.970*3.37] mapped 333334 sequences
+[M::worker_pipeline::297.276*3.39] mapped 333334 sequences
+[M::worker_pipeline::304.028*3.41] mapped 333334 sequences
+[M::worker_pipeline::310.530*3.43] mapped 333334 sequences
+[M::worker_pipeline::317.075*3.44] mapped 333334 sequences
+[M::worker_pipeline::323.669*3.45] mapped 333334 sequences
+[M::worker_pipeline::329.929*3.46] mapped 333334 sequences
+[M::worker_pipeline::336.412*3.47] mapped 333334 sequences
+[M::worker_pipeline::342.968*3.48] mapped 333334 sequences
+[M::worker_pipeline::349.639*3.49] mapped 333334 sequences
+[M::worker_pipeline::356.309*3.50] mapped 333334 sequences
+[M::worker_pipeline::364.499*3.49] mapped 333334 sequences
+[M::worker_pipeline::371.138*3.49] mapped 333334 sequences
+[M::worker_pipeline::377.719*3.51] mapped 333334 sequences
+[M::worker_pipeline::384.391*3.52] mapped 333334 sequences
+[M::worker_pipeline::390.805*3.53] mapped 333334 sequences
+[M::worker_pipeline::397.460*3.53] mapped 333334 sequences
+[M::worker_pipeline::404.078*3.54] mapped 333334 sequences
+[M::worker_pipeline::410.540*3.54] mapped 333334 sequences
+[M::worker_pipeline::417.019*3.54] mapped 333334 sequences
+[M::worker_pipeline::423.644*3.55] mapped 333334 sequences
+[M::worker_pipeline::429.938*3.55] mapped 333334 sequences
+[M::worker_pipeline::436.479*3.56] mapped 333334 sequences
+[M::worker_pipeline::443.110*3.57] mapped 333334 sequences
+[M::worker_pipeline::448.639*3.57] mapped 333334 sequences
+[M::worker_pipeline::457.230*3.57] mapped 333334 sequences
+[M::worker_pipeline::463.663*3.58] mapped 333334 sequences
+[M::worker_pipeline::470.326*3.58] mapped 333334 sequences
+[M::worker_pipeline::476.945*3.58] mapped 333334 sequences
+[M::worker_pipeline::482.835*3.59] mapped 333334 sequences
+[M::worker_pipeline::489.136*3.59] mapped 333334 sequences
+[M::worker_pipeline::495.849*3.59] mapped 333334 sequences
+[M::worker_pipeline::502.580*3.59] mapped 333334 sequences
+[M::worker_pipeline::509.226*3.60] mapped 333334 sequences
+[M::worker_pipeline::515.747*3.60] mapped 333334 sequences
+[M::worker_pipeline::522.489*3.60] mapped 333334 sequences
+[M::worker_pipeline::529.192*3.60] mapped 333334 sequences
+[M::worker_pipeline::535.865*3.60] mapped 333334 sequences
+[M::worker_pipeline::542.378*3.60] mapped 333334 sequences
+[M::worker_pipeline::548.936*3.61] mapped 333334 sequences
+[M::worker_pipeline::555.284*3.61] mapped 333334 sequences
+[M::worker_pipeline::562.007*3.61] mapped 333334 sequences
+[M::worker_pipeline::568.471*3.61] mapped 333334 sequences
+[M::worker_pipeline::577.512*3.60] mapped 333334 sequences
+[M::worker_pipeline::584.094*3.60] mapped 333334 sequences
+[M::worker_pipeline::590.495*3.60] mapped 333334 sequences
+[M::worker_pipeline::596.803*3.61] mapped 333334 sequences
+[M::worker_pipeline::602.958*3.61] mapped 333334 sequences
+[M::worker_pipeline::609.532*3.61] mapped 333334 sequences
+[M::worker_pipeline::616.273*3.61] mapped 333334 sequences
+[M::worker_pipeline::623.099*3.62] mapped 333334 sequences
+[M::worker_pipeline::629.699*3.62] mapped 333334 sequences
+[M::worker_pipeline::636.331*3.63] mapped 333334 sequences
+[M::worker_pipeline::643.122*3.63] mapped 333334 sequences
+[M::worker_pipeline::649.854*3.63] mapped 333334 sequences
+[M::worker_pipeline::656.313*3.63] mapped 333334 sequences
+[M::worker_pipeline::662.956*3.64] mapped 333334 sequences
+[M::worker_pipeline::669.537*3.64] mapped 333334 sequences
+[M::worker_pipeline::676.144*3.64] mapped 333334 sequences
+[M::worker_pipeline::682.823*3.64] mapped 333334 sequences
+[M::worker_pipeline::689.294*3.65] mapped 333334 sequences
+[M::worker_pipeline::695.935*3.65] mapped 333334 sequences
+[M::worker_pipeline::702.658*3.65] mapped 333334 sequences
+[M::worker_pipeline::709.062*3.65] mapped 333334 sequences
+[M::worker_pipeline::715.278*3.66] mapped 333334 sequences
+[M::worker_pipeline::721.744*3.66] mapped 333334 sequences
+[M::worker_pipeline::731.485*3.65] mapped 333334 sequences
+[M::worker_pipeline::738.259*3.65] mapped 333334 sequences
+[M::worker_pipeline::744.625*3.65] mapped 333334 sequences
+[M::worker_pipeline::751.301*3.65] mapped 333334 sequences
+[M::worker_pipeline::757.946*3.65] mapped 333334 sequences
+[M::worker_pipeline::764.712*3.65] mapped 333334 sequences
+[M::worker_pipeline::771.440*3.66] mapped 333334 sequences
+[M::worker_pipeline::778.071*3.66] mapped 333334 sequences
+[M::worker_pipeline::784.011*3.66] mapped 333334 sequences
+[M::worker_pipeline::790.743*3.66] mapped 333334 sequences
+[M::worker_pipeline::797.336*3.66] mapped 333334 sequences
+[M::worker_pipeline::804.010*3.66] mapped 333334 sequences
+[M::worker_pipeline::810.647*3.66] mapped 333334 sequences
+[M::worker_pipeline::817.262*3.66] mapped 333334 sequences
+[M::worker_pipeline::823.777*3.66] mapped 333334 sequences
+[M::worker_pipeline::830.272*3.67] mapped 333334 sequences
+[M::worker_pipeline::836.954*3.67] mapped 333334 sequences
+[M::worker_pipeline::843.627*3.67] mapped 333334 sequences
+[M::worker_pipeline::850.220*3.67] mapped 333334 sequences
+[M::worker_pipeline::856.826*3.67] mapped 333334 sequences
+[M::worker_pipeline::863.406*3.67] mapped 333334 sequences
+[M::worker_pipeline::869.828*3.67] mapped 333334 sequences
+[M::worker_pipeline::876.423*3.67] mapped 333334 sequences
+[M::worker_pipeline::883.093*3.67] mapped 333334 sequences
+[M::worker_pipeline::889.323*3.67] mapped 333334 sequences
+[M::worker_pipeline::895.240*3.68] mapped 333334 sequences
+[M::worker_pipeline::901.656*3.68] mapped 333334 sequences
+[M::worker_pipeline::908.298*3.68] mapped 333334 sequences
+[M::worker_pipeline::919.028*3.66] mapped 333334 sequences
+[M::worker_pipeline::925.689*3.66] mapped 333334 sequences
+[M::worker_pipeline::932.226*3.67] mapped 333334 sequences
+[M::worker_pipeline::938.898*3.67] mapped 333334 sequences
+[M::worker_pipeline::945.602*3.67] mapped 333334 sequences
+[M::worker_pipeline::951.597*3.67] mapped 333334 sequences
+[M::worker_pipeline::958.212*3.67] mapped 333334 sequences
+[M::worker_pipeline::964.926*3.67] mapped 333334 sequences
+[M::worker_pipeline::971.596*3.67] mapped 333334 sequences
+[M::worker_pipeline::977.420*3.67] mapped 333334 sequences
+[M::worker_pipeline::983.499*3.68] mapped 333334 sequences
+[M::worker_pipeline::989.513*3.68] mapped 333334 sequences
+[M::worker_pipeline::995.873*3.68] mapped 333334 sequences
+[M::worker_pipeline::1002.535*3.68] mapped 333334 sequences
+[M::worker_pipeline::1009.130*3.69] mapped 333334 sequences
+[M::worker_pipeline::1015.523*3.69] mapped 333334 sequences
+[M::worker_pipeline::1021.912*3.69] mapped 333334 sequences
+[M::worker_pipeline::1028.572*3.69] mapped 333334 sequences
+[M::worker_pipeline::1035.029*3.69] mapped 333334 sequences
+[M::worker_pipeline::1041.702*3.69] mapped 333334 sequences
+[M::worker_pipeline::1048.312*3.69] mapped 333334 sequences
+[M::worker_pipeline::1054.781*3.69] mapped 333334 sequences
+[M::worker_pipeline::1061.346*3.69] mapped 333334 sequences
+[M::worker_pipeline::1067.904*3.69] mapped 333334 sequences
+[M::worker_pipeline::1074.513*3.69] mapped 333334 sequences
+[M::worker_pipeline::1081.098*3.69] mapped 333334 sequences
+[M::worker_pipeline::1087.362*3.69] mapped 333334 sequences
+[M::worker_pipeline::1093.879*3.69] mapped 333334 sequences
+[M::worker_pipeline::1100.418*3.69] mapped 333334 sequences
+[M::worker_pipeline::1107.004*3.69] mapped 333334 sequences
+[M::worker_pipeline::1113.483*3.70] mapped 333334 sequences
+[M::worker_pipeline::1120.067*3.70] mapped 333334 sequences
+[M::worker_pipeline::1126.733*3.70] mapped 333334 sequences
+[M::worker_pipeline::1133.064*3.70] mapped 333334 sequences
+[M::worker_pipeline::1139.488*3.70] mapped 333334 sequences
+[M::worker_pipeline::1150.918*3.68] mapped 333334 sequences
+[M::worker_pipeline::1157.521*3.68] mapped 333334 sequences
+[M::worker_pipeline::1164.113*3.68] mapped 333334 sequences
+[M::worker_pipeline::1170.680*3.68] mapped 333334 sequences
+[M::worker_pipeline::1177.140*3.68] mapped 333334 sequences
+[M::worker_pipeline::1183.851*3.68] mapped 333334 sequences
+[M::worker_pipeline::1190.502*3.69] mapped 333334 sequences
+[M::worker_pipeline::1196.893*3.69] mapped 333334 sequences
+[M::worker_pipeline::1203.487*3.69] mapped 333334 sequences
+[M::worker_pipeline::1210.210*3.69] mapped 333334 sequences
+[M::worker_pipeline::1216.909*3.69] mapped 333334 sequences
+[M::worker_pipeline::1223.432*3.69] mapped 333334 sequences
+[M::worker_pipeline::1230.241*3.69] mapped 333334 sequences
+[M::worker_pipeline::1236.905*3.69] mapped 333334 sequences
+[M::worker_pipeline::1243.536*3.69] mapped 333334 sequences
+[M::worker_pipeline::1250.339*3.69] mapped 333334 sequences
+[M::worker_pipeline::1257.086*3.69] mapped 333334 sequences
+[M::worker_pipeline::1263.472*3.69] mapped 333334 sequences
+[M::worker_pipeline::1269.938*3.69] mapped 333334 sequences
+[M::worker_pipeline::1276.276*3.69] mapped 333334 sequences
+[M::worker_pipeline::1282.855*3.69] mapped 333334 sequences
+[M::worker_pipeline::1289.540*3.69] mapped 333334 sequences
+[M::worker_pipeline::1296.242*3.69] mapped 333334 sequences
+[M::worker_pipeline::1302.820*3.69] mapped 333334 sequences
+[M::worker_pipeline::1309.465*3.69] mapped 333334 sequences
+[M::worker_pipeline::1316.096*3.69] mapped 333334 sequences
+[M::worker_pipeline::1322.820*3.69] mapped 333334 sequences
+[M::worker_pipeline::1329.473*3.69] mapped 333334 sequences
+[M::worker_pipeline::1336.160*3.69] mapped 333334 sequences
+[M::worker_pipeline::1342.921*3.69] mapped 333334 sequences
+[M::worker_pipeline::1349.476*3.69] mapped 333334 sequences
+[M::worker_pipeline::1355.754*3.70] mapped 333334 sequences
+[M::worker_pipeline::1362.310*3.70] mapped 333334 sequences
+[M::worker_pipeline::1369.113*3.70] mapped 333334 sequences
+[M::worker_pipeline::1375.858*3.70] mapped 333334 sequences
+[M::worker_pipeline::1382.564*3.70] mapped 333334 sequences
+[M::worker_pipeline::1389.275*3.70] mapped 333334 sequences
+[M::worker_pipeline::1395.921*3.70] mapped 333334 sequences
+[M::worker_pipeline::1402.727*3.70] mapped 333334 sequences
+[M::worker_pipeline::1409.409*3.70] mapped 333334 sequences
+[M::worker_pipeline::1415.771*3.70] mapped 333334 sequences
+[M::worker_pipeline::1422.423*3.70] mapped 333334 sequences
+[M::worker_pipeline::1428.937*3.70] mapped 333334 sequences
+[M::worker_pipeline::1435.573*3.70] mapped 333334 sequences
+[M::worker_pipeline::1448.374*3.68] mapped 333334 sequences
+[M::worker_pipeline::1454.946*3.69] mapped 333334 sequences
+[M::worker_pipeline::1461.574*3.69] mapped 333334 sequences
+[M::worker_pipeline::1468.212*3.69] mapped 333334 sequences
+[M::worker_pipeline::1474.817*3.69] mapped 333334 sequences
+[M::worker_pipeline::1481.427*3.69] mapped 333334 sequences
+[M::worker_pipeline::1488.147*3.69] mapped 333334 sequences
+[M::worker_pipeline::1494.838*3.69] mapped 333334 sequences
+[M::worker_pipeline::1501.561*3.69] mapped 333334 sequences
+[M::worker_pipeline::1508.298*3.69] mapped 333334 sequences
+[M::worker_pipeline::1514.938*3.69] mapped 333334 sequences
+[M::worker_pipeline::1521.660*3.69] mapped 333334 sequences
+[M::worker_pipeline::1528.401*3.69] mapped 333334 sequences
+[M::worker_pipeline::1535.055*3.69] mapped 333334 sequences
+[M::worker_pipeline::1541.717*3.69] mapped 333334 sequences
+[M::worker_pipeline::1548.059*3.69] mapped 333334 sequences
+[M::worker_pipeline::1554.276*3.69] mapped 333334 sequences
+[M::worker_pipeline::1560.840*3.69] mapped 333334 sequences
+[M::worker_pipeline::1567.577*3.69] mapped 333334 sequences
+[M::worker_pipeline::1574.214*3.69] mapped 333334 sequences
+[M::worker_pipeline::1580.942*3.69] mapped 333334 sequences
+[M::worker_pipeline::1587.636*3.69] mapped 333334 sequences
+[M::worker_pipeline::1594.342*3.69] mapped 333334 sequences
+[M::worker_pipeline::1600.957*3.69] mapped 333334 sequences
+[M::worker_pipeline::1607.659*3.69] mapped 333334 sequences
+[M::worker_pipeline::1614.344*3.69] mapped 333334 sequences
+[M::worker_pipeline::1620.659*3.69] mapped 333334 sequences
+[M::worker_pipeline::1626.996*3.69] mapped 333334 sequences
+[M::worker_pipeline::1633.214*3.69] mapped 333334 sequences
+[M::worker_pipeline::1639.651*3.69] mapped 333334 sequences
+[M::worker_pipeline::1645.495*3.69] mapped 333334 sequences
+[M::worker_pipeline::1652.177*3.69] mapped 333334 sequences
+[M::worker_pipeline::1658.919*3.69] mapped 333334 sequences
+[M::worker_pipeline::1665.636*3.69] mapped 333334 sequences
+[M::worker_pipeline::1671.881*3.69] mapped 333334 sequences
+[M::worker_pipeline::1678.518*3.69] mapped 333334 sequences
+[M::worker_pipeline::1685.234*3.69] mapped 333334 sequences
+[M::worker_pipeline::1691.754*3.69] mapped 333334 sequences
+[M::worker_pipeline::1698.385*3.69] mapped 333334 sequences
+[M::worker_pipeline::1704.955*3.69] mapped 333334 sequences
+[M::worker_pipeline::1711.495*3.69] mapped 333334 sequences
+[M::worker_pipeline::1718.103*3.69] mapped 333334 sequences
+[M::worker_pipeline::1724.818*3.69] mapped 333334 sequences
+[M::worker_pipeline::1731.286*3.69] mapped 333334 sequences
+[M::worker_pipeline::1737.750*3.69] mapped 333334 sequences
+[M::worker_pipeline::1744.440*3.69] mapped 333334 sequences
+[M::worker_pipeline::1751.070*3.69] mapped 333334 sequences
+[M::worker_pipeline::1757.763*3.69] mapped 333334 sequences
+[M::worker_pipeline::1764.521*3.69] mapped 333334 sequences
+[M::worker_pipeline::1771.024*3.69] mapped 333334 sequences
+[M::worker_pipeline::1777.426*3.69] mapped 333334 sequences
+[M::worker_pipeline::1784.067*3.69] mapped 333334 sequences
+[M::worker_pipeline::1790.717*3.69] mapped 333334 sequences
+[M::worker_pipeline::1797.303*3.69] mapped 333334 sequences
+[M::worker_pipeline::1803.882*3.69] mapped 333334 sequences
+[M::worker_pipeline::1819.268*3.68] mapped 333334 sequences
+[M::worker_pipeline::1826.046*3.68] mapped 333334 sequences
+[M::worker_pipeline::1832.714*3.68] mapped 333334 sequences
+[M::worker_pipeline::1839.283*3.68] mapped 333334 sequences
+[M::worker_pipeline::1846.030*3.68] mapped 333334 sequences
+[M::worker_pipeline::1852.508*3.68] mapped 333334 sequences
+[M::worker_pipeline::1859.196*3.68] mapped 333334 sequences
+[M::worker_pipeline::1865.915*3.68] mapped 333334 sequences
+[M::worker_pipeline::1872.253*3.68] mapped 333334 sequences
+[M::worker_pipeline::1878.371*3.68] mapped 333334 sequences
+[M::worker_pipeline::1885.011*3.68] mapped 333334 sequences
+[M::worker_pipeline::1891.616*3.68] mapped 333334 sequences
+[M::worker_pipeline::1898.158*3.68] mapped 333334 sequences
+[M::worker_pipeline::1904.774*3.68] mapped 333334 sequences
+[M::worker_pipeline::1911.368*3.68] mapped 333334 sequences
+[M::worker_pipeline::1918.044*3.68] mapped 333334 sequences
+[M::worker_pipeline::1924.456*3.68] mapped 333334 sequences
+[M::worker_pipeline::1931.111*3.68] mapped 333334 sequences
+[M::worker_pipeline::1937.496*3.68] mapped 333334 sequences
+[M::worker_pipeline::1944.024*3.68] mapped 333334 sequences
+[M::worker_pipeline::1950.662*3.68] mapped 333334 sequences
+[M::worker_pipeline::1957.272*3.68] mapped 333334 sequences
+[M::worker_pipeline::1963.920*3.68] mapped 333334 sequences
+[M::worker_pipeline::1970.436*3.68] mapped 333334 sequences
+[M::worker_pipeline::1976.982*3.68] mapped 333334 sequences
+[M::worker_pipeline::1983.295*3.68] mapped 333334 sequences
+[M::worker_pipeline::1989.490*3.68] mapped 333334 sequences
+[M::worker_pipeline::1995.130*3.68] mapped 333334 sequences
+[M::worker_pipeline::2001.421*3.68] mapped 333334 sequences
+[M::worker_pipeline::2008.061*3.69] mapped 333334 sequences
+[M::worker_pipeline::2014.581*3.69] mapped 333334 sequences
+[M::worker_pipeline::2021.246*3.69] mapped 333334 sequences
+[M::worker_pipeline::2027.803*3.69] mapped 333334 sequences
+[M::worker_pipeline::2034.329*3.69] mapped 333334 sequences
+[M::worker_pipeline::2040.881*3.69] mapped 333334 sequences
+[M::worker_pipeline::2047.527*3.69] mapped 333334 sequences
+[M::worker_pipeline::2054.155*3.69] mapped 333334 sequences
+[M::worker_pipeline::2060.813*3.69] mapped 333334 sequences
+[M::worker_pipeline::2067.041*3.69] mapped 333334 sequences
+[M::worker_pipeline::2073.790*3.69] mapped 333334 sequences
+[M::worker_pipeline::2080.317*3.68] mapped 333334 sequences
+[M::worker_pipeline::2087.003*3.67] mapped 333334 sequences
+[M::worker_pipeline::2089.268*3.67] mapped 120702 sequences
+[M::mm_idx_gen::2168.377*3.60] collected minimizers
+[M::mm_idx_gen::2185.116*3.60] sorted minimizers
+[M::main::2185.116*3.60] loaded/built the index for 161388 target sequence(s)
+[M::mm_mapopt_update::2185.116*3.60] mid_occ = 1000
+[M::mm_idx_stat] kmer size: 21; skip: 11; is_hpc: 0; #seq: 161388
+[M::mm_idx_stat::2193.635*3.59] distinct minimizers: 521078871 (86.45% are singletons); average occurrences: 1.283; average spacing: 6.025
+[M::worker_pipeline::2199.633*3.59] mapped 333334 sequences
+[M::worker_pipeline::2202.423*3.59] mapped 333334 sequences
+[M::worker_pipeline::2205.510*3.60] mapped 333334 sequences
+[M::worker_pipeline::2208.373*3.60] mapped 333334 sequences
+[M::worker_pipeline::2211.618*3.60] mapped 333334 sequences
+[M::worker_pipeline::2214.974*3.60] mapped 333334 sequences
+[M::worker_pipeline::2217.552*3.60] mapped 333334 sequences
+[M::worker_pipeline::2221.348*3.60] mapped 333334 sequences
+[M::worker_pipeline::2224.531*3.60] mapped 333334 sequences
+[M::worker_pipeline::2227.438*3.60] mapped 333334 sequences
+[M::worker_pipeline::2230.633*3.60] mapped 333334 sequences
+[M::worker_pipeline::2233.591*3.60] mapped 333334 sequences
+[M::worker_pipeline::2236.258*3.61] mapped 333334 sequences
+[M::worker_pipeline::2239.932*3.61] mapped 333334 sequences
+[M::worker_pipeline::2242.730*3.61] mapped 333334 sequences
+[M::worker_pipeline::2246.005*3.61] mapped 333334 sequences
+[M::worker_pipeline::2249.711*3.61] mapped 333334 sequences
+[M::worker_pipeline::2252.758*3.61] mapped 333334 sequences
+[M::worker_pipeline::2255.670*3.61] mapped 333334 sequences
+[M::worker_pipeline::2259.103*3.61] mapped 333334 sequences
+[M::worker_pipeline::2262.165*3.61] mapped 333334 sequences
+[M::worker_pipeline::2265.149*3.61] mapped 333334 sequences
+[M::worker_pipeline::2268.631*3.62] mapped 333334 sequences
+[M::worker_pipeline::2271.235*3.62] mapped 333334 sequences
+[M::worker_pipeline::2274.119*3.62] mapped 333334 sequences
+[M::worker_pipeline::2277.593*3.62] mapped 333334 sequences
+[M::worker_pipeline::2280.298*3.62] mapped 333334 sequences
+[M::worker_pipeline::2283.793*3.62] mapped 333334 sequences
+[M::worker_pipeline::2287.315*3.62] mapped 333334 sequences
+[M::worker_pipeline::2289.904*3.62] mapped 333334 sequences
+[M::worker_pipeline::2293.102*3.62] mapped 333334 sequences
+[M::worker_pipeline::2296.615*3.62] mapped 333334 sequences
+[M::worker_pipeline::2300.026*3.63] mapped 333334 sequences
+[M::worker_pipeline::2302.797*3.63] mapped 333334 sequences
+[M::worker_pipeline::2306.488*3.63] mapped 333334 sequences
+[M::worker_pipeline::2309.309*3.63] mapped 333334 sequences
+[M::worker_pipeline::2312.468*3.63] mapped 333334 sequences
+[M::worker_pipeline::2316.094*3.63] mapped 333334 sequences
+[M::worker_pipeline::2318.931*3.63] mapped 333334 sequences
+[M::worker_pipeline::2321.765*3.63] mapped 333334 sequences
+[M::worker_pipeline::2325.736*3.63] mapped 333334 sequences
+[M::worker_pipeline::2328.419*3.63] mapped 333334 sequences
+[M::worker_pipeline::2331.191*3.63] mapped 333334 sequences
+[M::worker_pipeline::2334.842*3.64] mapped 333334 sequences
+[M::worker_pipeline::2337.610*3.64] mapped 333334 sequences
+[M::worker_pipeline::2340.537*3.64] mapped 333334 sequences
+[M::worker_pipeline::2343.964*3.64] mapped 333334 sequences
+[M::worker_pipeline::2347.036*3.64] mapped 333334 sequences
+[M::worker_pipeline::2349.877*3.64] mapped 333334 sequences
+[M::worker_pipeline::2353.755*3.64] mapped 333334 sequences
+[M::worker_pipeline::2356.776*3.64] mapped 333334 sequences
+[M::worker_pipeline::2359.404*3.64] mapped 333334 sequences
+[M::worker_pipeline::2362.624*3.64] mapped 333334 sequences
+[M::worker_pipeline::2365.942*3.64] mapped 333334 sequences
+[M::worker_pipeline::2368.597*3.65] mapped 333334 sequences
+[M::worker_pipeline::2372.089*3.65] mapped 333334 sequences
+[M::worker_pipeline::2375.062*3.65] mapped 333334 sequences
+[M::worker_pipeline::2377.931*3.65] mapped 333334 sequences
+[M::worker_pipeline::2381.499*3.65] mapped 333334 sequences
+[M::worker_pipeline::2384.352*3.65] mapped 333334 sequences
+[M::worker_pipeline::2387.001*3.65] mapped 333334 sequences
+[M::worker_pipeline::2390.671*3.65] mapped 333334 sequences
+[M::worker_pipeline::2393.310*3.65] mapped 333334 sequences
+[M::worker_pipeline::2396.459*3.65] mapped 333334 sequences
+[M::worker_pipeline::2399.920*3.65] mapped 333334 sequences
+[M::worker_pipeline::2402.870*3.66] mapped 333334 sequences
+[M::worker_pipeline::2405.506*3.66] mapped 333334 sequences
+[M::worker_pipeline::2409.309*3.66] mapped 333334 sequences
+[M::worker_pipeline::2412.181*3.66] mapped 333334 sequences
+[M::worker_pipeline::2415.032*3.66] mapped 333334 sequences
+[M::worker_pipeline::2419.241*3.66] mapped 333334 sequences
+[M::worker_pipeline::2422.237*3.66] mapped 333334 sequences
+[M::worker_pipeline::2425.026*3.66] mapped 333334 sequences
+[M::worker_pipeline::2428.186*3.66] mapped 333334 sequences
+[M::worker_pipeline::2431.235*3.66] mapped 333334 sequences
+[M::worker_pipeline::2434.029*3.66] mapped 333334 sequences
+[M::worker_pipeline::2437.455*3.67] mapped 333334 sequences
+[M::worker_pipeline::2440.228*3.67] mapped 333334 sequences
+[M::worker_pipeline::2443.083*3.67] mapped 333334 sequences
+[M::worker_pipeline::2446.552*3.67] mapped 333334 sequences
+[M::worker_pipeline::2449.964*3.67] mapped 333334 sequences
+[M::worker_pipeline::2452.548*3.67] mapped 333334 sequences
+[M::worker_pipeline::2455.978*3.67] mapped 333334 sequences
+[M::worker_pipeline::2458.603*3.67] mapped 333334 sequences
+[M::worker_pipeline::2461.515*3.67] mapped 333334 sequences
+[M::worker_pipeline::2465.013*3.67] mapped 333334 sequences
+[M::worker_pipeline::2467.864*3.67] mapped 333334 sequences
+[M::worker_pipeline::2470.519*3.67] mapped 333334 sequences
+[M::worker_pipeline::2474.245*3.68] mapped 333334 sequences
+[M::worker_pipeline::2477.649*3.68] mapped 333334 sequences
+[M::worker_pipeline::2480.448*3.68] mapped 333334 sequences
+[M::worker_pipeline::2483.698*3.68] mapped 333334 sequences
+[M::worker_pipeline::2486.753*3.68] mapped 333334 sequences
+[M::worker_pipeline::2489.751*3.68] mapped 333334 sequences
+[M::worker_pipeline::2493.323*3.68] mapped 333334 sequences
+[M::worker_pipeline::2496.077*3.68] mapped 333334 sequences
+[M::worker_pipeline::2499.358*3.68] mapped 333334 sequences
+[M::worker_pipeline::2502.801*3.68] mapped 333334 sequences
+[M::worker_pipeline::2505.556*3.68] mapped 333334 sequences
+[M::worker_pipeline::2508.276*3.68] mapped 333334 sequences
+[M::worker_pipeline::2511.798*3.69] mapped 333334 sequences
+[M::worker_pipeline::2514.792*3.69] mapped 333334 sequences
+[M::worker_pipeline::2517.635*3.69] mapped 333334 sequences
+[M::worker_pipeline::2521.208*3.69] mapped 333334 sequences
+[M::worker_pipeline::2523.968*3.69] mapped 333334 sequences
+[M::worker_pipeline::2526.825*3.69] mapped 333334 sequences
+[M::worker_pipeline::2530.488*3.69] mapped 333334 sequences
+[M::worker_pipeline::2533.343*3.69] mapped 333334 sequences
+[M::worker_pipeline::2536.217*3.69] mapped 333334 sequences
+[M::worker_pipeline::2539.737*3.69] mapped 333334 sequences
+[M::worker_pipeline::2542.698*3.69] mapped 333334 sequences
+[M::worker_pipeline::2545.361*3.69] mapped 333334 sequences
+[M::worker_pipeline::2549.044*3.69] mapped 333334 sequences
+[M::worker_pipeline::2551.993*3.70] mapped 333334 sequences
+[M::worker_pipeline::2555.573*3.70] mapped 333334 sequences
+[M::worker_pipeline::2559.163*3.70] mapped 333334 sequences
+[M::worker_pipeline::2561.894*3.70] mapped 333334 sequences
+[M::worker_pipeline::2564.711*3.70] mapped 333334 sequences
+[M::worker_pipeline::2568.566*3.70] mapped 333334 sequences
+[M::worker_pipeline::2571.364*3.70] mapped 333334 sequences
+[M::worker_pipeline::2574.717*3.70] mapped 333334 sequences
+[M::worker_pipeline::2578.138*3.70] mapped 333334 sequences
+[M::worker_pipeline::2580.883*3.70] mapped 333334 sequences
+[M::worker_pipeline::2584.034*3.70] mapped 333334 sequences
+[M::worker_pipeline::2587.488*3.70] mapped 333334 sequences
+[M::worker_pipeline::2590.785*3.70] mapped 333334 sequences
+[M::worker_pipeline::2593.535*3.71] mapped 333334 sequences
+[M::worker_pipeline::2597.192*3.71] mapped 333334 sequences
+[M::worker_pipeline::2600.516*3.71] mapped 333334 sequences
+[M::worker_pipeline::2603.328*3.71] mapped 333334 sequences
+[M::worker_pipeline::2607.353*3.71] mapped 333334 sequences
+[M::worker_pipeline::2610.340*3.71] mapped 333334 sequences
+[M::worker_pipeline::2613.641*3.71] mapped 333334 sequences
+[M::worker_pipeline::2617.124*3.71] mapped 333334 sequences
+[M::worker_pipeline::2620.447*3.71] mapped 333334 sequences
+[M::worker_pipeline::2623.107*3.71] mapped 333334 sequences
+[M::worker_pipeline::2626.205*3.71] mapped 333334 sequences
+[M::worker_pipeline::2629.204*3.71] mapped 333334 sequences
+[M::worker_pipeline::2632.378*3.71] mapped 333334 sequences
+[M::worker_pipeline::2635.683*3.72] mapped 333334 sequences
+[M::worker_pipeline::2638.905*3.72] mapped 333334 sequences
+[M::worker_pipeline::2641.842*3.72] mapped 333334 sequences
+[M::worker_pipeline::2644.838*3.72] mapped 333334 sequences
+[M::worker_pipeline::2647.953*3.72] mapped 333334 sequences
+[M::worker_pipeline::2651.458*3.72] mapped 333334 sequences
+[M::worker_pipeline::2654.920*3.72] mapped 333334 sequences
+[M::worker_pipeline::2658.060*3.72] mapped 333334 sequences
+[M::worker_pipeline::2660.723*3.72] mapped 333334 sequences
+[M::worker_pipeline::2664.117*3.72] mapped 333334 sequences
+[M::worker_pipeline::2667.171*3.72] mapped 333334 sequences
+[M::worker_pipeline::2670.390*3.72] mapped 333334 sequences
+[M::worker_pipeline::2673.582*3.72] mapped 333334 sequences
+[M::worker_pipeline::2676.653*3.72] mapped 333334 sequences
+[M::worker_pipeline::2679.441*3.73] mapped 333334 sequences
+[M::worker_pipeline::2683.062*3.73] mapped 333334 sequences
+[M::worker_pipeline::2686.127*3.73] mapped 333334 sequences
+[M::worker_pipeline::2688.704*3.73] mapped 333334 sequences
+[M::worker_pipeline::2692.492*3.73] mapped 333334 sequences
+[M::worker_pipeline::2694.957*3.73] mapped 333334 sequences
+[M::worker_pipeline::2698.075*3.73] mapped 333334 sequences
+[M::worker_pipeline::2701.490*3.73] mapped 333334 sequences
+[M::worker_pipeline::2704.420*3.73] mapped 333334 sequences
+[M::worker_pipeline::2707.493*3.73] mapped 333334 sequences
+[M::worker_pipeline::2711.046*3.73] mapped 333334 sequences
+[M::worker_pipeline::2713.695*3.73] mapped 333334 sequences
+[M::worker_pipeline::2716.725*3.73] mapped 333334 sequences
+[M::worker_pipeline::2720.821*3.73] mapped 333334 sequences
+[M::worker_pipeline::2723.670*3.73] mapped 333334 sequences
+[M::worker_pipeline::2726.693*3.74] mapped 333334 sequences
+[M::worker_pipeline::2730.346*3.74] mapped 333334 sequences
+[M::worker_pipeline::2732.916*3.74] mapped 333334 sequences
+[M::worker_pipeline::2735.919*3.74] mapped 333334 sequences
+[M::worker_pipeline::2739.636*3.74] mapped 333334 sequences
+[M::worker_pipeline::2742.266*3.74] mapped 333334 sequences
+[M::worker_pipeline::2745.138*3.74] mapped 333334 sequences
+[M::worker_pipeline::2748.729*3.74] mapped 333334 sequences
+[M::worker_pipeline::2751.389*3.74] mapped 333334 sequences
+[M::worker_pipeline::2754.345*3.74] mapped 333334 sequences
+[M::worker_pipeline::2758.349*3.74] mapped 333334 sequences
+[M::worker_pipeline::2760.846*3.74] mapped 333334 sequences
+[M::worker_pipeline::2764.000*3.74] mapped 333334 sequences
+[M::worker_pipeline::2767.434*3.74] mapped 333334 sequences
+[M::worker_pipeline::2770.500*3.74] mapped 333334 sequences
+[M::worker_pipeline::2773.436*3.75] mapped 333334 sequences
+[M::worker_pipeline::2776.967*3.75] mapped 333334 sequences
+[M::worker_pipeline::2779.734*3.75] mapped 333334 sequences
+[M::worker_pipeline::2782.907*3.75] mapped 333334 sequences
+[M::worker_pipeline::2786.511*3.75] mapped 333334 sequences
+[M::worker_pipeline::2789.257*3.75] mapped 333334 sequences
+[M::worker_pipeline::2792.234*3.75] mapped 333334 sequences
+[M::worker_pipeline::2795.720*3.75] mapped 333334 sequences
+[M::worker_pipeline::2798.743*3.75] mapped 333334 sequences
+[M::worker_pipeline::2801.949*3.75] mapped 333334 sequences
+[M::worker_pipeline::2805.318*3.75] mapped 333334 sequences
+[M::worker_pipeline::2808.129*3.75] mapped 333334 sequences
+[M::worker_pipeline::2811.154*3.75] mapped 333334 sequences
+[M::worker_pipeline::2814.605*3.75] mapped 333334 sequences
+[M::worker_pipeline::2817.655*3.75] mapped 333334 sequences
+[M::worker_pipeline::2820.550*3.75] mapped 333334 sequences
+[M::worker_pipeline::2823.870*3.76] mapped 333334 sequences
+[M::worker_pipeline::2826.872*3.76] mapped 333334 sequences
+[M::worker_pipeline::2829.896*3.76] mapped 333334 sequences
+[M::worker_pipeline::2833.674*3.76] mapped 333334 sequences
+[M::worker_pipeline::2836.686*3.76] mapped 333334 sequences
+[M::worker_pipeline::2839.952*3.76] mapped 333334 sequences
+[M::worker_pipeline::2843.435*3.76] mapped 333334 sequences
+[M::worker_pipeline::2846.262*3.76] mapped 333334 sequences
+[M::worker_pipeline::2849.344*3.76] mapped 333334 sequences
+[M::worker_pipeline::2853.438*3.76] mapped 333334 sequences
+[M::worker_pipeline::2856.019*3.76] mapped 333334 sequences
+[M::worker_pipeline::2858.980*3.76] mapped 333334 sequences
+[M::worker_pipeline::2862.439*3.76] mapped 333334 sequences
+[M::worker_pipeline::2865.396*3.76] mapped 333334 sequences
+[M::worker_pipeline::2868.640*3.76] mapped 333334 sequences
+[M::worker_pipeline::2872.515*3.76] mapped 333334 sequences
+[M::worker_pipeline::2875.241*3.77] mapped 333334 sequences
+[M::worker_pipeline::2878.162*3.77] mapped 333334 sequences
+[M::worker_pipeline::2881.779*3.77] mapped 333334 sequences
+[M::worker_pipeline::2884.680*3.77] mapped 333334 sequences
+[M::worker_pipeline::2887.734*3.77] mapped 333334 sequences
+[M::worker_pipeline::2891.072*3.77] mapped 333334 sequences
+[M::worker_pipeline::2893.917*3.77] mapped 333334 sequences
+[M::worker_pipeline::2896.992*3.77] mapped 333334 sequences
+[M::worker_pipeline::2900.918*3.77] mapped 333334 sequences
+[M::worker_pipeline::2904.085*3.77] mapped 333334 sequences
+[M::worker_pipeline::2906.817*3.77] mapped 333334 sequences
+[M::worker_pipeline::2910.267*3.77] mapped 333334 sequences
+[M::worker_pipeline::2913.622*3.77] mapped 333334 sequences
+[M::worker_pipeline::2916.271*3.77] mapped 333334 sequences
+[M::worker_pipeline::2919.570*3.77] mapped 333334 sequences
+[M::worker_pipeline::2923.006*3.77] mapped 333334 sequences
+[M::worker_pipeline::2925.670*3.77] mapped 333334 sequences
+[M::worker_pipeline::2928.745*3.78] mapped 333334 sequences
+[M::worker_pipeline::2932.022*3.78] mapped 333334 sequences
+[M::worker_pipeline::2934.976*3.78] mapped 333334 sequences
+[M::worker_pipeline::2938.666*3.78] mapped 333334 sequences
+[M::worker_pipeline::2941.959*3.78] mapped 333334 sequences
+[M::worker_pipeline::2944.518*3.78] mapped 333334 sequences
+[M::worker_pipeline::2948.182*3.78] mapped 333334 sequences
+[M::worker_pipeline::2952.010*3.78] mapped 333334 sequences
+[M::worker_pipeline::2955.238*3.78] mapped 333334 sequences
+[M::worker_pipeline::2958.902*3.78] mapped 333334 sequences
+[M::worker_pipeline::2962.525*3.78] mapped 333334 sequences
+[M::worker_pipeline::2965.506*3.78] mapped 333334 sequences
+[M::worker_pipeline::2969.633*3.78] mapped 333334 sequences
+[M::worker_pipeline::2973.324*3.78] mapped 333334 sequences
+[M::worker_pipeline::2976.157*3.78] mapped 333334 sequences
+[M::worker_pipeline::2979.946*3.78] mapped 333334 sequences
+[M::worker_pipeline::2983.654*3.79] mapped 333334 sequences
+[M::worker_pipeline::2986.633*3.79] mapped 333334 sequences
+[M::worker_pipeline::2990.545*3.79] mapped 333334 sequences
+[M::worker_pipeline::2994.101*3.79] mapped 333334 sequences
+[M::worker_pipeline::2996.739*3.79] mapped 333334 sequences
+[M::worker_pipeline::3000.732*3.79] mapped 333334 sequences
+[M::worker_pipeline::3004.133*3.79] mapped 333334 sequences
+[M::worker_pipeline::3007.047*3.79] mapped 333334 sequences
+[M::worker_pipeline::3010.536*3.79] mapped 333334 sequences
+[M::worker_pipeline::3013.963*3.79] mapped 333334 sequences
+[M::worker_pipeline::3016.893*3.79] mapped 333334 sequences
+[M::worker_pipeline::3020.492*3.79] mapped 333334 sequences
+[M::worker_pipeline::3023.972*3.79] mapped 333334 sequences
+[M::worker_pipeline::3026.882*3.79] mapped 333334 sequences
+[M::worker_pipeline::3030.521*3.79] mapped 333334 sequences
+[M::worker_pipeline::3033.761*3.79] mapped 333334 sequences
+[M::worker_pipeline::3036.806*3.79] mapped 333334 sequences
+[M::worker_pipeline::3040.283*3.79] mapped 333334 sequences
+[M::worker_pipeline::3044.187*3.80] mapped 333334 sequences
+[M::worker_pipeline::3050.253*3.80] mapped 333334 sequences
+[M::worker_pipeline::3054.790*3.80] mapped 333334 sequences
+[M::worker_pipeline::3059.807*3.80] mapped 333334 sequences
+[M::worker_pipeline::3066.036*3.80] mapped 333334 sequences
+[M::worker_pipeline::3070.121*3.80] mapped 333334 sequences
+[M::worker_pipeline::3074.551*3.80] mapped 333334 sequences
+[M::worker_pipeline::3079.713*3.80] mapped 333334 sequences
+[M::worker_pipeline::3084.739*3.80] mapped 333334 sequences
+[M::worker_pipeline::3089.475*3.80] mapped 333334 sequences
+[M::worker_pipeline::3096.370*3.80] mapped 333334 sequences
+[M::worker_pipeline::3099.471*3.80] mapped 333334 sequences
+[M::worker_pipeline::3103.104*3.81] mapped 333334 sequences
+[M::worker_pipeline::3105.908*3.81] mapped 333334 sequences
+[M::worker_pipeline::3109.333*3.81] mapped 333334 sequences
+[M::worker_pipeline::3112.485*3.81] mapped 333334 sequences
+[M::worker_pipeline::3115.657*3.81] mapped 333334 sequences
+[M::worker_pipeline::3119.035*3.81] mapped 333334 sequences
+[M::worker_pipeline::3122.167*3.81] mapped 333334 sequences
+[M::worker_pipeline::3125.243*3.81] mapped 333334 sequences
+[M::worker_pipeline::3128.784*3.81] mapped 333334 sequences
+[M::worker_pipeline::3131.704*3.81] mapped 333334 sequences
+[M::worker_pipeline::3134.913*3.81] mapped 333334 sequences
+[M::worker_pipeline::3138.201*3.81] mapped 333334 sequences
+[M::worker_pipeline::3141.369*3.81] mapped 333334 sequences
+[M::worker_pipeline::3144.580*3.81] mapped 333334 sequences
+[M::worker_pipeline::3148.017*3.81] mapped 333334 sequences
+[M::worker_pipeline::3151.163*3.81] mapped 333334 sequences
+[M::worker_pipeline::3154.164*3.81] mapped 333334 sequences
+[M::worker_pipeline::3157.356*3.81] mapped 333334 sequences
+[M::worker_pipeline::3160.668*3.82] mapped 333334 sequences
+[M::worker_pipeline::3163.764*3.82] mapped 333334 sequences
+[M::worker_pipeline::3166.900*3.81] mapped 333334 sequences
+[M::worker_pipeline::3167.799*3.81] mapped 120702 sequences
+[M::mm_idx_gen::3260.845*3.76] collected minimizers
+[M::mm_idx_gen::3280.052*3.76] sorted minimizers
+[M::main::3280.052*3.76] loaded/built the index for 128118 target sequence(s)
+[M::mm_mapopt_update::3280.052*3.76] mid_occ = 1000
+[M::mm_idx_stat] kmer size: 21; skip: 11; is_hpc: 0; #seq: 128118
+[M::mm_idx_stat::3292.121*3.75] distinct minimizers: 519192000 (86.48% are singletons); average occurrences: 1.297; average spacing: 6.016
+[M::worker_pipeline::3298.523*3.75] mapped 333334 sequences
+[M::worker_pipeline::3301.602*3.75] mapped 333334 sequences
+[M::worker_pipeline::3304.953*3.75] mapped 333334 sequences
+[M::worker_pipeline::3308.406*3.75] mapped 333334 sequences
+[M::worker_pipeline::3311.384*3.75] mapped 333334 sequences
+[M::worker_pipeline::3314.285*3.75] mapped 333334 sequences
+[M::worker_pipeline::3317.018*3.75] mapped 333334 sequences
+[M::worker_pipeline::3320.111*3.75] mapped 333334 sequences
+[M::worker_pipeline::3323.176*3.75] mapped 333334 sequences
+[M::worker_pipeline::3326.739*3.75] mapped 333334 sequences
+[M::worker_pipeline::3330.154*3.75] mapped 333334 sequences
+[M::worker_pipeline::3333.036*3.75] mapped 333334 sequences
+[M::worker_pipeline::3335.861*3.75] mapped 333334 sequences
+[M::worker_pipeline::3338.787*3.75] mapped 333334 sequences
+[M::worker_pipeline::3341.702*3.75] mapped 333334 sequences
+[M::worker_pipeline::3344.536*3.75] mapped 333334 sequences
+[M::worker_pipeline::3347.429*3.75] mapped 333334 sequences
+[M::worker_pipeline::3350.337*3.75] mapped 333334 sequences
+[M::worker_pipeline::3352.877*3.76] mapped 333334 sequences
+[M::worker_pipeline::3355.738*3.76] mapped 333334 sequences
+[M::worker_pipeline::3358.494*3.76] mapped 333334 sequences
+[M::worker_pipeline::3361.166*3.76] mapped 333334 sequences
+[M::worker_pipeline::3364.065*3.76] mapped 333334 sequences
+[M::worker_pipeline::3367.010*3.76] mapped 333334 sequences
+[M::worker_pipeline::3369.791*3.76] mapped 333334 sequences
+[M::worker_pipeline::3372.591*3.76] mapped 333334 sequences
+[M::worker_pipeline::3375.205*3.76] mapped 333334 sequences
+[M::worker_pipeline::3378.251*3.76] mapped 333334 sequences
+[M::worker_pipeline::3381.070*3.76] mapped 333334 sequences
+[M::worker_pipeline::3383.777*3.76] mapped 333334 sequences
+[M::worker_pipeline::3386.687*3.76] mapped 333334 sequences
+[M::worker_pipeline::3389.398*3.76] mapped 333334 sequences
+[M::worker_pipeline::3392.060*3.76] mapped 333334 sequences
+[M::worker_pipeline::3394.835*3.76] mapped 333334 sequences
+[M::worker_pipeline::3397.538*3.76] mapped 333334 sequences
+[M::worker_pipeline::3400.570*3.76] mapped 333334 sequences
+[M::worker_pipeline::3403.308*3.76] mapped 333334 sequences
+[M::worker_pipeline::3405.925*3.76] mapped 333334 sequences
+[M::worker_pipeline::3408.805*3.77] mapped 333334 sequences
+[M::worker_pipeline::3411.657*3.77] mapped 333334 sequences
+[M::worker_pipeline::3414.250*3.77] mapped 333334 sequences
+[M::worker_pipeline::3416.955*3.77] mapped 333334 sequences
+[M::worker_pipeline::3419.622*3.77] mapped 333334 sequences
+[M::worker_pipeline::3422.324*3.77] mapped 333334 sequences
+[M::worker_pipeline::3424.992*3.77] mapped 333334 sequences
+[M::worker_pipeline::3427.796*3.77] mapped 333334 sequences
+[M::worker_pipeline::3430.479*3.77] mapped 333334 sequences
+[M::worker_pipeline::3433.159*3.77] mapped 333334 sequences
+[M::worker_pipeline::3435.809*3.77] mapped 333334 sequences
+[M::worker_pipeline::3438.150*3.77] mapped 333334 sequences
+[M::worker_pipeline::3440.801*3.77] mapped 333334 sequences
+[M::worker_pipeline::3443.923*3.77] mapped 333334 sequences
+[M::worker_pipeline::3446.162*3.77] mapped 333334 sequences
+[M::worker_pipeline::3448.881*3.77] mapped 333334 sequences
+[M::worker_pipeline::3451.574*3.77] mapped 333334 sequences
+[M::worker_pipeline::3454.223*3.77] mapped 333334 sequences
+[M::worker_pipeline::3456.871*3.77] mapped 333334 sequences
+[M::worker_pipeline::3459.526*3.77] mapped 333334 sequences
+[M::worker_pipeline::3462.282*3.77] mapped 333334 sequences
+[M::worker_pipeline::3464.968*3.77] mapped 333334 sequences
+[M::worker_pipeline::3467.660*3.77] mapped 333334 sequences
+[M::worker_pipeline::3470.419*3.77] mapped 333334 sequences
+[M::worker_pipeline::3473.138*3.78] mapped 333334 sequences
+[M::worker_pipeline::3475.837*3.78] mapped 333334 sequences
+[M::worker_pipeline::3478.452*3.78] mapped 333334 sequences
+[M::worker_pipeline::3481.447*3.78] mapped 333334 sequences
+[M::worker_pipeline::3483.742*3.78] mapped 333334 sequences
+[M::worker_pipeline::3486.385*3.78] mapped 333334 sequences
+[M::worker_pipeline::3489.521*3.78] mapped 333334 sequences
+[M::worker_pipeline::3491.789*3.78] mapped 333334 sequences
+[M::worker_pipeline::3494.467*3.78] mapped 333334 sequences
+[M::worker_pipeline::3497.076*3.78] mapped 333334 sequences
+[M::worker_pipeline::3499.764*3.78] mapped 333334 sequences
+[M::worker_pipeline::3503.209*3.78] mapped 333334 sequences
+[M::worker_pipeline::3505.448*3.78] mapped 333334 sequences
+[M::worker_pipeline::3508.143*3.78] mapped 333334 sequences
+[M::worker_pipeline::3510.765*3.78] mapped 333334 sequences
+[M::worker_pipeline::3513.439*3.78] mapped 333334 sequences
+[M::worker_pipeline::3515.932*3.78] mapped 333334 sequences
+[M::worker_pipeline::3518.491*3.78] mapped 333334 sequences
+[M::worker_pipeline::3521.151*3.78] mapped 333334 sequences
+[M::worker_pipeline::3523.768*3.78] mapped 333334 sequences
+[M::worker_pipeline::3526.397*3.78] mapped 333334 sequences
+[M::worker_pipeline::3529.073*3.78] mapped 333334 sequences
+[M::worker_pipeline::3531.797*3.78] mapped 333334 sequences
+[M::worker_pipeline::3534.536*3.78] mapped 333334 sequences
+[M::worker_pipeline::3537.604*3.78] mapped 333334 sequences
+[M::worker_pipeline::3539.785*3.78] mapped 333334 sequences
+[M::worker_pipeline::3542.432*3.79] mapped 333334 sequences
+[M::worker_pipeline::3545.027*3.79] mapped 333334 sequences
+[M::worker_pipeline::3547.684*3.79] mapped 333334 sequences
+[M::worker_pipeline::3550.747*3.79] mapped 333334 sequences
+[M::worker_pipeline::3552.984*3.79] mapped 333334 sequences
+[M::worker_pipeline::3555.966*3.79] mapped 333334 sequences
+[M::worker_pipeline::3558.539*3.79] mapped 333334 sequences
+[M::worker_pipeline::3561.042*3.79] mapped 333334 sequences
+[M::worker_pipeline::3563.703*3.79] mapped 333334 sequences
+[M::worker_pipeline::3566.343*3.79] mapped 333334 sequences
+[M::worker_pipeline::3568.977*3.79] mapped 333334 sequences
+[M::worker_pipeline::3571.545*3.79] mapped 333334 sequences
+[M::worker_pipeline::3574.159*3.79] mapped 333334 sequences
+[M::worker_pipeline::3576.843*3.79] mapped 333334 sequences
+[M::worker_pipeline::3579.521*3.79] mapped 333334 sequences
+[M::worker_pipeline::3582.189*3.79] mapped 333334 sequences
+[M::worker_pipeline::3584.721*3.79] mapped 333334 sequences
+[M::worker_pipeline::3587.358*3.79] mapped 333334 sequences
+[M::worker_pipeline::3589.983*3.79] mapped 333334 sequences
+[M::worker_pipeline::3592.648*3.79] mapped 333334 sequences
+[M::worker_pipeline::3595.343*3.79] mapped 333334 sequences
+[M::worker_pipeline::3597.932*3.79] mapped 333334 sequences
+[M::worker_pipeline::3600.635*3.79] mapped 333334 sequences
+[M::worker_pipeline::3603.374*3.79] mapped 333334 sequences
+[M::worker_pipeline::3605.913*3.79] mapped 333334 sequences
+[M::worker_pipeline::3608.788*3.79] mapped 333334 sequences
+[M::worker_pipeline::3611.130*3.79] mapped 333334 sequences
+[M::worker_pipeline::3613.773*3.79] mapped 333334 sequences
+[M::worker_pipeline::3616.587*3.80] mapped 333334 sequences
+[M::worker_pipeline::3619.132*3.80] mapped 333334 sequences
+[M::worker_pipeline::3621.799*3.80] mapped 333334 sequences
+[M::worker_pipeline::3624.458*3.80] mapped 333334 sequences
+[M::worker_pipeline::3627.084*3.80] mapped 333334 sequences
+[M::worker_pipeline::3629.739*3.80] mapped 333334 sequences
+[M::worker_pipeline::3632.293*3.80] mapped 333334 sequences
+[M::worker_pipeline::3635.145*3.80] mapped 333334 sequences
+[M::worker_pipeline::3638.041*3.80] mapped 333334 sequences
+[M::worker_pipeline::3640.325*3.80] mapped 333334 sequences
+[M::worker_pipeline::3643.017*3.80] mapped 333334 sequences
+[M::worker_pipeline::3645.716*3.80] mapped 333334 sequences
+[M::worker_pipeline::3648.289*3.80] mapped 333334 sequences
+[M::worker_pipeline::3650.911*3.80] mapped 333334 sequences
+[M::worker_pipeline::3653.469*3.80] mapped 333334 sequences
+[M::worker_pipeline::3656.126*3.80] mapped 333334 sequences
+[M::worker_pipeline::3658.799*3.80] mapped 333334 sequences
+[M::worker_pipeline::3661.414*3.80] mapped 333334 sequences
+[M::worker_pipeline::3664.304*3.80] mapped 333334 sequences
+[M::worker_pipeline::3667.178*3.80] mapped 333334 sequences
+[M::worker_pipeline::3669.919*3.80] mapped 333334 sequences
+[M::worker_pipeline::3672.537*3.80] mapped 333334 sequences
+[M::worker_pipeline::3675.009*3.80] mapped 333334 sequences
+[M::worker_pipeline::3677.915*3.80] mapped 333334 sequences
+[M::worker_pipeline::3680.657*3.80] mapped 333334 sequences
+[M::worker_pipeline::3683.347*3.80] mapped 333334 sequences
+[M::worker_pipeline::3686.068*3.80] mapped 333334 sequences
+[M::worker_pipeline::3688.678*3.81] mapped 333334 sequences
+[M::worker_pipeline::3691.481*3.81] mapped 333334 sequences
+[M::worker_pipeline::3694.084*3.81] mapped 333334 sequences
+[M::worker_pipeline::3707.420*3.80] mapped 333334 sequences
+[M::worker_pipeline::3709.774*3.80] mapped 333334 sequences
+[M::worker_pipeline::3712.171*3.80] mapped 333334 sequences
+[M::worker_pipeline::3714.464*3.80] mapped 333334 sequences
+[M::worker_pipeline::3716.810*3.80] mapped 333334 sequences
+[M::worker_pipeline::3719.122*3.80] mapped 333334 sequences
+[M::worker_pipeline::3721.348*3.80] mapped 333334 sequences
+[M::worker_pipeline::3723.659*3.80] mapped 333334 sequences
+[M::worker_pipeline::3726.150*3.80] mapped 333334 sequences
+[M::worker_pipeline::3728.852*3.80] mapped 333334 sequences
+[M::worker_pipeline::3731.460*3.80] mapped 333334 sequences
+[M::worker_pipeline::3734.267*3.80] mapped 333334 sequences
+[M::worker_pipeline::3736.996*3.80] mapped 333334 sequences
+[M::worker_pipeline::3739.914*3.80] mapped 333334 sequences
+[M::worker_pipeline::3742.562*3.80] mapped 333334 sequences
+[M::worker_pipeline::3745.341*3.80] mapped 333334 sequences
+[M::worker_pipeline::3747.906*3.81] mapped 333334 sequences
+[M::worker_pipeline::3750.608*3.81] mapped 333334 sequences
+[M::worker_pipeline::3753.331*3.81] mapped 333334 sequences
+[M::worker_pipeline::3755.995*3.81] mapped 333334 sequences
+[M::worker_pipeline::3758.719*3.81] mapped 333334 sequences
+[M::worker_pipeline::3761.453*3.81] mapped 333334 sequences
+[M::worker_pipeline::3764.134*3.81] mapped 333334 sequences
+[M::worker_pipeline::3766.791*3.81] mapped 333334 sequences
+[M::worker_pipeline::3769.485*3.81] mapped 333334 sequences
+[M::worker_pipeline::3772.171*3.81] mapped 333334 sequences
+[M::worker_pipeline::3774.893*3.81] mapped 333334 sequences
+[M::worker_pipeline::3777.616*3.81] mapped 333334 sequences
+[M::worker_pipeline::3780.363*3.81] mapped 333334 sequences
+[M::worker_pipeline::3783.016*3.81] mapped 333334 sequences
+[M::worker_pipeline::3785.660*3.81] mapped 333334 sequences
+[M::worker_pipeline::3788.430*3.81] mapped 333334 sequences
+[M::worker_pipeline::3791.109*3.81] mapped 333334 sequences
+[M::worker_pipeline::3793.747*3.81] mapped 333334 sequences
+[M::worker_pipeline::3796.381*3.81] mapped 333334 sequences
+[M::worker_pipeline::3799.188*3.81] mapped 333334 sequences
+[M::worker_pipeline::3801.854*3.81] mapped 333334 sequences
+[M::worker_pipeline::3804.672*3.81] mapped 333334 sequences
+[M::worker_pipeline::3807.472*3.81] mapped 333334 sequences
+[M::worker_pipeline::3810.106*3.81] mapped 333334 sequences
+[M::worker_pipeline::3812.699*3.81] mapped 333334 sequences
+[M::worker_pipeline::3815.480*3.82] mapped 333334 sequences
+[M::worker_pipeline::3818.169*3.82] mapped 333334 sequences
+[M::worker_pipeline::3820.962*3.82] mapped 333334 sequences
+[M::worker_pipeline::3823.728*3.82] mapped 333334 sequences
+[M::worker_pipeline::3826.318*3.82] mapped 333334 sequences
+[M::worker_pipeline::3828.962*3.82] mapped 333334 sequences
+[M::worker_pipeline::3831.547*3.82] mapped 333334 sequences
+[M::worker_pipeline::3834.224*3.82] mapped 333334 sequences
+[M::worker_pipeline::3836.869*3.82] mapped 333334 sequences
+[M::worker_pipeline::3839.660*3.82] mapped 333334 sequences
+[M::worker_pipeline::3842.496*3.82] mapped 333334 sequences
+[M::worker_pipeline::3845.127*3.82] mapped 333334 sequences
+[M::worker_pipeline::3847.792*3.82] mapped 333334 sequences
+[M::worker_pipeline::3850.351*3.82] mapped 333334 sequences
+[M::worker_pipeline::3853.239*3.82] mapped 333334 sequences
+[M::worker_pipeline::3855.861*3.82] mapped 333334 sequences
+[M::worker_pipeline::3858.604*3.82] mapped 333334 sequences
+[M::worker_pipeline::3861.379*3.82] mapped 333334 sequences
+[M::worker_pipeline::3863.991*3.82] mapped 333334 sequences
+[M::worker_pipeline::3866.732*3.82] mapped 333334 sequences
+[M::worker_pipeline::3869.396*3.82] mapped 333334 sequences
+[M::worker_pipeline::3871.809*3.82] mapped 333334 sequences
+[M::worker_pipeline::3874.704*3.82] mapped 333334 sequences
+[M::worker_pipeline::3877.458*3.82] mapped 333334 sequences
+[M::worker_pipeline::3880.244*3.82] mapped 333334 sequences
+[M::worker_pipeline::3882.961*3.82] mapped 333334 sequences
+[M::worker_pipeline::3885.701*3.83] mapped 333334 sequences
+[M::worker_pipeline::3888.202*3.83] mapped 333334 sequences
+[M::worker_pipeline::3891.284*3.83] mapped 333334 sequences
+[M::worker_pipeline::3894.000*3.83] mapped 333334 sequences
+[M::worker_pipeline::3896.696*3.83] mapped 333334 sequences
+[M::worker_pipeline::3899.409*3.83] mapped 333334 sequences
+[M::worker_pipeline::3902.037*3.83] mapped 333334 sequences
+[M::worker_pipeline::3904.799*3.83] mapped 333334 sequences
+[M::worker_pipeline::3907.550*3.83] mapped 333334 sequences
+[M::worker_pipeline::3910.247*3.83] mapped 333334 sequences
+[M::worker_pipeline::3912.896*3.83] mapped 333334 sequences
+[M::worker_pipeline::3915.528*3.83] mapped 333334 sequences
+[M::worker_pipeline::3918.272*3.83] mapped 333334 sequences
+[M::worker_pipeline::3920.832*3.83] mapped 333334 sequences
+[M::worker_pipeline::3923.627*3.83] mapped 333334 sequences
+[M::worker_pipeline::3926.340*3.83] mapped 333334 sequences
+[M::worker_pipeline::3929.144*3.83] mapped 333334 sequences
+[M::worker_pipeline::3931.789*3.83] mapped 333334 sequences
+[M::worker_pipeline::3934.577*3.83] mapped 333334 sequences
+[M::worker_pipeline::3937.142*3.83] mapped 333334 sequences
+[M::worker_pipeline::3939.841*3.83] mapped 333334 sequences
+[M::worker_pipeline::3942.563*3.83] mapped 333334 sequences
+[M::worker_pipeline::3945.129*3.83] mapped 333334 sequences
+[M::worker_pipeline::3948.096*3.83] mapped 333334 sequences
+[M::worker_pipeline::3950.929*3.83] mapped 333334 sequences
+[M::worker_pipeline::3953.732*3.83] mapped 333334 sequences
+[M::worker_pipeline::3956.474*3.84] mapped 333334 sequences
+[M::worker_pipeline::3959.259*3.84] mapped 333334 sequences
+[M::worker_pipeline::3961.971*3.84] mapped 333334 sequences
+[M::worker_pipeline::3964.713*3.84] mapped 333334 sequences
+[M::worker_pipeline::3967.384*3.84] mapped 333334 sequences
+[M::worker_pipeline::3970.157*3.84] mapped 333334 sequences
+[M::worker_pipeline::3972.965*3.84] mapped 333334 sequences
+[M::worker_pipeline::3975.734*3.84] mapped 333334 sequences
+[M::worker_pipeline::3978.551*3.84] mapped 333334 sequences
+[M::worker_pipeline::3981.238*3.84] mapped 333334 sequences
+[M::worker_pipeline::3983.966*3.84] mapped 333334 sequences
+[M::worker_pipeline::3986.576*3.84] mapped 333334 sequences
+[M::worker_pipeline::3989.241*3.84] mapped 333334 sequences
+[M::worker_pipeline::3992.009*3.84] mapped 333334 sequences
+[M::worker_pipeline::3994.814*3.84] mapped 333334 sequences
+[M::worker_pipeline::3997.531*3.84] mapped 333334 sequences
+[M::worker_pipeline::4000.104*3.84] mapped 333334 sequences
+[M::worker_pipeline::4002.812*3.84] mapped 333334 sequences
+[M::worker_pipeline::4005.490*3.84] mapped 333334 sequences
+[M::worker_pipeline::4008.105*3.84] mapped 333334 sequences
+[M::worker_pipeline::4010.865*3.84] mapped 333334 sequences
+[M::worker_pipeline::4013.653*3.84] mapped 333334 sequences
+[M::worker_pipeline::4016.269*3.84] mapped 333334 sequences
+[M::worker_pipeline::4019.186*3.84] mapped 333334 sequences
+[M::worker_pipeline::4021.884*3.84] mapped 333334 sequences
+[M::worker_pipeline::4024.667*3.84] mapped 333334 sequences
+[M::worker_pipeline::4027.262*3.84] mapped 333334 sequences
+[M::worker_pipeline::4029.895*3.84] mapped 333334 sequences
+[M::worker_pipeline::4032.913*3.85] mapped 333334 sequences
+[M::worker_pipeline::4035.701*3.85] mapped 333334 sequences
+[M::worker_pipeline::4038.337*3.85] mapped 333334 sequences
+[M::worker_pipeline::4041.176*3.85] mapped 333334 sequences
+[M::worker_pipeline::4043.498*3.85] mapped 333334 sequences
+[M::worker_pipeline::4046.401*3.85] mapped 333334 sequences
+[M::worker_pipeline::4049.127*3.85] mapped 333334 sequences
+[M::worker_pipeline::4051.772*3.85] mapped 333334 sequences
+[M::worker_pipeline::4054.487*3.85] mapped 333334 sequences
+[M::worker_pipeline::4057.210*3.85] mapped 333334 sequences
+[M::worker_pipeline::4059.885*3.85] mapped 333334 sequences
+[M::worker_pipeline::4062.638*3.85] mapped 333334 sequences
+[M::worker_pipeline::4065.385*3.85] mapped 333334 sequences
+[M::worker_pipeline::4068.008*3.85] mapped 333334 sequences
+[M::worker_pipeline::4070.929*3.85] mapped 333334 sequences
+[M::worker_pipeline::4073.638*3.85] mapped 333334 sequences
+[M::worker_pipeline::4076.246*3.85] mapped 333334 sequences
+[M::worker_pipeline::4079.062*3.85] mapped 333334 sequences
+[M::worker_pipeline::4082.081*3.85] mapped 333334 sequences
+[M::worker_pipeline::4084.733*3.85] mapped 333334 sequences
+[M::worker_pipeline::4087.437*3.85] mapped 333334 sequences
+[M::worker_pipeline::4090.246*3.85] mapped 333334 sequences
+[M::worker_pipeline::4092.934*3.85] mapped 333334 sequences
+[M::worker_pipeline::4095.727*3.85] mapped 333334 sequences
+[M::worker_pipeline::4098.602*3.85] mapped 333334 sequences
+[M::worker_pipeline::4101.283*3.85] mapped 333334 sequences
+[M::worker_pipeline::4104.016*3.85] mapped 333334 sequences
+[M::worker_pipeline::4106.893*3.85] mapped 333334 sequences
+[M::worker_pipeline::4109.617*3.86] mapped 333334 sequences
+[M::worker_pipeline::4112.440*3.86] mapped 333334 sequences
+[M::worker_pipeline::4115.240*3.86] mapped 333334 sequences
+[M::worker_pipeline::4117.903*3.85] mapped 333334 sequences
+[M::worker_pipeline::4118.733*3.85] mapped 120702 sequences
+[M::mm_idx_gen::4212.006*3.81] collected minimizers
+[M::mm_idx_gen::4230.164*3.81] sorted minimizers
+[M::main::4230.164*3.81] loaded/built the index for 213154 target sequence(s)
+[M::mm_mapopt_update::4230.164*3.81] mid_occ = 1000
+[M::mm_idx_stat] kmer size: 21; skip: 11; is_hpc: 0; #seq: 213154
+[M::mm_idx_stat::4240.040*3.80] distinct minimizers: 506056649 (86.96% are singletons); average occurrences: 1.323; average spacing: 6.024
+[M::worker_pipeline::4244.960*3.80] mapped 333334 sequences
+[M::worker_pipeline::4246.744*3.80] mapped 333334 sequences
+[M::worker_pipeline::4249.520*3.80] mapped 333334 sequences
+[M::worker_pipeline::4251.748*3.80] mapped 333334 sequences
+[M::worker_pipeline::4253.894*3.80] mapped 333334 sequences
+[M::worker_pipeline::4256.143*3.80] mapped 333334 sequences
+[M::worker_pipeline::4258.589*3.80] mapped 333334 sequences
+[M::worker_pipeline::4260.813*3.80] mapped 333334 sequences
+[M::worker_pipeline::4263.044*3.81] mapped 333334 sequences
+[M::worker_pipeline::4265.608*3.81] mapped 333334 sequences
+[M::worker_pipeline::4268.057*3.81] mapped 333334 sequences
+[M::worker_pipeline::4270.392*3.81] mapped 333334 sequences
+[M::worker_pipeline::4272.834*3.81] mapped 333334 sequences
+[M::worker_pipeline::4274.914*3.81] mapped 333334 sequences
+[M::worker_pipeline::4278.122*3.81] mapped 333334 sequences
+[M::worker_pipeline::4280.548*3.81] mapped 333334 sequences
+[M::worker_pipeline::4282.542*3.81] mapped 333334 sequences
+[M::worker_pipeline::4284.971*3.81] mapped 333334 sequences
+[M::worker_pipeline::4287.558*3.81] mapped 333334 sequences
+[M::worker_pipeline::4289.864*3.81] mapped 333334 sequences
+[M::worker_pipeline::4292.451*3.81] mapped 333334 sequences
+[M::worker_pipeline::4295.095*3.81] mapped 333334 sequences
+[M::worker_pipeline::4297.512*3.81] mapped 333334 sequences
+[M::worker_pipeline::4300.214*3.81] mapped 333334 sequences
+[M::worker_pipeline::4302.575*3.81] mapped 333334 sequences
+[M::worker_pipeline::4304.707*3.81] mapped 333334 sequences
+[M::worker_pipeline::4307.456*3.81] mapped 333334 sequences
+[M::worker_pipeline::4309.929*3.81] mapped 333334 sequences
+[M::worker_pipeline::4312.021*3.81] mapped 333334 sequences
+[M::worker_pipeline::4314.968*3.81] mapped 333334 sequences
+[M::worker_pipeline::4317.282*3.81] mapped 333334 sequences
+[M::worker_pipeline::4319.231*3.81] mapped 333334 sequences
+[M::worker_pipeline::4321.919*3.81] mapped 333334 sequences
+[M::worker_pipeline::4324.471*3.81] mapped 333334 sequences
+[M::worker_pipeline::4326.603*3.81] mapped 333334 sequences
+[M::worker_pipeline::4329.310*3.81] mapped 333334 sequences
+[M::worker_pipeline::4331.808*3.81] mapped 333334 sequences
+[M::worker_pipeline::4334.024*3.81] mapped 333334 sequences
+[M::worker_pipeline::4336.681*3.81] mapped 333334 sequences
+[M::worker_pipeline::4339.168*3.82] mapped 333334 sequences
+[M::worker_pipeline::4341.410*3.82] mapped 333334 sequences
+[M::worker_pipeline::4343.901*3.82] mapped 333334 sequences
+[M::worker_pipeline::4346.428*3.82] mapped 333334 sequences
+[M::worker_pipeline::4348.567*3.82] mapped 333334 sequences
+[M::worker_pipeline::4351.569*3.82] mapped 333334 sequences
+[M::worker_pipeline::4354.233*3.82] mapped 333334 sequences
+[M::worker_pipeline::4356.520*3.82] mapped 333334 sequences
+[M::worker_pipeline::4358.730*3.82] mapped 333334 sequences
+[M::worker_pipeline::4361.588*3.82] mapped 333334 sequences
+[M::worker_pipeline::4363.535*3.82] mapped 333334 sequences
+[M::worker_pipeline::4366.377*3.82] mapped 333334 sequences
+[M::worker_pipeline::4368.763*3.82] mapped 333334 sequences
+[M::worker_pipeline::4370.652*3.82] mapped 333334 sequences
+[M::worker_pipeline::4373.482*3.82] mapped 333334 sequences
+[M::worker_pipeline::4375.929*3.82] mapped 333334 sequences
+[M::worker_pipeline::4378.410*3.82] mapped 333334 sequences
+[M::worker_pipeline::4380.732*3.82] mapped 333334 sequences
+[M::worker_pipeline::4383.185*3.82] mapped 333334 sequences
+[M::worker_pipeline::4385.502*3.82] mapped 333334 sequences
+[M::worker_pipeline::4388.025*3.82] mapped 333334 sequences
+[M::worker_pipeline::4390.343*3.82] mapped 333334 sequences
+[M::worker_pipeline::4392.896*3.82] mapped 333334 sequences
+[M::worker_pipeline::4395.461*3.82] mapped 333334 sequences
+[M::worker_pipeline::4397.903*3.82] mapped 333334 sequences
+[M::worker_pipeline::4400.524*3.82] mapped 333334 sequences
+[M::worker_pipeline::4402.945*3.82] mapped 333334 sequences
+[M::worker_pipeline::4405.488*3.82] mapped 333334 sequences
+[M::worker_pipeline::4407.903*3.82] mapped 333334 sequences
+[M::worker_pipeline::4410.254*3.82] mapped 333334 sequences
+[M::worker_pipeline::4413.036*3.83] mapped 333334 sequences
+[M::worker_pipeline::4415.679*3.83] mapped 333334 sequences
+[M::worker_pipeline::4418.452*3.83] mapped 333334 sequences
+[M::worker_pipeline::4420.865*3.83] mapped 333334 sequences
+[M::worker_pipeline::4423.551*3.83] mapped 333334 sequences
+[M::worker_pipeline::4425.694*3.83] mapped 333334 sequences
+[M::worker_pipeline::4428.266*3.83] mapped 333334 sequences
+[M::worker_pipeline::4430.664*3.83] mapped 333334 sequences
+[M::worker_pipeline::4433.267*3.83] mapped 333334 sequences
+[M::worker_pipeline::4435.833*3.83] mapped 333334 sequences
+[M::worker_pipeline::4438.537*3.83] mapped 333334 sequences
+[M::worker_pipeline::4441.341*3.83] mapped 333334 sequences
+[M::worker_pipeline::4444.286*3.83] mapped 333334 sequences
+[M::worker_pipeline::4446.734*3.83] mapped 333334 sequences
+[M::worker_pipeline::4449.477*3.83] mapped 333334 sequences
+[M::worker_pipeline::4451.964*3.83] mapped 333334 sequences
+[M::worker_pipeline::4454.499*3.83] mapped 333334 sequences
+[M::worker_pipeline::4456.727*3.83] mapped 333334 sequences
+[M::worker_pipeline::4459.677*3.83] mapped 333334 sequences
+[M::worker_pipeline::4462.239*3.83] mapped 333334 sequences
+[M::worker_pipeline::4464.716*3.83] mapped 333334 sequences
+[M::worker_pipeline::4467.067*3.83] mapped 333334 sequences
+[M::worker_pipeline::4469.458*3.83] mapped 333334 sequences
+[M::worker_pipeline::4471.670*3.83] mapped 333334 sequences
+[M::worker_pipeline::4474.013*3.83] mapped 333334 sequences
+[M::worker_pipeline::4476.642*3.83] mapped 333334 sequences
+[M::worker_pipeline::4479.277*3.83] mapped 333334 sequences
+[M::worker_pipeline::4482.004*3.83] mapped 333334 sequences
+[M::worker_pipeline::4484.470*3.83] mapped 333334 sequences
+[M::worker_pipeline::4486.965*3.83] mapped 333334 sequences
+[M::worker_pipeline::4489.394*3.83] mapped 333334 sequences
+[M::worker_pipeline::4491.816*3.84] mapped 333334 sequences
+[M::worker_pipeline::4494.278*3.84] mapped 333334 sequences
+[M::worker_pipeline::4496.782*3.84] mapped 333334 sequences
+[M::worker_pipeline::4499.372*3.84] mapped 333334 sequences
+[M::worker_pipeline::4501.878*3.84] mapped 333334 sequences
+[M::worker_pipeline::4504.540*3.84] mapped 333334 sequences
+[M::worker_pipeline::4507.386*3.84] mapped 333334 sequences
+[M::worker_pipeline::4509.868*3.84] mapped 333334 sequences
+[M::worker_pipeline::4512.272*3.84] mapped 333334 sequences
+[M::worker_pipeline::4514.810*3.84] mapped 333334 sequences
+[M::worker_pipeline::4517.239*3.84] mapped 333334 sequences
+[M::worker_pipeline::4519.724*3.84] mapped 333334 sequences
+[M::worker_pipeline::4522.332*3.84] mapped 333334 sequences
+[M::worker_pipeline::4524.666*3.84] mapped 333334 sequences
+[M::worker_pipeline::4527.091*3.84] mapped 333334 sequences
+[M::worker_pipeline::4530.232*3.84] mapped 333334 sequences
+[M::worker_pipeline::4532.793*3.84] mapped 333334 sequences
+[M::worker_pipeline::4535.377*3.84] mapped 333334 sequences
+[M::worker_pipeline::4537.885*3.84] mapped 333334 sequences
+[M::worker_pipeline::4540.274*3.84] mapped 333334 sequences
+[M::worker_pipeline::4542.695*3.84] mapped 333334 sequences
+[M::worker_pipeline::4545.034*3.84] mapped 333334 sequences
+[M::worker_pipeline::4547.536*3.84] mapped 333334 sequences
+[M::worker_pipeline::4549.973*3.84] mapped 333334 sequences
+[M::worker_pipeline::4552.626*3.84] mapped 333334 sequences
+[M::worker_pipeline::4555.167*3.84] mapped 333334 sequences
+[M::worker_pipeline::4557.586*3.84] mapped 333334 sequences
+[M::worker_pipeline::4559.998*3.84] mapped 333334 sequences
+[M::worker_pipeline::4562.411*3.84] mapped 333334 sequences
+[M::worker_pipeline::4564.872*3.84] mapped 333334 sequences
+[M::worker_pipeline::4567.447*3.84] mapped 333334 sequences
+[M::worker_pipeline::4570.144*3.84] mapped 333334 sequences
+[M::worker_pipeline::4572.829*3.84] mapped 333334 sequences
+[M::worker_pipeline::4575.328*3.85] mapped 333334 sequences
+[M::worker_pipeline::4577.957*3.85] mapped 333334 sequences
+[M::worker_pipeline::4580.364*3.85] mapped 333334 sequences
+[M::worker_pipeline::4582.858*3.85] mapped 333334 sequences
+[M::worker_pipeline::4585.388*3.85] mapped 333334 sequences
+[M::worker_pipeline::4587.874*3.85] mapped 333334 sequences
+[M::worker_pipeline::4590.404*3.85] mapped 333334 sequences
+[M::worker_pipeline::4593.004*3.85] mapped 333334 sequences
+[M::worker_pipeline::4595.727*3.85] mapped 333334 sequences
+[M::worker_pipeline::4598.282*3.85] mapped 333334 sequences
+[M::worker_pipeline::4600.643*3.85] mapped 333334 sequences
+[M::worker_pipeline::4602.968*3.85] mapped 333334 sequences
+[M::worker_pipeline::4605.665*3.85] mapped 333334 sequences
+[M::worker_pipeline::4608.088*3.85] mapped 333334 sequences
+[M::worker_pipeline::4610.306*3.85] mapped 333334 sequences
+[M::worker_pipeline::4612.858*3.85] mapped 333334 sequences
+[M::worker_pipeline::4615.442*3.85] mapped 333334 sequences
+[M::worker_pipeline::4617.813*3.85] mapped 333334 sequences
+[M::worker_pipeline::4620.350*3.85] mapped 333334 sequences
+[M::worker_pipeline::4622.823*3.85] mapped 333334 sequences
+[M::worker_pipeline::4625.432*3.85] mapped 333334 sequences
+[M::worker_pipeline::4627.649*3.85] mapped 333334 sequences
+[M::worker_pipeline::4630.285*3.85] mapped 333334 sequences
+[M::worker_pipeline::4632.646*3.85] mapped 333334 sequences
+[M::worker_pipeline::4635.312*3.85] mapped 333334 sequences
+[M::worker_pipeline::4637.917*3.85] mapped 333334 sequences
+[M::worker_pipeline::4640.566*3.85] mapped 333334 sequences
+[M::worker_pipeline::4643.016*3.85] mapped 333334 sequences
+[M::worker_pipeline::4645.522*3.85] mapped 333334 sequences
+[M::worker_pipeline::4648.069*3.85] mapped 333334 sequences
+[M::worker_pipeline::4650.584*3.85] mapped 333334 sequences
+[M::worker_pipeline::4653.045*3.85] mapped 333334 sequences
+[M::worker_pipeline::4655.508*3.85] mapped 333334 sequences
+[M::worker_pipeline::4657.837*3.85] mapped 333334 sequences
+[M::worker_pipeline::4660.533*3.86] mapped 333334 sequences
+[M::worker_pipeline::4662.887*3.86] mapped 333334 sequences
+[M::worker_pipeline::4665.322*3.86] mapped 333334 sequences
+[M::worker_pipeline::4667.440*3.86] mapped 333334 sequences
+[M::worker_pipeline::4670.263*3.86] mapped 333334 sequences
+[M::worker_pipeline::4672.666*3.86] mapped 333334 sequences
+[M::worker_pipeline::4675.163*3.86] mapped 333334 sequences
+[M::worker_pipeline::4678.159*3.86] mapped 333334 sequences
+[M::worker_pipeline::4680.799*3.86] mapped 333334 sequences
+[M::worker_pipeline::4683.288*3.86] mapped 333334 sequences
+[M::worker_pipeline::4685.719*3.86] mapped 333334 sequences
+[M::worker_pipeline::4688.035*3.86] mapped 333334 sequences
+[M::worker_pipeline::4690.539*3.86] mapped 333334 sequences
+[M::worker_pipeline::4692.984*3.86] mapped 333334 sequences
+[M::worker_pipeline::4695.577*3.86] mapped 333334 sequences
+[M::worker_pipeline::4698.074*3.86] mapped 333334 sequences
+[M::worker_pipeline::4700.482*3.86] mapped 333334 sequences
+[M::worker_pipeline::4702.849*3.86] mapped 333334 sequences
+[M::worker_pipeline::4705.434*3.86] mapped 333334 sequences
+[M::worker_pipeline::4707.845*3.86] mapped 333334 sequences
+[M::worker_pipeline::4710.146*3.86] mapped 333334 sequences
+[M::worker_pipeline::4712.487*3.86] mapped 333334 sequences
+[M::worker_pipeline::4715.367*3.86] mapped 333334 sequences
+[M::worker_pipeline::4718.125*3.86] mapped 333334 sequences
+[M::worker_pipeline::4720.745*3.86] mapped 333334 sequences
+[M::worker_pipeline::4723.258*3.86] mapped 333334 sequences
+[M::worker_pipeline::4725.780*3.86] mapped 333334 sequences
+[M::worker_pipeline::4728.196*3.86] mapped 333334 sequences
+[M::worker_pipeline::4730.576*3.86] mapped 333334 sequences
+[M::worker_pipeline::4733.266*3.86] mapped 333334 sequences
+[M::worker_pipeline::4735.679*3.86] mapped 333334 sequences
+[M::worker_pipeline::4738.029*3.86] mapped 333334 sequences
+[M::worker_pipeline::4740.787*3.86] mapped 333334 sequences
+[M::worker_pipeline::4743.341*3.86] mapped 333334 sequences
+[M::worker_pipeline::4745.862*3.86] mapped 333334 sequences
+[M::worker_pipeline::4748.391*3.87] mapped 333334 sequences
+[M::worker_pipeline::4750.873*3.87] mapped 333334 sequences
+[M::worker_pipeline::4753.391*3.87] mapped 333334 sequences
+[M::worker_pipeline::4755.588*3.87] mapped 333334 sequences
+[M::worker_pipeline::4758.217*3.87] mapped 333334 sequences
+[M::worker_pipeline::4760.819*3.87] mapped 333334 sequences
+[M::worker_pipeline::4763.514*3.87] mapped 333334 sequences
+[M::worker_pipeline::4766.130*3.87] mapped 333334 sequences
+[M::worker_pipeline::4768.545*3.87] mapped 333334 sequences
+[M::worker_pipeline::4771.066*3.87] mapped 333334 sequences
+[M::worker_pipeline::4773.341*3.87] mapped 333334 sequences
+[M::worker_pipeline::4775.879*3.87] mapped 333334 sequences
+[M::worker_pipeline::4778.298*3.87] mapped 333334 sequences
+[M::worker_pipeline::4780.708*3.87] mapped 333334 sequences
+[M::worker_pipeline::4783.065*3.87] mapped 333334 sequences
+[M::worker_pipeline::4785.742*3.87] mapped 333334 sequences
+[M::worker_pipeline::4788.348*3.87] mapped 333334 sequences
+[M::worker_pipeline::4790.785*3.87] mapped 333334 sequences
+[M::worker_pipeline::4793.325*3.87] mapped 333334 sequences
+[M::worker_pipeline::4796.070*3.87] mapped 333334 sequences
+[M::worker_pipeline::4798.465*3.87] mapped 333334 sequences
+[M::worker_pipeline::4800.816*3.87] mapped 333334 sequences
+[M::worker_pipeline::4803.329*3.87] mapped 333334 sequences
+[M::worker_pipeline::4805.857*3.87] mapped 333334 sequences
+[M::worker_pipeline::4808.399*3.87] mapped 333334 sequences
+[M::worker_pipeline::4810.836*3.87] mapped 333334 sequences
+[M::worker_pipeline::4813.368*3.87] mapped 333334 sequences
+[M::worker_pipeline::4815.848*3.87] mapped 333334 sequences
+[M::worker_pipeline::4818.267*3.87] mapped 333334 sequences
+[M::worker_pipeline::4820.737*3.87] mapped 333334 sequences
+[M::worker_pipeline::4823.315*3.87] mapped 333334 sequences
+[M::worker_pipeline::4825.631*3.87] mapped 333334 sequences
+[M::worker_pipeline::4828.032*3.87] mapped 333334 sequences
+[M::worker_pipeline::4830.858*3.87] mapped 333334 sequences
+[M::worker_pipeline::4833.301*3.87] mapped 333334 sequences
+[M::worker_pipeline::4835.613*3.87] mapped 333334 sequences
+[M::worker_pipeline::4837.864*3.88] mapped 333334 sequences
+[M::worker_pipeline::4840.281*3.88] mapped 333334 sequences
+[M::worker_pipeline::4842.952*3.88] mapped 333334 sequences
+[M::worker_pipeline::4845.286*3.88] mapped 333334 sequences
+[M::worker_pipeline::4847.915*3.88] mapped 333334 sequences
+[M::worker_pipeline::4850.612*3.88] mapped 333334 sequences
+[M::worker_pipeline::4852.834*3.88] mapped 333334 sequences
+[M::worker_pipeline::4855.566*3.88] mapped 333334 sequences
+[M::worker_pipeline::4858.020*3.88] mapped 333334 sequences
+[M::worker_pipeline::4860.523*3.88] mapped 333334 sequences
+[M::worker_pipeline::4863.027*3.88] mapped 333334 sequences
+[M::worker_pipeline::4865.502*3.88] mapped 333334 sequences
+[M::worker_pipeline::4867.914*3.88] mapped 333334 sequences
+[M::worker_pipeline::4870.141*3.88] mapped 333334 sequences
+[M::worker_pipeline::4872.753*3.88] mapped 333334 sequences
+[M::worker_pipeline::4875.603*3.88] mapped 333334 sequences
+[M::worker_pipeline::4878.159*3.88] mapped 333334 sequences
+[M::worker_pipeline::4880.749*3.88] mapped 333334 sequences
+[M::worker_pipeline::4883.186*3.88] mapped 333334 sequences
+[M::worker_pipeline::4885.641*3.88] mapped 333334 sequences
+[M::worker_pipeline::4888.083*3.88] mapped 333334 sequences
+[M::worker_pipeline::4890.492*3.88] mapped 333334 sequences
+[M::worker_pipeline::4892.947*3.88] mapped 333334 sequences
+[M::worker_pipeline::4895.478*3.88] mapped 333334 sequences
+[M::worker_pipeline::4898.249*3.88] mapped 333334 sequences
+[M::worker_pipeline::4900.606*3.88] mapped 333334 sequences
+[M::worker_pipeline::4903.139*3.88] mapped 333334 sequences
+[M::worker_pipeline::4905.615*3.88] mapped 333334 sequences
+[M::worker_pipeline::4908.086*3.88] mapped 333334 sequences
+[M::worker_pipeline::4910.531*3.88] mapped 333334 sequences
+[M::worker_pipeline::4912.899*3.88] mapped 333334 sequences
+[M::worker_pipeline::4915.438*3.88] mapped 333334 sequences
+[M::worker_pipeline::4918.071*3.88] mapped 333334 sequences
+[M::worker_pipeline::4920.495*3.88] mapped 333334 sequences
+[M::worker_pipeline::4922.890*3.88] mapped 333334 sequences
+[M::worker_pipeline::4925.488*3.88] mapped 333334 sequences
+[M::worker_pipeline::4927.600*3.88] mapped 333334 sequences
+[M::worker_pipeline::4930.449*3.88] mapped 333334 sequences
+[M::worker_pipeline::4932.998*3.88] mapped 333334 sequences
+[M::worker_pipeline::4935.534*3.89] mapped 333334 sequences
+[M::worker_pipeline::4938.162*3.89] mapped 333334 sequences
+[M::worker_pipeline::4940.629*3.89] mapped 333334 sequences
+[M::worker_pipeline::4943.001*3.89] mapped 333334 sequences
+[M::worker_pipeline::4945.578*3.89] mapped 333334 sequences
+[M::worker_pipeline::4948.002*3.89] mapped 333334 sequences
+[M::worker_pipeline::4950.399*3.89] mapped 333334 sequences
+[M::worker_pipeline::4952.713*3.89] mapped 333334 sequences
+[M::worker_pipeline::4954.973*3.89] mapped 333334 sequences
+[M::worker_pipeline::4957.567*3.89] mapped 333334 sequences
+[M::worker_pipeline::4960.134*3.89] mapped 333334 sequences
+[M::worker_pipeline::4962.869*3.89] mapped 333334 sequences
+[M::worker_pipeline::4965.243*3.89] mapped 333334 sequences
+[M::worker_pipeline::4967.825*3.89] mapped 333334 sequences
+[M::worker_pipeline::4970.438*3.89] mapped 333334 sequences
+[M::worker_pipeline::4973.006*3.89] mapped 333334 sequences
+[M::worker_pipeline::4975.622*3.89] mapped 333334 sequences
+[M::worker_pipeline::4977.785*3.89] mapped 333334 sequences
+[M::worker_pipeline::4980.496*3.89] mapped 333334 sequences
+[M::worker_pipeline::4983.099*3.89] mapped 333334 sequences
+[M::worker_pipeline::4985.684*3.89] mapped 333334 sequences
+[M::worker_pipeline::4988.159*3.89] mapped 333334 sequences
+[M::worker_pipeline::4988.919*3.89] mapped 120702 sequences
+[M::mm_idx_gen::5082.609*3.85] collected minimizers
+[M::mm_idx_gen::5099.149*3.85] sorted minimizers
+[M::main::5099.149*3.85] loaded/built the index for 128975 target sequence(s)
+[M::mm_mapopt_update::5099.149*3.85] mid_occ = 1000
+[M::mm_idx_stat] kmer size: 21; skip: 11; is_hpc: 0; #seq: 128975
+[M::mm_idx_stat::5108.889*3.84] distinct minimizers: 505442636 (87.19% are singletons); average occurrences: 1.331; average spacing: 6.018
+[M::worker_pipeline::5114.137*3.85] mapped 333334 sequences
+[M::worker_pipeline::5116.658*3.85] mapped 333334 sequences
+[M::worker_pipeline::5119.157*3.85] mapped 333334 sequences
+[M::worker_pipeline::5121.946*3.85] mapped 333334 sequences
+[M::worker_pipeline::5124.506*3.85] mapped 333334 sequences
+[M::worker_pipeline::5127.166*3.85] mapped 333334 sequences
+[M::worker_pipeline::5129.589*3.85] mapped 333334 sequences
+[M::worker_pipeline::5132.272*3.85] mapped 333334 sequences
+[M::worker_pipeline::5134.834*3.85] mapped 333334 sequences
+[M::worker_pipeline::5137.220*3.85] mapped 333334 sequences
+[M::worker_pipeline::5140.144*3.85] mapped 333334 sequences
+[M::worker_pipeline::5142.864*3.85] mapped 333334 sequences
+[M::worker_pipeline::5145.084*3.85] mapped 333334 sequences
+[M::worker_pipeline::5148.055*3.85] mapped 333334 sequences
+[M::worker_pipeline::5150.692*3.85] mapped 333334 sequences
+[M::worker_pipeline::5153.359*3.85] mapped 333334 sequences
+[M::worker_pipeline::5156.081*3.85] mapped 333334 sequences
+[M::worker_pipeline::5158.954*3.85] mapped 333334 sequences
+[M::worker_pipeline::5161.394*3.85] mapped 333334 sequences
+[M::worker_pipeline::5164.434*3.85] mapped 333334 sequences
+[M::worker_pipeline::5167.234*3.85] mapped 333334 sequences
+[M::worker_pipeline::5169.989*3.85] mapped 333334 sequences
+[M::worker_pipeline::5172.813*3.85] mapped 333334 sequences
+[M::worker_pipeline::5175.521*3.85] mapped 333334 sequences
+[M::worker_pipeline::5177.773*3.85] mapped 333334 sequences
+[M::worker_pipeline::5180.456*3.85] mapped 333334 sequences
+[M::worker_pipeline::5183.262*3.85] mapped 333334 sequences
+[M::worker_pipeline::5185.613*3.85] mapped 333334 sequences
+[M::worker_pipeline::5188.525*3.85] mapped 333334 sequences
+[M::worker_pipeline::5191.141*3.85] mapped 333334 sequences
+[M::worker_pipeline::5193.216*3.85] mapped 333334 sequences
+[M::worker_pipeline::5196.181*3.85] mapped 333334 sequences
+[M::worker_pipeline::5199.029*3.85] mapped 333334 sequences
+[M::worker_pipeline::5201.466*3.85] mapped 333334 sequences
+[M::worker_pipeline::5204.609*3.85] mapped 333334 sequences
+[M::worker_pipeline::5207.107*3.85] mapped 333334 sequences
+[M::worker_pipeline::5209.459*3.85] mapped 333334 sequences
+[M::worker_pipeline::5212.548*3.85] mapped 333334 sequences
+[M::worker_pipeline::5215.198*3.86] mapped 333334 sequences
+[M::worker_pipeline::5217.549*3.86] mapped 333334 sequences
+[M::worker_pipeline::5220.531*3.86] mapped 333334 sequences
+[M::worker_pipeline::5223.350*3.86] mapped 333334 sequences
+[M::worker_pipeline::5225.436*3.86] mapped 333334 sequences
+[M::worker_pipeline::5228.106*3.86] mapped 333334 sequences
+[M::worker_pipeline::5230.814*3.86] mapped 333334 sequences
+[M::worker_pipeline::5233.067*3.86] mapped 333334 sequences
+[M::worker_pipeline::5235.827*3.86] mapped 333334 sequences
+[M::worker_pipeline::5238.511*3.86] mapped 333334 sequences
+[M::worker_pipeline::5241.120*3.86] mapped 333334 sequences
+[M::worker_pipeline::5243.877*3.86] mapped 333334 sequences
+[M::worker_pipeline::5246.443*3.86] mapped 333334 sequences
+[M::worker_pipeline::5248.874*3.86] mapped 333334 sequences
+[M::worker_pipeline::5251.800*3.86] mapped 333334 sequences
+[M::worker_pipeline::5254.425*3.86] mapped 333334 sequences
+[M::worker_pipeline::5257.089*3.86] mapped 333334 sequences
+[M::worker_pipeline::5259.715*3.86] mapped 333334 sequences
+[M::worker_pipeline::5262.498*3.86] mapped 333334 sequences
+[M::worker_pipeline::5265.173*3.86] mapped 333334 sequences
+[M::worker_pipeline::5268.094*3.86] mapped 333334 sequences
+[M::worker_pipeline::5270.680*3.86] mapped 333334 sequences
+[M::worker_pipeline::5273.175*3.86] mapped 333334 sequences
+[M::worker_pipeline::5275.744*3.86] mapped 333334 sequences
+[M::worker_pipeline::5278.351*3.86] mapped 333334 sequences
+[M::worker_pipeline::5281.079*3.86] mapped 333334 sequences
+[M::worker_pipeline::5283.920*3.86] mapped 333334 sequences
+[M::worker_pipeline::5286.590*3.86] mapped 333334 sequences
+[M::worker_pipeline::5289.398*3.86] mapped 333334 sequences
+[M::worker_pipeline::5291.848*3.86] mapped 333334 sequences
+[M::worker_pipeline::5294.391*3.86] mapped 333334 sequences
+[M::worker_pipeline::5297.357*3.86] mapped 333334 sequences
+[M::worker_pipeline::5300.018*3.86] mapped 333334 sequences
+[M::worker_pipeline::5302.576*3.86] mapped 333334 sequences
+[M::worker_pipeline::5305.144*3.86] mapped 333334 sequences
+[M::worker_pipeline::5307.715*3.86] mapped 333334 sequences
+[M::worker_pipeline::5310.219*3.86] mapped 333334 sequences
+[M::worker_pipeline::5312.924*3.86] mapped 333334 sequences
+[M::worker_pipeline::5315.479*3.87] mapped 333334 sequences
+[M::worker_pipeline::5318.028*3.87] mapped 333334 sequences
+[M::worker_pipeline::5320.594*3.87] mapped 333334 sequences
+[M::worker_pipeline::5323.204*3.87] mapped 333334 sequences
+[M::worker_pipeline::5325.840*3.87] mapped 333334 sequences
+[M::worker_pipeline::5328.363*3.87] mapped 333334 sequences
+[M::worker_pipeline::5331.098*3.87] mapped 333334 sequences
+[M::worker_pipeline::5333.690*3.87] mapped 333334 sequences
+[M::worker_pipeline::5336.157*3.87] mapped 333334 sequences
+[M::worker_pipeline::5338.825*3.87] mapped 333334 sequences
+[M::worker_pipeline::5341.347*3.87] mapped 333334 sequences
+[M::worker_pipeline::5343.839*3.87] mapped 333334 sequences
+[M::worker_pipeline::5346.105*3.87] mapped 333334 sequences
+[M::worker_pipeline::5348.908*3.87] mapped 333334 sequences
+[M::worker_pipeline::5351.530*3.87] mapped 333334 sequences
+[M::worker_pipeline::5354.055*3.87] mapped 333334 sequences
+[M::worker_pipeline::5356.740*3.87] mapped 333334 sequences
+[M::worker_pipeline::5359.093*3.87] mapped 333334 sequences
+[M::worker_pipeline::5361.584*3.87] mapped 333334 sequences
+[M::worker_pipeline::5364.221*3.87] mapped 333334 sequences
+[M::worker_pipeline::5366.892*3.87] mapped 333334 sequences
+[M::worker_pipeline::5369.396*3.87] mapped 333334 sequences
+[M::worker_pipeline::5372.122*3.87] mapped 333334 sequences
+[M::worker_pipeline::5374.743*3.87] mapped 333334 sequences
+[M::worker_pipeline::5377.304*3.87] mapped 333334 sequences
+[M::worker_pipeline::5379.762*3.87] mapped 333334 sequences
+[M::worker_pipeline::5382.448*3.87] mapped 333334 sequences
+[M::worker_pipeline::5385.135*3.87] mapped 333334 sequences
+[M::worker_pipeline::5387.607*3.87] mapped 333334 sequences
+[M::worker_pipeline::5390.254*3.87] mapped 333334 sequences
+[M::worker_pipeline::5392.742*3.87] mapped 333334 sequences
+[M::worker_pipeline::5395.186*3.87] mapped 333334 sequences
+[M::worker_pipeline::5397.764*3.87] mapped 333334 sequences
+[M::worker_pipeline::5400.159*3.87] mapped 333334 sequences
+[M::worker_pipeline::5402.846*3.87] mapped 333334 sequences
+[M::worker_pipeline::5405.304*3.87] mapped 333334 sequences
+[M::worker_pipeline::5407.780*3.87] mapped 333334 sequences
+[M::worker_pipeline::5410.321*3.87] mapped 333334 sequences
+[M::worker_pipeline::5412.834*3.87] mapped 333334 sequences
+[M::worker_pipeline::5415.185*3.87] mapped 333334 sequences
+[M::worker_pipeline::5417.886*3.87] mapped 333334 sequences
+[M::worker_pipeline::5420.401*3.88] mapped 333334 sequences
+[M::worker_pipeline::5422.849*3.88] mapped 333334 sequences
+[M::worker_pipeline::5425.304*3.88] mapped 333334 sequences
+[M::worker_pipeline::5427.859*3.88] mapped 333334 sequences
+[M::worker_pipeline::5430.313*3.88] mapped 333334 sequences
+[M::worker_pipeline::5432.711*3.88] mapped 333334 sequences
+[M::worker_pipeline::5435.243*3.88] mapped 333334 sequences
+[M::worker_pipeline::5437.772*3.88] mapped 333334 sequences
+[M::worker_pipeline::5440.339*3.88] mapped 333334 sequences
+[M::worker_pipeline::5442.897*3.88] mapped 333334 sequences
+[M::worker_pipeline::5445.449*3.88] mapped 333334 sequences
+[M::worker_pipeline::5447.904*3.88] mapped 333334 sequences
+[M::worker_pipeline::5450.214*3.88] mapped 333334 sequences
+[M::worker_pipeline::5452.754*3.88] mapped 333334 sequences
+[M::worker_pipeline::5455.469*3.88] mapped 333334 sequences
+[M::worker_pipeline::5457.957*3.88] mapped 333334 sequences
+[M::worker_pipeline::5460.405*3.88] mapped 333334 sequences
+[M::worker_pipeline::5462.897*3.88] mapped 333334 sequences
+[M::worker_pipeline::5465.403*3.88] mapped 333334 sequences
+[M::worker_pipeline::5467.750*3.88] mapped 333334 sequences
+[M::worker_pipeline::5470.304*3.88] mapped 333334 sequences
+[M::worker_pipeline::5473.000*3.88] mapped 333334 sequences
+[M::worker_pipeline::5475.423*3.88] mapped 333334 sequences
+[M::worker_pipeline::5478.019*3.88] mapped 333334 sequences
+[M::worker_pipeline::5480.503*3.88] mapped 333334 sequences
+[M::worker_pipeline::5482.837*3.88] mapped 333334 sequences
+[M::worker_pipeline::5485.422*3.88] mapped 333334 sequences
+[M::worker_pipeline::5487.677*3.88] mapped 333334 sequences
+[M::worker_pipeline::5490.678*3.88] mapped 333334 sequences
+[M::worker_pipeline::5493.160*3.88] mapped 333334 sequences
+[M::worker_pipeline::5495.720*3.88] mapped 333334 sequences
+[M::worker_pipeline::5498.148*3.88] mapped 333334 sequences
+[M::worker_pipeline::5500.872*3.88] mapped 333334 sequences
+[M::worker_pipeline::5503.379*3.88] mapped 333334 sequences
+[M::worker_pipeline::5505.878*3.88] mapped 333334 sequences
+[M::worker_pipeline::5508.483*3.88] mapped 333334 sequences
+[M::worker_pipeline::5511.057*3.88] mapped 333334 sequences
+[M::worker_pipeline::5513.481*3.88] mapped 333334 sequences
+[M::worker_pipeline::5516.047*3.88] mapped 333334 sequences
+[M::worker_pipeline::5518.519*3.88] mapped 333334 sequences
+[M::worker_pipeline::5521.079*3.88] mapped 333334 sequences
+[M::worker_pipeline::5523.738*3.88] mapped 333334 sequences
+[M::worker_pipeline::5526.184*3.88] mapped 333334 sequences
+[M::worker_pipeline::5528.786*3.88] mapped 333334 sequences
+[M::worker_pipeline::5531.094*3.89] mapped 333334 sequences
+[M::worker_pipeline::5533.943*3.89] mapped 333334 sequences
+[M::worker_pipeline::5536.414*3.89] mapped 333334 sequences
+[M::worker_pipeline::5538.928*3.89] mapped 333334 sequences
+[M::worker_pipeline::5541.538*3.89] mapped 333334 sequences
+[M::worker_pipeline::5544.065*3.89] mapped 333334 sequences
+[M::worker_pipeline::5546.567*3.89] mapped 333334 sequences
+[M::worker_pipeline::5549.041*3.89] mapped 333334 sequences
+[M::worker_pipeline::5551.463*3.89] mapped 333334 sequences
+[M::worker_pipeline::5553.629*3.89] mapped 333334 sequences
+[M::worker_pipeline::5556.575*3.89] mapped 333334 sequences
+[M::worker_pipeline::5559.090*3.89] mapped 333334 sequences
+[M::worker_pipeline::5561.529*3.89] mapped 333334 sequences
+[M::worker_pipeline::5564.056*3.89] mapped 333334 sequences
+[M::worker_pipeline::5566.726*3.89] mapped 333334 sequences
+[M::worker_pipeline::5569.102*3.89] mapped 333334 sequences
+[M::worker_pipeline::5571.747*3.89] mapped 333334 sequences
+[M::worker_pipeline::5574.326*3.89] mapped 333334 sequences
+[M::worker_pipeline::5576.745*3.89] mapped 333334 sequences
+[M::worker_pipeline::5579.522*3.89] mapped 333334 sequences
+[M::worker_pipeline::5582.181*3.89] mapped 333334 sequences
+[M::worker_pipeline::5584.737*3.89] mapped 333334 sequences
+[M::worker_pipeline::5587.191*3.89] mapped 333334 sequences
+[M::worker_pipeline::5589.641*3.89] mapped 333334 sequences
+[M::worker_pipeline::5592.139*3.89] mapped 333334 sequences
+[M::worker_pipeline::5594.645*3.89] mapped 333334 sequences
+[M::worker_pipeline::5597.210*3.89] mapped 333334 sequences
+[M::worker_pipeline::5599.786*3.89] mapped 333334 sequences
+[M::worker_pipeline::5602.279*3.89] mapped 333334 sequences
+[M::worker_pipeline::5604.799*3.89] mapped 333334 sequences
+[M::worker_pipeline::5607.270*3.89] mapped 333334 sequences
+[M::worker_pipeline::5609.789*3.89] mapped 333334 sequences
+[M::worker_pipeline::5612.366*3.89] mapped 333334 sequences
+[M::worker_pipeline::5615.011*3.89] mapped 333334 sequences
+[M::worker_pipeline::5617.670*3.89] mapped 333334 sequences
+[M::worker_pipeline::5620.014*3.89] mapped 333334 sequences
+[M::worker_pipeline::5622.758*3.89] mapped 333334 sequences
+[M::worker_pipeline::5625.047*3.89] mapped 333334 sequences
+[M::worker_pipeline::5627.688*3.89] mapped 333334 sequences
+[M::worker_pipeline::5630.426*3.89] mapped 333334 sequences
+[M::worker_pipeline::5632.860*3.89] mapped 333334 sequences
+[M::worker_pipeline::5635.274*3.89] mapped 333334 sequences
+[M::worker_pipeline::5637.887*3.89] mapped 333334 sequences
+[M::worker_pipeline::5640.361*3.89] mapped 333334 sequences
+[M::worker_pipeline::5642.796*3.90] mapped 333334 sequences
+[M::worker_pipeline::5645.479*3.90] mapped 333334 sequences
+[M::worker_pipeline::5648.101*3.90] mapped 333334 sequences
+[M::worker_pipeline::5650.837*3.90] mapped 333334 sequences
+[M::worker_pipeline::5653.430*3.90] mapped 333334 sequences
+[M::worker_pipeline::5655.953*3.90] mapped 333334 sequences
+[M::worker_pipeline::5658.394*3.90] mapped 333334 sequences
+[M::worker_pipeline::5661.045*3.90] mapped 333334 sequences
+[M::worker_pipeline::5663.770*3.90] mapped 333334 sequences
+[M::worker_pipeline::5666.368*3.90] mapped 333334 sequences
+[M::worker_pipeline::5668.940*3.90] mapped 333334 sequences
+[M::worker_pipeline::5671.609*3.90] mapped 333334 sequences
+[M::worker_pipeline::5674.065*3.90] mapped 333334 sequences
+[M::worker_pipeline::5676.445*3.90] mapped 333334 sequences
+[M::worker_pipeline::5679.019*3.90] mapped 333334 sequences
+[M::worker_pipeline::5681.492*3.90] mapped 333334 sequences
+[M::worker_pipeline::5684.036*3.90] mapped 333334 sequences
+[M::worker_pipeline::5686.612*3.90] mapped 333334 sequences
+[M::worker_pipeline::5689.151*3.90] mapped 333334 sequences
+[M::worker_pipeline::5691.834*3.90] mapped 333334 sequences
+[M::worker_pipeline::5694.090*3.90] mapped 333334 sequences
+[M::worker_pipeline::5696.843*3.90] mapped 333334 sequences
+[M::worker_pipeline::5699.405*3.90] mapped 333334 sequences
+[M::worker_pipeline::5701.844*3.90] mapped 333334 sequences
+[M::worker_pipeline::5704.457*3.90] mapped 333334 sequences
+[M::worker_pipeline::5707.092*3.90] mapped 333334 sequences
+[M::worker_pipeline::5709.643*3.90] mapped 333334 sequences
+[M::worker_pipeline::5712.075*3.90] mapped 333334 sequences
+[M::worker_pipeline::5714.690*3.90] mapped 333334 sequences
+[M::worker_pipeline::5717.226*3.90] mapped 333334 sequences
+[M::worker_pipeline::5719.786*3.90] mapped 333334 sequences
+[M::worker_pipeline::5722.427*3.90] mapped 333334 sequences
+[M::worker_pipeline::5724.878*3.90] mapped 333334 sequences
+[M::worker_pipeline::5727.339*3.90] mapped 333334 sequences
+[M::worker_pipeline::5730.081*3.90] mapped 333334 sequences
+[M::worker_pipeline::5732.732*3.90] mapped 333334 sequences
+[M::worker_pipeline::5735.203*3.90] mapped 333334 sequences
+[M::worker_pipeline::5737.782*3.90] mapped 333334 sequences
+[M::worker_pipeline::5740.393*3.90] mapped 333334 sequences
+[M::worker_pipeline::5743.076*3.90] mapped 333334 sequences
+[M::worker_pipeline::5745.657*3.90] mapped 333334 sequences
+[M::worker_pipeline::5748.058*3.90] mapped 333334 sequences
+[M::worker_pipeline::5750.528*3.90] mapped 333334 sequences
+[M::worker_pipeline::5753.229*3.90] mapped 333334 sequences
+[M::worker_pipeline::5755.805*3.90] mapped 333334 sequences
+[M::worker_pipeline::5758.196*3.90] mapped 333334 sequences
+[M::worker_pipeline::5760.881*3.91] mapped 333334 sequences
+[M::worker_pipeline::5763.270*3.91] mapped 333334 sequences
+[M::worker_pipeline::5765.955*3.91] mapped 333334 sequences
+[M::worker_pipeline::5768.435*3.91] mapped 333334 sequences
+[M::worker_pipeline::5771.133*3.91] mapped 333334 sequences
+[M::worker_pipeline::5773.664*3.91] mapped 333334 sequences
+[M::worker_pipeline::5776.282*3.91] mapped 333334 sequences
+[M::worker_pipeline::5778.798*3.91] mapped 333334 sequences
+[M::worker_pipeline::5781.275*3.91] mapped 333334 sequences
+[M::worker_pipeline::5783.853*3.91] mapped 333334 sequences
+[M::worker_pipeline::5786.384*3.91] mapped 333334 sequences
+[M::worker_pipeline::5788.922*3.91] mapped 333334 sequences
+[M::worker_pipeline::5791.573*3.91] mapped 333334 sequences
+[M::worker_pipeline::5794.143*3.91] mapped 333334 sequences
+[M::worker_pipeline::5796.745*3.91] mapped 333334 sequences
+[M::worker_pipeline::5799.176*3.91] mapped 333334 sequences
+[M::worker_pipeline::5801.900*3.91] mapped 333334 sequences
+[M::worker_pipeline::5804.314*3.91] mapped 333334 sequences
+[M::worker_pipeline::5806.894*3.91] mapped 333334 sequences
+[M::worker_pipeline::5809.612*3.91] mapped 333334 sequences
+[M::worker_pipeline::5812.166*3.91] mapped 333334 sequences
+[M::worker_pipeline::5814.626*3.91] mapped 333334 sequences
+[M::worker_pipeline::5817.216*3.91] mapped 333334 sequences
+[M::worker_pipeline::5819.775*3.91] mapped 333334 sequences
+[M::worker_pipeline::5822.088*3.91] mapped 333334 sequences
+[M::worker_pipeline::5825.105*3.91] mapped 333334 sequences
+[M::worker_pipeline::5827.826*3.91] mapped 333334 sequences
+[M::worker_pipeline::5830.275*3.91] mapped 333334 sequences
+[M::worker_pipeline::5832.740*3.91] mapped 333334 sequences
+[M::worker_pipeline::5834.979*3.91] mapped 333334 sequences
+[M::worker_pipeline::5837.697*3.91] mapped 333334 sequences
+[M::worker_pipeline::5840.380*3.91] mapped 333334 sequences
+[M::worker_pipeline::5842.958*3.91] mapped 333334 sequences
+[M::worker_pipeline::5845.607*3.91] mapped 333334 sequences
+[M::worker_pipeline::5848.230*3.91] mapped 333334 sequences
+[M::worker_pipeline::5850.798*3.91] mapped 333334 sequences
+[M::worker_pipeline::5853.195*3.91] mapped 333334 sequences
+[M::worker_pipeline::5855.778*3.91] mapped 333334 sequences
+[M::worker_pipeline::5858.342*3.91] mapped 333334 sequences
+[M::worker_pipeline::5860.714*3.91] mapped 333334 sequences
+[M::worker_pipeline::5863.278*3.91] mapped 333334 sequences
+[M::worker_pipeline::5865.718*3.91] mapped 333334 sequences
+[M::worker_pipeline::5868.207*3.91] mapped 333334 sequences
+[M::worker_pipeline::5870.545*3.91] mapped 333334 sequences
+[M::worker_pipeline::5873.136*3.91] mapped 333334 sequences
+[M::worker_pipeline::5875.480*3.91] mapped 333334 sequences
+[M::worker_pipeline::5878.278*3.91] mapped 333334 sequences
+[M::worker_pipeline::5880.988*3.91] mapped 333334 sequences
+[M::worker_pipeline::5881.739*3.91] mapped 120702 sequences
+[M::mm_idx_gen::5976.602*3.88] collected minimizers
+[M::mm_idx_gen::5992.578*3.88] sorted minimizers
+[M::main::5992.578*3.88] loaded/built the index for 187934 target sequence(s)
+[M::mm_mapopt_update::5992.578*3.88] mid_occ = 1000
+[M::mm_idx_stat] kmer size: 21; skip: 11; is_hpc: 0; #seq: 187934
+[M::mm_idx_stat::6002.790*3.87] distinct minimizers: 593142266 (91.86% are singletons); average occurrences: 1.131; average spacing: 6.018
+[M::worker_pipeline::6007.577*3.87] mapped 333334 sequences
+[M::worker_pipeline::6009.712*3.88] mapped 333334 sequences
+[M::worker_pipeline::6012.126*3.88] mapped 333334 sequences
+[M::worker_pipeline::6014.306*3.88] mapped 333334 sequences
+[M::worker_pipeline::6016.402*3.88] mapped 333334 sequences
+[M::worker_pipeline::6018.625*3.88] mapped 333334 sequences
+[M::worker_pipeline::6020.852*3.88] mapped 333334 sequences
+[M::worker_pipeline::6023.093*3.88] mapped 333334 sequences
+[M::worker_pipeline::6025.411*3.88] mapped 333334 sequences
+[M::worker_pipeline::6027.689*3.88] mapped 333334 sequences
+[M::worker_pipeline::6030.115*3.88] mapped 333334 sequences
+[M::worker_pipeline::6032.638*3.88] mapped 333334 sequences
+[M::worker_pipeline::6034.955*3.88] mapped 333334 sequences
+[M::worker_pipeline::6037.532*3.88] mapped 333334 sequences
+[M::worker_pipeline::6039.888*3.88] mapped 333334 sequences
+[M::worker_pipeline::6042.352*3.88] mapped 333334 sequences
+[M::worker_pipeline::6044.707*3.88] mapped 333334 sequences
+[M::worker_pipeline::6046.818*3.88] mapped 333334 sequences
+[M::worker_pipeline::6049.549*3.88] mapped 333334 sequences
+[M::worker_pipeline::6051.915*3.88] mapped 333334 sequences
+[M::worker_pipeline::6054.369*3.88] mapped 333334 sequences
+[M::worker_pipeline::6056.880*3.88] mapped 333334 sequences
+[M::worker_pipeline::6059.194*3.88] mapped 333334 sequences
+[M::worker_pipeline::6061.524*3.88] mapped 333334 sequences
+[M::worker_pipeline::6063.748*3.88] mapped 333334 sequences
+[M::worker_pipeline::6066.118*3.88] mapped 333334 sequences
+[M::worker_pipeline::6068.558*3.88] mapped 333334 sequences
+[M::worker_pipeline::6070.869*3.88] mapped 333334 sequences
+[M::worker_pipeline::6073.386*3.88] mapped 333334 sequences
+[M::worker_pipeline::6075.765*3.88] mapped 333334 sequences
+[M::worker_pipeline::6078.168*3.88] mapped 333334 sequences
+[M::worker_pipeline::6080.235*3.88] mapped 333334 sequences
+[M::worker_pipeline::6082.755*3.88] mapped 333334 sequences
+[M::worker_pipeline::6085.038*3.88] mapped 333334 sequences
+[M::worker_pipeline::6087.374*3.88] mapped 333334 sequences
+[M::worker_pipeline::6089.744*3.88] mapped 333334 sequences
+[M::worker_pipeline::6092.196*3.88] mapped 333334 sequences
+[M::worker_pipeline::6094.639*3.88] mapped 333334 sequences
+[M::worker_pipeline::6097.285*3.88] mapped 333334 sequences
+[M::worker_pipeline::6099.600*3.88] mapped 333334 sequences
+[M::worker_pipeline::6102.006*3.88] mapped 333334 sequences
+[M::worker_pipeline::6104.319*3.88] mapped 333334 sequences
+[M::worker_pipeline::6106.795*3.88] mapped 333334 sequences
+[M::worker_pipeline::6109.140*3.88] mapped 333334 sequences
+[M::worker_pipeline::6111.646*3.88] mapped 333334 sequences
+[M::worker_pipeline::6114.008*3.88] mapped 333334 sequences
+[M::worker_pipeline::6116.147*3.88] mapped 333334 sequences
+[M::worker_pipeline::6118.369*3.88] mapped 333334 sequences
+[M::worker_pipeline::6120.856*3.88] mapped 333334 sequences
+[M::worker_pipeline::6123.163*3.89] mapped 333334 sequences
+[M::worker_pipeline::6125.511*3.89] mapped 333334 sequences
+[M::worker_pipeline::6127.767*3.89] mapped 333334 sequences
+[M::worker_pipeline::6130.070*3.89] mapped 333334 sequences
+[M::worker_pipeline::6132.499*3.89] mapped 333334 sequences
+[M::worker_pipeline::6134.657*3.89] mapped 333334 sequences
+[M::worker_pipeline::6137.127*3.89] mapped 333334 sequences
+[M::worker_pipeline::6139.379*3.89] mapped 333334 sequences
+[M::worker_pipeline::6141.548*3.89] mapped 333334 sequences
+[M::worker_pipeline::6143.800*3.89] mapped 333334 sequences
+[M::worker_pipeline::6146.129*3.89] mapped 333334 sequences
+[M::worker_pipeline::6148.651*3.89] mapped 333334 sequences
+[M::worker_pipeline::6151.010*3.89] mapped 333334 sequences
+[M::worker_pipeline::6153.425*3.89] mapped 333334 sequences
+[M::worker_pipeline::6155.842*3.89] mapped 333334 sequences
+[M::worker_pipeline::6158.137*3.89] mapped 333334 sequences
+[M::worker_pipeline::6160.511*3.89] mapped 333334 sequences
+[M::worker_pipeline::6162.809*3.89] mapped 333334 sequences
+[M::worker_pipeline::6165.072*3.89] mapped 333334 sequences
+[M::worker_pipeline::6167.342*3.89] mapped 333334 sequences
+[M::worker_pipeline::6169.295*3.89] mapped 333334 sequences
+[M::worker_pipeline::6172.045*3.89] mapped 333334 sequences
+[M::worker_pipeline::6174.382*3.89] mapped 333334 sequences
+[M::worker_pipeline::6176.562*3.89] mapped 333334 sequences
+[M::worker_pipeline::6179.061*3.89] mapped 333334 sequences
+[M::worker_pipeline::6181.213*3.89] mapped 333334 sequences
+[M::worker_pipeline::6183.497*3.89] mapped 333334 sequences
+[M::worker_pipeline::6185.734*3.89] mapped 333334 sequences
+[M::worker_pipeline::6187.885*3.89] mapped 333334 sequences
+[M::worker_pipeline::6190.234*3.89] mapped 333334 sequences
+[M::worker_pipeline::6192.774*3.89] mapped 333334 sequences
+[M::worker_pipeline::6195.152*3.89] mapped 333334 sequences
+[M::worker_pipeline::6197.673*3.89] mapped 333334 sequences
+[M::worker_pipeline::6199.990*3.89] mapped 333334 sequences
+[M::worker_pipeline::6202.253*3.89] mapped 333334 sequences
+[M::worker_pipeline::6204.732*3.89] mapped 333334 sequences
+[M::worker_pipeline::6207.041*3.89] mapped 333334 sequences
+[M::worker_pipeline::6209.325*3.89] mapped 333334 sequences
+[M::worker_pipeline::6211.748*3.89] mapped 333334 sequences
+[M::worker_pipeline::6214.070*3.89] mapped 333334 sequences
+[M::worker_pipeline::6216.537*3.89] mapped 333334 sequences
+[M::worker_pipeline::6218.969*3.89] mapped 333334 sequences
+[M::worker_pipeline::6221.010*3.89] mapped 333334 sequences
+[M::worker_pipeline::6223.493*3.89] mapped 333334 sequences
+[M::worker_pipeline::6225.630*3.89] mapped 333334 sequences
+[M::worker_pipeline::6228.088*3.89] mapped 333334 sequences
+[M::worker_pipeline::6230.615*3.89] mapped 333334 sequences
+[M::worker_pipeline::6233.075*3.89] mapped 333334 sequences
+[M::worker_pipeline::6235.467*3.89] mapped 333334 sequences
+[M::worker_pipeline::6237.856*3.89] mapped 333334 sequences
+[M::worker_pipeline::6240.193*3.89] mapped 333334 sequences
+[M::worker_pipeline::6242.516*3.90] mapped 333334 sequences
+[M::worker_pipeline::6244.789*3.90] mapped 333334 sequences
+[M::worker_pipeline::6247.101*3.90] mapped 333334 sequences
+[M::worker_pipeline::6249.360*3.90] mapped 333334 sequences
+[M::worker_pipeline::6251.684*3.90] mapped 333334 sequences
+[M::worker_pipeline::6254.088*3.90] mapped 333334 sequences
+[M::worker_pipeline::6256.318*3.90] mapped 333334 sequences
+[M::worker_pipeline::6258.683*3.90] mapped 333334 sequences
+[M::worker_pipeline::6261.134*3.90] mapped 333334 sequences
+[M::worker_pipeline::6263.484*3.90] mapped 333334 sequences
+[M::worker_pipeline::6266.011*3.90] mapped 333334 sequences
+[M::worker_pipeline::6268.233*3.90] mapped 333334 sequences
+[M::worker_pipeline::6270.767*3.90] mapped 333334 sequences
+[M::worker_pipeline::6273.280*3.90] mapped 333334 sequences
+[M::worker_pipeline::6275.717*3.90] mapped 333334 sequences
+[M::worker_pipeline::6278.040*3.90] mapped 333334 sequences
+[M::worker_pipeline::6280.192*3.90] mapped 333334 sequences
+[M::worker_pipeline::6282.625*3.90] mapped 333334 sequences
+[M::worker_pipeline::6284.981*3.90] mapped 333334 sequences
+[M::worker_pipeline::6287.325*3.90] mapped 333334 sequences
+[M::worker_pipeline::6289.641*3.90] mapped 333334 sequences
+[M::worker_pipeline::6292.097*3.90] mapped 333334 sequences
+[M::worker_pipeline::6294.531*3.90] mapped 333334 sequences
+[M::worker_pipeline::6296.825*3.90] mapped 333334 sequences
+[M::worker_pipeline::6299.114*3.90] mapped 333334 sequences
+[M::worker_pipeline::6301.406*3.90] mapped 333334 sequences
+[M::worker_pipeline::6303.818*3.90] mapped 333334 sequences
+[M::worker_pipeline::6306.031*3.90] mapped 333334 sequences
+[M::worker_pipeline::6308.677*3.90] mapped 333334 sequences
+[M::worker_pipeline::6310.972*3.90] mapped 333334 sequences
+[M::worker_pipeline::6313.242*3.90] mapped 333334 sequences
+[M::worker_pipeline::6315.482*3.90] mapped 333334 sequences
+[M::worker_pipeline::6317.807*3.90] mapped 333334 sequences
+[M::worker_pipeline::6319.731*3.90] mapped 333334 sequences
+[M::worker_pipeline::6322.494*3.90] mapped 333334 sequences
+[M::worker_pipeline::6324.772*3.90] mapped 333334 sequences
+[M::worker_pipeline::6327.069*3.90] mapped 333334 sequences
+[M::worker_pipeline::6329.345*3.90] mapped 333334 sequences
+[M::worker_pipeline::6331.532*3.90] mapped 333334 sequences
+[M::worker_pipeline::6333.707*3.90] mapped 333334 sequences
+[M::worker_pipeline::6336.024*3.90] mapped 333334 sequences
+[M::worker_pipeline::6338.411*3.90] mapped 333334 sequences
+[M::worker_pipeline::6340.624*3.90] mapped 333334 sequences
+[M::worker_pipeline::6343.251*3.90] mapped 333334 sequences
+[M::worker_pipeline::6345.567*3.90] mapped 333334 sequences
+[M::worker_pipeline::6347.884*3.90] mapped 333334 sequences
+[M::worker_pipeline::6350.163*3.90] mapped 333334 sequences
+[M::worker_pipeline::6352.472*3.90] mapped 333334 sequences
+[M::worker_pipeline::6354.823*3.90] mapped 333334 sequences
+[M::worker_pipeline::6356.762*3.90] mapped 333334 sequences
+[M::worker_pipeline::6359.453*3.90] mapped 333334 sequences
+[M::worker_pipeline::6361.497*3.90] mapped 333334 sequences
+[M::worker_pipeline::6364.021*3.90] mapped 333334 sequences
+[M::worker_pipeline::6366.721*3.91] mapped 333334 sequences
+[M::worker_pipeline::6369.035*3.91] mapped 333334 sequences
+[M::worker_pipeline::6371.505*3.91] mapped 333334 sequences
+[M::worker_pipeline::6373.762*3.91] mapped 333334 sequences
+[M::worker_pipeline::6376.211*3.91] mapped 333334 sequences
+[M::worker_pipeline::6378.491*3.91] mapped 333334 sequences
+[M::worker_pipeline::6380.750*3.91] mapped 333334 sequences
+[M::worker_pipeline::6383.025*3.91] mapped 333334 sequences
+[M::worker_pipeline::6385.234*3.91] mapped 333334 sequences
+[M::worker_pipeline::6387.574*3.91] mapped 333334 sequences
+[M::worker_pipeline::6389.862*3.91] mapped 333334 sequences
+[M::worker_pipeline::6392.296*3.91] mapped 333334 sequences
+[M::worker_pipeline::6394.513*3.91] mapped 333334 sequences
+[M::worker_pipeline::6396.571*3.91] mapped 333334 sequences
+[M::worker_pipeline::6399.053*3.91] mapped 333334 sequences
+[M::worker_pipeline::6401.465*3.91] mapped 333334 sequences
+[M::worker_pipeline::6403.994*3.91] mapped 333334 sequences
+[M::worker_pipeline::6406.265*3.91] mapped 333334 sequences
+[M::worker_pipeline::6408.623*3.91] mapped 333334 sequences
+[M::worker_pipeline::6410.854*3.91] mapped 333334 sequences
+[M::worker_pipeline::6413.162*3.91] mapped 333334 sequences
+[M::worker_pipeline::6415.581*3.91] mapped 333334 sequences
+[M::worker_pipeline::6417.743*3.91] mapped 333334 sequences
+[M::worker_pipeline::6420.000*3.91] mapped 333334 sequences
+[M::worker_pipeline::6422.294*3.91] mapped 333334 sequences
+[M::worker_pipeline::6424.542*3.91] mapped 333334 sequences
+[M::worker_pipeline::6426.729*3.91] mapped 333334 sequences
+[M::worker_pipeline::6429.252*3.91] mapped 333334 sequences
+[M::worker_pipeline::6431.576*3.91] mapped 333334 sequences
+[M::worker_pipeline::6433.954*3.91] mapped 333334 sequences
+[M::worker_pipeline::6436.305*3.91] mapped 333334 sequences
+[M::worker_pipeline::6438.736*3.91] mapped 333334 sequences
+[M::worker_pipeline::6441.046*3.91] mapped 333334 sequences
+[M::worker_pipeline::6443.402*3.91] mapped 333334 sequences
+[M::worker_pipeline::6445.502*3.91] mapped 333334 sequences
+[M::worker_pipeline::6447.884*3.91] mapped 333334 sequences
+[M::worker_pipeline::6450.168*3.91] mapped 333334 sequences
+[M::worker_pipeline::6452.301*3.91] mapped 333334 sequences
+[M::worker_pipeline::6454.940*3.91] mapped 333334 sequences
+[M::worker_pipeline::6457.164*3.91] mapped 333334 sequences
+[M::worker_pipeline::6459.505*3.91] mapped 333334 sequences
+[M::worker_pipeline::6461.656*3.91] mapped 333334 sequences
+[M::worker_pipeline::6464.173*3.91] mapped 333334 sequences
+[M::worker_pipeline::6466.080*3.91] mapped 333334 sequences
+[M::worker_pipeline::6468.775*3.91] mapped 333334 sequences
+[M::worker_pipeline::6471.064*3.91] mapped 333334 sequences
+[M::worker_pipeline::6473.443*3.91] mapped 333334 sequences
+[M::worker_pipeline::6475.923*3.91] mapped 333334 sequences
+[M::worker_pipeline::6478.312*3.91] mapped 333334 sequences
+[M::worker_pipeline::6480.451*3.91] mapped 333334 sequences
+[M::worker_pipeline::6482.833*3.91] mapped 333334 sequences
+[M::worker_pipeline::6485.188*3.91] mapped 333334 sequences
+[M::worker_pipeline::6487.337*3.91] mapped 333334 sequences
+[M::worker_pipeline::6489.589*3.91] mapped 333334 sequences
+[M::worker_pipeline::6491.845*3.91] mapped 333334 sequences
+[M::worker_pipeline::6494.069*3.91] mapped 333334 sequences
+[M::worker_pipeline::6496.421*3.91] mapped 333334 sequences
+[M::worker_pipeline::6498.647*3.92] mapped 333334 sequences
+[M::worker_pipeline::6500.962*3.92] mapped 333334 sequences
+[M::worker_pipeline::6503.204*3.92] mapped 333334 sequences
+[M::worker_pipeline::6505.419*3.92] mapped 333334 sequences
+[M::worker_pipeline::6507.761*3.92] mapped 333334 sequences
+[M::worker_pipeline::6509.909*3.92] mapped 333334 sequences
+[M::worker_pipeline::6512.294*3.92] mapped 333334 sequences
+[M::worker_pipeline::6514.623*3.92] mapped 333334 sequences
+[M::worker_pipeline::6516.816*3.92] mapped 333334 sequences
+[M::worker_pipeline::6519.176*3.92] mapped 333334 sequences
+[M::worker_pipeline::6521.430*3.92] mapped 333334 sequences
+[M::worker_pipeline::6523.690*3.92] mapped 333334 sequences
+[M::worker_pipeline::6525.962*3.92] mapped 333334 sequences
+[M::worker_pipeline::6528.147*3.92] mapped 333334 sequences
+[M::worker_pipeline::6530.437*3.92] mapped 333334 sequences
+[M::worker_pipeline::6532.803*3.92] mapped 333334 sequences
+[M::worker_pipeline::6535.046*3.92] mapped 333334 sequences
+[M::worker_pipeline::6537.454*3.92] mapped 333334 sequences
+[M::worker_pipeline::6539.753*3.92] mapped 333334 sequences
+[M::worker_pipeline::6542.147*3.92] mapped 333334 sequences
+[M::worker_pipeline::6544.465*3.92] mapped 333334 sequences
+[M::worker_pipeline::6546.828*3.92] mapped 333334 sequences
+[M::worker_pipeline::6549.159*3.92] mapped 333334 sequences
+[M::worker_pipeline::6551.511*3.92] mapped 333334 sequences
+[M::worker_pipeline::6553.828*3.92] mapped 333334 sequences
+[M::worker_pipeline::6556.037*3.92] mapped 333334 sequences
+[M::worker_pipeline::6558.446*3.92] mapped 333334 sequences
+[M::worker_pipeline::6560.701*3.92] mapped 333334 sequences
+[M::worker_pipeline::6562.916*3.92] mapped 333334 sequences
+[M::worker_pipeline::6565.302*3.92] mapped 333334 sequences
+[M::worker_pipeline::6567.646*3.92] mapped 333334 sequences
+[M::worker_pipeline::6570.006*3.92] mapped 333334 sequences
+[M::worker_pipeline::6572.404*3.92] mapped 333334 sequences
+[M::worker_pipeline::6574.711*3.92] mapped 333334 sequences
+[M::worker_pipeline::6577.059*3.92] mapped 333334 sequences
+[M::worker_pipeline::6579.246*3.92] mapped 333334 sequences
+[M::worker_pipeline::6581.578*3.92] mapped 333334 sequences
+[M::worker_pipeline::6583.942*3.92] mapped 333334 sequences
+[M::worker_pipeline::6586.182*3.92] mapped 333334 sequences
+[M::worker_pipeline::6588.458*3.92] mapped 333334 sequences
+[M::worker_pipeline::6590.732*3.92] mapped 333334 sequences
+[M::worker_pipeline::6592.967*3.92] mapped 333334 sequences
+[M::worker_pipeline::6595.290*3.92] mapped 333334 sequences
+[M::worker_pipeline::6597.558*3.92] mapped 333334 sequences
+[M::worker_pipeline::6599.855*3.92] mapped 333334 sequences
+[M::worker_pipeline::6602.080*3.92] mapped 333334 sequences
+[M::worker_pipeline::6604.183*3.92] mapped 333334 sequences
+[M::worker_pipeline::6606.600*3.92] mapped 333334 sequences
+[M::worker_pipeline::6608.735*3.92] mapped 333334 sequences
+[M::worker_pipeline::6611.148*3.92] mapped 333334 sequences
+[M::worker_pipeline::6613.346*3.92] mapped 333334 sequences
+[M::worker_pipeline::6615.747*3.92] mapped 333334 sequences
+[M::worker_pipeline::6618.063*3.92] mapped 333334 sequences
+[M::worker_pipeline::6620.337*3.92] mapped 333334 sequences
+[M::worker_pipeline::6622.608*3.92] mapped 333334 sequences
+[M::worker_pipeline::6624.880*3.92] mapped 333334 sequences
+[M::worker_pipeline::6626.973*3.92] mapped 333334 sequences
+[M::worker_pipeline::6629.259*3.92] mapped 333334 sequences
+[M::worker_pipeline::6631.522*3.92] mapped 333334 sequences
+[M::worker_pipeline::6633.730*3.93] mapped 333334 sequences
+[M::worker_pipeline::6636.072*3.93] mapped 333334 sequences
+[M::worker_pipeline::6638.289*3.93] mapped 333334 sequences
+[M::worker_pipeline::6640.574*3.93] mapped 333334 sequences
+[M::worker_pipeline::6642.758*3.93] mapped 333334 sequences
+[M::worker_pipeline::6644.942*3.93] mapped 333334 sequences
+[M::worker_pipeline::6646.805*3.93] mapped 333334 sequences
+[M::worker_pipeline::6649.539*3.93] mapped 333334 sequences
+[M::worker_pipeline::6651.778*3.93] mapped 333334 sequences
+[M::worker_pipeline::6654.059*3.93] mapped 333334 sequences
+[M::worker_pipeline::6656.057*3.93] mapped 333334 sequences
+[M::worker_pipeline::6658.670*3.93] mapped 333334 sequences
+[M::worker_pipeline::6660.894*3.93] mapped 333334 sequences
+[M::worker_pipeline::6663.211*3.93] mapped 333334 sequences
+[M::worker_pipeline::6665.475*3.93] mapped 333334 sequences
+[M::worker_pipeline::6667.706*3.93] mapped 333334 sequences
+[M::worker_pipeline::6670.004*3.93] mapped 333334 sequences
+[M::worker_pipeline::6671.906*3.93] mapped 333334 sequences
+[M::worker_pipeline::6674.246*3.93] mapped 333334 sequences
+[M::worker_pipeline::6676.806*3.93] mapped 333334 sequences
+[M::worker_pipeline::6679.080*3.93] mapped 333334 sequences
+[M::worker_pipeline::6681.282*3.93] mapped 333334 sequences
+[M::worker_pipeline::6683.521*3.93] mapped 333334 sequences
+[M::worker_pipeline::6685.749*3.93] mapped 333334 sequences
+[M::worker_pipeline::6687.912*3.93] mapped 333334 sequences
+[M::worker_pipeline::6690.148*3.93] mapped 333334 sequences
+[M::worker_pipeline::6692.454*3.93] mapped 333334 sequences
+[M::worker_pipeline::6694.734*3.93] mapped 333334 sequences
+[M::worker_pipeline::6696.836*3.93] mapped 333334 sequences
+[M::worker_pipeline::6699.084*3.93] mapped 333334 sequences
+[M::worker_pipeline::6699.786*3.93] mapped 120702 sequences
+[M::mm_idx_gen::6727.546*3.92] collected minimizers
+[M::mm_idx_gen::6732.027*3.92] sorted minimizers
+[M::main::6732.027*3.92] loaded/built the index for 64601 target sequence(s)
+[M::mm_mapopt_update::6732.027*3.92] mid_occ = 1000
+[M::mm_idx_stat] kmer size: 21; skip: 11; is_hpc: 0; #seq: 64601
+[M::mm_idx_stat::6734.050*3.92] distinct minimizers: 185215934 (95.76% are singletons); average occurrences: 1.074; average spacing: 6.040
+[M::worker_pipeline::6736.768*3.92] mapped 333334 sequences
+[M::worker_pipeline::6738.050*3.92] mapped 333334 sequences
+[M::worker_pipeline::6739.234*3.92] mapped 333334 sequences
+[M::worker_pipeline::6740.497*3.92] mapped 333334 sequences
+[M::worker_pipeline::6741.824*3.92] mapped 333334 sequences
+[M::worker_pipeline::6743.122*3.92] mapped 333334 sequences
+[M::worker_pipeline::6744.171*3.92] mapped 333334 sequences
+[M::worker_pipeline::6745.428*3.92] mapped 333334 sequences
+[M::worker_pipeline::6746.737*3.92] mapped 333334 sequences
+[M::worker_pipeline::6748.056*3.92] mapped 333334 sequences
+[M::worker_pipeline::6749.386*3.92] mapped 333334 sequences
+[M::worker_pipeline::6750.617*3.92] mapped 333334 sequences
+[M::worker_pipeline::6751.969*3.92] mapped 333334 sequences
+[M::worker_pipeline::6753.265*3.92] mapped 333334 sequences
+[M::worker_pipeline::6754.525*3.92] mapped 333334 sequences
+[M::worker_pipeline::6755.763*3.92] mapped 333334 sequences
+[M::worker_pipeline::6757.101*3.92] mapped 333334 sequences
+[M::worker_pipeline::6758.325*3.92] mapped 333334 sequences
+[M::worker_pipeline::6759.592*3.92] mapped 333334 sequences
+[M::worker_pipeline::6760.903*3.92] mapped 333334 sequences
+[M::worker_pipeline::6762.115*3.92] mapped 333334 sequences
+[M::worker_pipeline::6763.458*3.92] mapped 333334 sequences
+[M::worker_pipeline::6764.747*3.92] mapped 333334 sequences
+[M::worker_pipeline::6766.073*3.92] mapped 333334 sequences
+[M::worker_pipeline::6767.358*3.92] mapped 333334 sequences
+[M::worker_pipeline::6768.619*3.92] mapped 333334 sequences
+[M::worker_pipeline::6769.882*3.92] mapped 333334 sequences
+[M::worker_pipeline::6771.122*3.92] mapped 333334 sequences
+[M::worker_pipeline::6772.353*3.92] mapped 333334 sequences
+[M::worker_pipeline::6773.611*3.92] mapped 333334 sequences
+[M::worker_pipeline::6774.852*3.92] mapped 333334 sequences
+[M::worker_pipeline::6776.092*3.92] mapped 333334 sequences
+[M::worker_pipeline::6777.209*3.92] mapped 333334 sequences
+[M::worker_pipeline::6778.658*3.92] mapped 333334 sequences
+[M::worker_pipeline::6779.825*3.92] mapped 333334 sequences
+[M::worker_pipeline::6781.070*3.92] mapped 333334 sequences
+[M::worker_pipeline::6782.372*3.92] mapped 333334 sequences
+[M::worker_pipeline::6783.537*3.92] mapped 333334 sequences
+[M::worker_pipeline::6784.877*3.92] mapped 333334 sequences
+[M::worker_pipeline::6786.108*3.92] mapped 333334 sequences
+[M::worker_pipeline::6787.442*3.92] mapped 333334 sequences
+[M::worker_pipeline::6788.744*3.92] mapped 333334 sequences
+[M::worker_pipeline::6789.892*3.92] mapped 333334 sequences
+[M::worker_pipeline::6791.141*3.92] mapped 333334 sequences
+[M::worker_pipeline::6792.410*3.92] mapped 333334 sequences
+[M::worker_pipeline::6793.757*3.92] mapped 333334 sequences
+[M::worker_pipeline::6795.057*3.92] mapped 333334 sequences
+[M::worker_pipeline::6796.260*3.92] mapped 333334 sequences
+[M::worker_pipeline::6797.467*3.92] mapped 333334 sequences
+[M::worker_pipeline::6798.780*3.92] mapped 333334 sequences
+[M::worker_pipeline::6800.013*3.92] mapped 333334 sequences
+[M::worker_pipeline::6801.321*3.92] mapped 333334 sequences
+[M::worker_pipeline::6802.624*3.92] mapped 333334 sequences
+[M::worker_pipeline::6803.739*3.92] mapped 333334 sequences
+[M::worker_pipeline::6804.990*3.92] mapped 333334 sequences
+[M::worker_pipeline::6806.310*3.92] mapped 333334 sequences
+[M::worker_pipeline::6807.611*3.92] mapped 333334 sequences
+[M::worker_pipeline::6808.853*3.92] mapped 333334 sequences
+[M::worker_pipeline::6810.080*3.92] mapped 333334 sequences
+[M::worker_pipeline::6811.401*3.93] mapped 333334 sequences
+[M::worker_pipeline::6812.690*3.93] mapped 333334 sequences
+[M::worker_pipeline::6813.902*3.93] mapped 333334 sequences
+[M::worker_pipeline::6815.021*3.93] mapped 333334 sequences
+[M::worker_pipeline::6816.406*3.93] mapped 333334 sequences
+[M::worker_pipeline::6817.584*3.93] mapped 333334 sequences
+[M::worker_pipeline::6818.833*3.93] mapped 333334 sequences
+[M::worker_pipeline::6820.245*3.93] mapped 333334 sequences
+[M::worker_pipeline::6821.556*3.93] mapped 333334 sequences
+[M::worker_pipeline::6822.895*3.93] mapped 333334 sequences
+[M::worker_pipeline::6824.204*3.93] mapped 333334 sequences
+[M::worker_pipeline::6825.502*3.93] mapped 333334 sequences
+[M::worker_pipeline::6826.714*3.93] mapped 333334 sequences
+[M::worker_pipeline::6827.968*3.93] mapped 333334 sequences
+[M::worker_pipeline::6829.311*3.93] mapped 333334 sequences
+[M::worker_pipeline::6830.609*3.93] mapped 333334 sequences
+[M::worker_pipeline::6832.015*3.93] mapped 333334 sequences
+[M::worker_pipeline::6833.307*3.93] mapped 333334 sequences
+[M::worker_pipeline::6834.545*3.93] mapped 333334 sequences
+[M::worker_pipeline::6835.826*3.93] mapped 333334 sequences
+[M::worker_pipeline::6837.075*3.93] mapped 333334 sequences
+[M::worker_pipeline::6838.401*3.93] mapped 333334 sequences
+[M::worker_pipeline::6839.685*3.93] mapped 333334 sequences
+[M::worker_pipeline::6841.010*3.93] mapped 333334 sequences
+[M::worker_pipeline::6842.389*3.93] mapped 333334 sequences
+[M::worker_pipeline::6843.617*3.93] mapped 333334 sequences
+[M::worker_pipeline::6844.898*3.93] mapped 333334 sequences
+[M::worker_pipeline::6846.232*3.93] mapped 333334 sequences
+[M::worker_pipeline::6847.534*3.93] mapped 333334 sequences
+[M::worker_pipeline::6848.813*3.93] mapped 333334 sequences
+[M::worker_pipeline::6850.138*3.93] mapped 333334 sequences
+[M::worker_pipeline::6851.441*3.93] mapped 333334 sequences
+[M::worker_pipeline::6852.760*3.93] mapped 333334 sequences
+[M::worker_pipeline::6854.059*3.93] mapped 333334 sequences
+[M::worker_pipeline::6855.487*3.93] mapped 333334 sequences
+[M::worker_pipeline::6856.699*3.93] mapped 333334 sequences
+[M::worker_pipeline::6857.899*3.93] mapped 333334 sequences
+[M::worker_pipeline::6859.095*3.93] mapped 333334 sequences
+[M::worker_pipeline::6860.296*3.93] mapped 333334 sequences
+[M::worker_pipeline::6861.581*3.93] mapped 333334 sequences
+[M::worker_pipeline::6862.903*3.93] mapped 333334 sequences
+[M::worker_pipeline::6864.305*3.93] mapped 333334 sequences
+[M::worker_pipeline::6865.611*3.93] mapped 333334 sequences
+[M::worker_pipeline::6866.895*3.93] mapped 333334 sequences
+[M::worker_pipeline::6868.148*3.93] mapped 333334 sequences
+[M::worker_pipeline::6869.558*3.93] mapped 333334 sequences
+[M::worker_pipeline::6870.876*3.93] mapped 333334 sequences
+[M::worker_pipeline::6872.241*3.93] mapped 333334 sequences
+[M::worker_pipeline::6873.548*3.93] mapped 333334 sequences
+[M::worker_pipeline::6874.823*3.93] mapped 333334 sequences
+[M::worker_pipeline::6875.914*3.93] mapped 333334 sequences
+[M::worker_pipeline::6877.231*3.93] mapped 333334 sequences
+[M::worker_pipeline::6878.547*3.93] mapped 333334 sequences
+[M::worker_pipeline::6879.872*3.93] mapped 333334 sequences
+[M::worker_pipeline::6881.125*3.93] mapped 333334 sequences
+[M::worker_pipeline::6882.404*3.93] mapped 333334 sequences
+[M::worker_pipeline::6883.725*3.93] mapped 333334 sequences
+[M::worker_pipeline::6884.873*3.93] mapped 333334 sequences
+[M::worker_pipeline::6886.062*3.93] mapped 333334 sequences
+[M::worker_pipeline::6887.329*3.93] mapped 333334 sequences
+[M::worker_pipeline::6888.594*3.93] mapped 333334 sequences
+[M::worker_pipeline::6889.964*3.93] mapped 333334 sequences
+[M::worker_pipeline::6891.108*3.93] mapped 333334 sequences
+[M::worker_pipeline::6892.347*3.93] mapped 333334 sequences
+[M::worker_pipeline::6893.577*3.93] mapped 333334 sequences
+[M::worker_pipeline::6894.863*3.93] mapped 333334 sequences
+[M::worker_pipeline::6896.173*3.93] mapped 333334 sequences
+[M::worker_pipeline::6897.601*3.93] mapped 333334 sequences
+[M::worker_pipeline::6898.868*3.93] mapped 333334 sequences
+[M::worker_pipeline::6900.174*3.93] mapped 333334 sequences
+[M::worker_pipeline::6901.246*3.93] mapped 333334 sequences
+[M::worker_pipeline::6902.545*3.93] mapped 333334 sequences
+[M::worker_pipeline::6903.825*3.93] mapped 333334 sequences
+[M::worker_pipeline::6905.023*3.93] mapped 333334 sequences
+[M::worker_pipeline::6906.231*3.93] mapped 333334 sequences
+[M::worker_pipeline::6907.440*3.93] mapped 333334 sequences
+[M::worker_pipeline::6908.787*3.93] mapped 333334 sequences
+[M::worker_pipeline::6910.055*3.93] mapped 333334 sequences
+[M::worker_pipeline::6911.304*3.93] mapped 333334 sequences
+[M::worker_pipeline::6912.561*3.93] mapped 333334 sequences
+[M::worker_pipeline::6913.912*3.93] mapped 333334 sequences
+[M::worker_pipeline::6915.152*3.93] mapped 333334 sequences
+[M::worker_pipeline::6916.486*3.93] mapped 333334 sequences
+[M::worker_pipeline::6917.695*3.93] mapped 333334 sequences
+[M::worker_pipeline::6918.989*3.93] mapped 333334 sequences
+[M::worker_pipeline::6920.165*3.93] mapped 333334 sequences
+[M::worker_pipeline::6921.485*3.93] mapped 333334 sequences
+[M::worker_pipeline::6922.805*3.93] mapped 333334 sequences
+[M::worker_pipeline::6923.958*3.93] mapped 333334 sequences
+[M::worker_pipeline::6925.282*3.93] mapped 333334 sequences
+[M::worker_pipeline::6926.535*3.93] mapped 333334 sequences
+[M::worker_pipeline::6927.832*3.93] mapped 333334 sequences
+[M::worker_pipeline::6929.139*3.93] mapped 333334 sequences
+[M::worker_pipeline::6930.493*3.93] mapped 333334 sequences
+[M::worker_pipeline::6931.753*3.93] mapped 333334 sequences
+[M::worker_pipeline::6932.977*3.93] mapped 333334 sequences
+[M::worker_pipeline::6934.339*3.93] mapped 333334 sequences
+[M::worker_pipeline::6935.635*3.93] mapped 333334 sequences
+[M::worker_pipeline::6936.881*3.93] mapped 333334 sequences
+[M::worker_pipeline::6938.098*3.94] mapped 333334 sequences
+[M::worker_pipeline::6939.409*3.94] mapped 333334 sequences
+[M::worker_pipeline::6940.712*3.94] mapped 333334 sequences
+[M::worker_pipeline::6942.035*3.94] mapped 333334 sequences
+[M::worker_pipeline::6943.335*3.94] mapped 333334 sequences
+[M::worker_pipeline::6944.653*3.94] mapped 333334 sequences
+[M::worker_pipeline::6945.817*3.94] mapped 333334 sequences
+[M::worker_pipeline::6946.896*3.94] mapped 333334 sequences
+[M::worker_pipeline::6948.129*3.94] mapped 333334 sequences
+[M::worker_pipeline::6949.467*3.94] mapped 333334 sequences
+[M::worker_pipeline::6950.728*3.94] mapped 333334 sequences
+[M::worker_pipeline::6951.959*3.94] mapped 333334 sequences
+[M::worker_pipeline::6953.309*3.94] mapped 333334 sequences
+[M::worker_pipeline::6954.681*3.94] mapped 333334 sequences
+[M::worker_pipeline::6955.768*3.94] mapped 333334 sequences
+[M::worker_pipeline::6957.035*3.94] mapped 333334 sequences
+[M::worker_pipeline::6958.289*3.94] mapped 333334 sequences
+[M::worker_pipeline::6959.499*3.94] mapped 333334 sequences
+[M::worker_pipeline::6960.525*3.94] mapped 333334 sequences
+[M::worker_pipeline::6961.768*3.94] mapped 333334 sequences
+[M::worker_pipeline::6963.005*3.94] mapped 333334 sequences
+[M::worker_pipeline::6964.108*3.94] mapped 333334 sequences
+[M::worker_pipeline::6965.425*3.94] mapped 333334 sequences
+[M::worker_pipeline::6966.782*3.94] mapped 333334 sequences
+[M::worker_pipeline::6968.066*3.94] mapped 333334 sequences
+[M::worker_pipeline::6969.364*3.94] mapped 333334 sequences
+[M::worker_pipeline::6970.818*3.94] mapped 333334 sequences
+[M::worker_pipeline::6972.072*3.94] mapped 333334 sequences
+[M::worker_pipeline::6973.317*3.94] mapped 333334 sequences
+[M::worker_pipeline::6974.583*3.94] mapped 333334 sequences
+[M::worker_pipeline::6975.866*3.94] mapped 333334 sequences
+[M::worker_pipeline::6977.068*3.94] mapped 333334 sequences
+[M::worker_pipeline::6978.243*3.94] mapped 333334 sequences
+[M::worker_pipeline::6979.493*3.94] mapped 333334 sequences
+[M::worker_pipeline::6980.697*3.94] mapped 333334 sequences
+[M::worker_pipeline::6982.025*3.94] mapped 333334 sequences
+[M::worker_pipeline::6983.301*3.94] mapped 333334 sequences
+[M::worker_pipeline::6984.582*3.94] mapped 333334 sequences
+[M::worker_pipeline::6985.994*3.94] mapped 333334 sequences
+[M::worker_pipeline::6987.377*3.94] mapped 333334 sequences
+[M::worker_pipeline::6988.649*3.94] mapped 333334 sequences
+[M::worker_pipeline::6989.889*3.94] mapped 333334 sequences
+[M::worker_pipeline::6991.167*3.94] mapped 333334 sequences
+[M::worker_pipeline::6992.383*3.94] mapped 333334 sequences
+[M::worker_pipeline::6993.527*3.94] mapped 333334 sequences
+[M::worker_pipeline::6994.842*3.94] mapped 333334 sequences
+[M::worker_pipeline::6996.109*3.94] mapped 333334 sequences
+[M::worker_pipeline::6997.387*3.94] mapped 333334 sequences
+[M::worker_pipeline::6998.657*3.94] mapped 333334 sequences
+[M::worker_pipeline::6999.967*3.94] mapped 333334 sequences
+[M::worker_pipeline::7001.347*3.94] mapped 333334 sequences
+[M::worker_pipeline::7002.661*3.94] mapped 333334 sequences
+[M::worker_pipeline::7003.741*3.94] mapped 333334 sequences
+[M::worker_pipeline::7005.045*3.94] mapped 333334 sequences
+[M::worker_pipeline::7006.464*3.94] mapped 333334 sequences
+[M::worker_pipeline::7007.848*3.94] mapped 333334 sequences
+[M::worker_pipeline::7009.213*3.94] mapped 333334 sequences
+[M::worker_pipeline::7010.647*3.94] mapped 333334 sequences
+[M::worker_pipeline::7012.008*3.94] mapped 333334 sequences
+[M::worker_pipeline::7013.266*3.94] mapped 333334 sequences
+[M::worker_pipeline::7014.612*3.94] mapped 333334 sequences
+[M::worker_pipeline::7015.856*3.94] mapped 333334 sequences
+[M::worker_pipeline::7017.182*3.94] mapped 333334 sequences
+[M::worker_pipeline::7018.439*3.94] mapped 333334 sequences
+[M::worker_pipeline::7019.713*3.94] mapped 333334 sequences
+[M::worker_pipeline::7021.049*3.94] mapped 333334 sequences
+[M::worker_pipeline::7022.338*3.94] mapped 333334 sequences
+[M::worker_pipeline::7023.528*3.94] mapped 333334 sequences
+[M::worker_pipeline::7024.839*3.94] mapped 333334 sequences
+[M::worker_pipeline::7026.170*3.94] mapped 333334 sequences
+[M::worker_pipeline::7027.248*3.94] mapped 333334 sequences
+[M::worker_pipeline::7028.400*3.94] mapped 333334 sequences
+[M::worker_pipeline::7029.620*3.94] mapped 333334 sequences
+[M::worker_pipeline::7030.899*3.94] mapped 333334 sequences
+[M::worker_pipeline::7032.241*3.94] mapped 333334 sequences
+[M::worker_pipeline::7033.448*3.94] mapped 333334 sequences
+[M::worker_pipeline::7034.763*3.94] mapped 333334 sequences
+[M::worker_pipeline::7036.007*3.94] mapped 333334 sequences
+[M::worker_pipeline::7037.308*3.94] mapped 333334 sequences
+[M::worker_pipeline::7038.588*3.94] mapped 333334 sequences
+[M::worker_pipeline::7039.908*3.94] mapped 333334 sequences
+[M::worker_pipeline::7041.057*3.94] mapped 333334 sequences
+[M::worker_pipeline::7042.371*3.94] mapped 333334 sequences
+[M::worker_pipeline::7043.783*3.94] mapped 333334 sequences
+[M::worker_pipeline::7045.170*3.94] mapped 333334 sequences
+[M::worker_pipeline::7046.473*3.94] mapped 333334 sequences
+[M::worker_pipeline::7047.783*3.94] mapped 333334 sequences
+[M::worker_pipeline::7049.098*3.94] mapped 333334 sequences
+[M::worker_pipeline::7050.346*3.94] mapped 333334 sequences
+[M::worker_pipeline::7051.632*3.94] mapped 333334 sequences
+[M::worker_pipeline::7052.960*3.94] mapped 333334 sequences
+[M::worker_pipeline::7054.254*3.94] mapped 333334 sequences
+[M::worker_pipeline::7055.624*3.94] mapped 333334 sequences
+[M::worker_pipeline::7056.990*3.95] mapped 333334 sequences
+[M::worker_pipeline::7058.401*3.95] mapped 333334 sequences
+[M::worker_pipeline::7059.694*3.95] mapped 333334 sequences
+[M::worker_pipeline::7061.042*3.95] mapped 333334 sequences
+[M::worker_pipeline::7062.372*3.95] mapped 333334 sequences
+[M::worker_pipeline::7063.603*3.95] mapped 333334 sequences
+[M::worker_pipeline::7064.955*3.95] mapped 333334 sequences
+[M::worker_pipeline::7066.240*3.95] mapped 333334 sequences
+[M::worker_pipeline::7067.610*3.95] mapped 333334 sequences
+[M::worker_pipeline::7068.978*3.95] mapped 333334 sequences
+[M::worker_pipeline::7070.256*3.95] mapped 333334 sequences
+[M::worker_pipeline::7071.592*3.95] mapped 333334 sequences
+[M::worker_pipeline::7072.953*3.95] mapped 333334 sequences
+[M::worker_pipeline::7074.377*3.95] mapped 333334 sequences
+[M::worker_pipeline::7075.736*3.95] mapped 333334 sequences
+[M::worker_pipeline::7077.037*3.95] mapped 333334 sequences
+[M::worker_pipeline::7078.331*3.95] mapped 333334 sequences
+[M::worker_pipeline::7079.713*3.95] mapped 333334 sequences
+[M::worker_pipeline::7080.994*3.95] mapped 333334 sequences
+[M::worker_pipeline::7082.404*3.95] mapped 333334 sequences
+[M::worker_pipeline::7083.722*3.95] mapped 333334 sequences
+[M::worker_pipeline::7085.015*3.95] mapped 333334 sequences
+[M::worker_pipeline::7086.267*3.95] mapped 333334 sequences
+[M::worker_pipeline::7087.508*3.95] mapped 333334 sequences
+[M::worker_pipeline::7088.793*3.95] mapped 333334 sequences
+[M::worker_pipeline::7090.092*3.95] mapped 333334 sequences
+[M::worker_pipeline::7091.415*3.95] mapped 333334 sequences
+[M::worker_pipeline::7092.713*3.95] mapped 333334 sequences
+[M::worker_pipeline::7094.006*3.95] mapped 333334 sequences
+[M::worker_pipeline::7095.328*3.95] mapped 333334 sequences
+[M::worker_pipeline::7096.599*3.95] mapped 333334 sequences
+[M::worker_pipeline::7097.795*3.95] mapped 333334 sequences
+[M::worker_pipeline::7098.807*3.95] mapped 333334 sequences
+[M::worker_pipeline::7100.051*3.95] mapped 333334 sequences
+[M::worker_pipeline::7101.314*3.95] mapped 333334 sequences
+[M::worker_pipeline::7102.533*3.95] mapped 333334 sequences
+[M::worker_pipeline::7103.711*3.95] mapped 333334 sequences
+[M::worker_pipeline::7104.832*3.95] mapped 333334 sequences
+[M::worker_pipeline::7106.090*3.95] mapped 333334 sequences
+[M::worker_pipeline::7107.418*3.95] mapped 333334 sequences
+[M::worker_pipeline::7108.755*3.95] mapped 333334 sequences
+[M::worker_pipeline::7110.057*3.95] mapped 333334 sequences
+[M::worker_pipeline::7111.354*3.95] mapped 333334 sequences
+[M::worker_pipeline::7112.720*3.95] mapped 333334 sequences
+[M::worker_pipeline::7113.977*3.95] mapped 333334 sequences
+[M::worker_pipeline::7115.263*3.95] mapped 333334 sequences
+[M::worker_pipeline::7116.419*3.95] mapped 333334 sequences
+[M::worker_pipeline::7117.668*3.95] mapped 333334 sequences
+[M::worker_pipeline::7118.130*3.95] mapped 120702 sequences
+[M::main] Version: 2.17-r954-dirty
+[M::main] CMD: /home/Metalign/minimap2/minimap2 -ax sr -t 4 -2 -n1 --secondary=yes TEMP_metalign/cmashed_db.fna /home/workdir/1cami/challenge_med/RM2_S002__insert_270.fq
+[M::main] Real time: 7118.296 sec; CPU: 28096.184 sec; Peak RSS: 43.396 GB
+
+real	150m25.491s
+user	0m0.544s
+sys	0m0.256s

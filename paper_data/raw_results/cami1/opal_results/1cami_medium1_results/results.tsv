@@ -1,0 +1,1329 @@
+tool	rank	metric	sample	value
+Gold standard	class	Bray-Curtis distance	CAMI_MED_S001	0.0
+Gold standard	family	Bray-Curtis distance	CAMI_MED_S001	0.0
+Gold standard	genus	Bray-Curtis distance	CAMI_MED_S001	0.0
+Gold standard	order	Bray-Curtis distance	CAMI_MED_S001	0.0
+Gold standard	phylum	Bray-Curtis distance	CAMI_MED_S001	0.0
+Gold standard	species	Bray-Curtis distance	CAMI_MED_S001	0.0
+Gold standard	strain	Bray-Curtis distance	CAMI_MED_S001	0.0
+Gold standard	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.0
+Gold standard	superkingdom	Shannon diversity	CAMI_MED_S001	0.6610013072694895
+Gold standard	superkingdom	Shannon equitability	CAMI_MED_S001	0.6016693187283085
+Gold standard	phylum	Shannon diversity	CAMI_MED_S001	0.952650146931384
+Gold standard	phylum	Shannon equitability	CAMI_MED_S001	0.5316841703880124
+Gold standard	class	Shannon diversity	CAMI_MED_S001	1.5306160943793035
+Gold standard	class	Shannon equitability	CAMI_MED_S001	0.5652096455805449
+Gold standard	order	Shannon diversity	CAMI_MED_S001	2.1822314262325015
+Gold standard	order	Shannon equitability	CAMI_MED_S001	0.6480664415639618
+Gold standard	family	Shannon diversity	CAMI_MED_S001	2.9611298701220017
+Gold standard	family	Shannon equitability	CAMI_MED_S001	0.7458217014256647
+Gold standard	genus	Shannon diversity	CAMI_MED_S001	3.1178139851022113
+Gold standard	genus	Shannon equitability	CAMI_MED_S001	0.7314210954227827
+Gold standard	species	Shannon diversity	CAMI_MED_S001	1.9378985685860681
+Gold standard	species	Shannon equitability	CAMI_MED_S001	0.4531330046947705
+Gold standard	strain	Shannon diversity	CAMI_MED_S001	4.058562112498776
+Gold standard	strain	Shannon equitability	CAMI_MED_S001	0.745136369822279
+Gold standard	species	F1 score	CAMI_MED_S001	1.0
+Gold standard	species	False negatives	CAMI_MED_S001	0.0
+Gold standard	species	False positives	CAMI_MED_S001	0.0
+Gold standard	species	Jaccard index	CAMI_MED_S001	1.0
+Gold standard	species	Taxon counts	CAMI_MED_S001	72.0
+Gold standard	species	Purity (precision)	CAMI_MED_S001	1.0
+Gold standard	species	Completeness (recall)	CAMI_MED_S001	1.0
+Gold standard	species	True positives	CAMI_MED_S001	72.0
+Gold standard	genus	F1 score	CAMI_MED_S001	1.0
+Gold standard	genus	False negatives	CAMI_MED_S001	0.0
+Gold standard	genus	False positives	CAMI_MED_S001	0.0
+Gold standard	genus	Jaccard index	CAMI_MED_S001	1.0
+Gold standard	genus	Taxon counts	CAMI_MED_S001	71.0
+Gold standard	genus	Purity (precision)	CAMI_MED_S001	1.0
+Gold standard	genus	Completeness (recall)	CAMI_MED_S001	1.0
+Gold standard	genus	True positives	CAMI_MED_S001	71.0
+Gold standard	phylum	F1 score	CAMI_MED_S001	1.0
+Gold standard	phylum	False negatives	CAMI_MED_S001	0.0
+Gold standard	phylum	False positives	CAMI_MED_S001	0.0
+Gold standard	phylum	Jaccard index	CAMI_MED_S001	1.0
+Gold standard	phylum	Taxon counts	CAMI_MED_S001	6.0
+Gold standard	phylum	Purity (precision)	CAMI_MED_S001	1.0
+Gold standard	phylum	Completeness (recall)	CAMI_MED_S001	1.0
+Gold standard	phylum	True positives	CAMI_MED_S001	6.0
+Gold standard	class	F1 score	CAMI_MED_S001	1.0
+Gold standard	class	False negatives	CAMI_MED_S001	0.0
+Gold standard	class	False positives	CAMI_MED_S001	0.0
+Gold standard	class	Jaccard index	CAMI_MED_S001	1.0
+Gold standard	class	Taxon counts	CAMI_MED_S001	15.0
+Gold standard	class	Purity (precision)	CAMI_MED_S001	1.0
+Gold standard	class	Completeness (recall)	CAMI_MED_S001	1.0
+Gold standard	class	True positives	CAMI_MED_S001	15.0
+Gold standard	strain	F1 score	CAMI_MED_S001	1.0
+Gold standard	strain	False negatives	CAMI_MED_S001	0.0
+Gold standard	strain	False positives	CAMI_MED_S001	0.0
+Gold standard	strain	Jaccard index	CAMI_MED_S001	1.0
+Gold standard	strain	Taxon counts	CAMI_MED_S001	232.0
+Gold standard	strain	Purity (precision)	CAMI_MED_S001	1.0
+Gold standard	strain	Completeness (recall)	CAMI_MED_S001	1.0
+Gold standard	strain	True positives	CAMI_MED_S001	232.0
+Gold standard	superkingdom	F1 score	CAMI_MED_S001	1.0
+Gold standard	superkingdom	False negatives	CAMI_MED_S001	0.0
+Gold standard	superkingdom	False positives	CAMI_MED_S001	0.0
+Gold standard	superkingdom	Jaccard index	CAMI_MED_S001	1.0
+Gold standard	superkingdom	Taxon counts	CAMI_MED_S001	3.0
+Gold standard	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+Gold standard	superkingdom	Completeness (recall)	CAMI_MED_S001	1.0
+Gold standard	superkingdom	True positives	CAMI_MED_S001	3.0
+Gold standard	family	F1 score	CAMI_MED_S001	1.0
+Gold standard	family	False negatives	CAMI_MED_S001	0.0
+Gold standard	family	False positives	CAMI_MED_S001	0.0
+Gold standard	family	Jaccard index	CAMI_MED_S001	1.0
+Gold standard	family	Taxon counts	CAMI_MED_S001	53.0
+Gold standard	family	Purity (precision)	CAMI_MED_S001	1.0
+Gold standard	family	Completeness (recall)	CAMI_MED_S001	1.0
+Gold standard	family	True positives	CAMI_MED_S001	53.0
+Gold standard	order	F1 score	CAMI_MED_S001	1.0
+Gold standard	order	False negatives	CAMI_MED_S001	0.0
+Gold standard	order	False positives	CAMI_MED_S001	0.0
+Gold standard	order	Jaccard index	CAMI_MED_S001	1.0
+Gold standard	order	Taxon counts	CAMI_MED_S001	29.0
+Gold standard	order	Purity (precision)	CAMI_MED_S001	1.0
+Gold standard	order	Completeness (recall)	CAMI_MED_S001	1.0
+Gold standard	order	True positives	CAMI_MED_S001	29.0
+Gold standard	class	L1 norm error	CAMI_MED_S001	0.0
+Gold standard	family	L1 norm error	CAMI_MED_S001	0.0
+Gold standard	genus	L1 norm error	CAMI_MED_S001	0.0
+Gold standard	order	L1 norm error	CAMI_MED_S001	0.0
+Gold standard	phylum	L1 norm error	CAMI_MED_S001	0.0
+Gold standard	species	L1 norm error	CAMI_MED_S001	0.0
+Gold standard	strain	L1 norm error	CAMI_MED_S001	0.0
+Gold standard	superkingdom	L1 norm error	CAMI_MED_S001	0.0
+Gold standard	na	Weighted UniFrac error	CAMI_MED_S001	0.0
+Gold standard	na	Unweighted UniFrac error	CAMI_MED_S001	0.0
+metalign_default	class	Bray-Curtis distance	CAMI_MED_S001	0.10519180880948013
+metalign_default	family	Bray-Curtis distance	CAMI_MED_S001	0.24221583301150587
+metalign_default	genus	Bray-Curtis distance	CAMI_MED_S001	0.4519252564574059
+metalign_default	order	Bray-Curtis distance	CAMI_MED_S001	0.3206470023435834
+metalign_default	phylum	Bray-Curtis distance	CAMI_MED_S001	0.06125070386797204
+metalign_default	species	Bray-Curtis distance	CAMI_MED_S001	0.8357238918631166
+metalign_default	strain	Bray-Curtis distance	CAMI_MED_S001	0.9833340333319335
+metalign_default	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.35661272973313873
+metalign_default	superkingdom	Shannon diversity	CAMI_MED_S001	0.011832225425056325
+metalign_default	superkingdom	Shannon equitability	CAMI_MED_S001	0.010770155720177671
+metalign_default	phylum	Shannon diversity	CAMI_MED_S001	0.9200886985780077
+metalign_default	phylum	Shannon equitability	CAMI_MED_S001	0.5716832513200049
+metalign_default	class	Shannon diversity	CAMI_MED_S001	1.5259004681112216
+metalign_default	class	Shannon equitability	CAMI_MED_S001	0.5949047156320332
+metalign_default	order	Shannon diversity	CAMI_MED_S001	2.162747870553403
+metalign_default	order	Shannon equitability	CAMI_MED_S001	0.6805258771581654
+metalign_default	family	Shannon diversity	CAMI_MED_S001	2.8314780219819027
+metalign_default	family	Shannon equitability	CAMI_MED_S001	0.7728757683041052
+metalign_default	genus	Shannon diversity	CAMI_MED_S001	3.106304364304061
+metalign_default	genus	Shannon equitability	CAMI_MED_S001	0.755631154576603
+metalign_default	species	Shannon diversity	CAMI_MED_S001	3.4770194860074484
+metalign_default	species	Shannon equitability	CAMI_MED_S001	0.6235744662815316
+metalign_default	strain	Shannon diversity	CAMI_MED_S001	3.47701948600745
+metalign_default	strain	Shannon equitability	CAMI_MED_S001	0.6235744662815318
+metalign_default	species	F1 score	CAMI_MED_S001	0.22023809523809523
+metalign_default	species	False negatives	CAMI_MED_S001	35.0
+metalign_default	species	False positives	CAMI_MED_S001	227.0
+metalign_default	species	Jaccard index	CAMI_MED_S001	0.12374581939799331
+metalign_default	species	Taxon counts	CAMI_MED_S001	264.0
+metalign_default	species	Purity (precision)	CAMI_MED_S001	0.14015151515151514
+metalign_default	species	Completeness (recall)	CAMI_MED_S001	0.5138888888888888
+metalign_default	species	True positives	CAMI_MED_S001	37.0
+metalign_default	genus	F1 score	CAMI_MED_S001	0.7272727272727273
+metalign_default	genus	False negatives	CAMI_MED_S001	23.0
+metalign_default	genus	False positives	CAMI_MED_S001	13.0
+metalign_default	genus	Jaccard index	CAMI_MED_S001	0.5714285714285714
+metalign_default	genus	Taxon counts	CAMI_MED_S001	61.0
+metalign_default	genus	Purity (precision)	CAMI_MED_S001	0.7868852459016393
+metalign_default	genus	Completeness (recall)	CAMI_MED_S001	0.676056338028169
+metalign_default	genus	True positives	CAMI_MED_S001	48.0
+metalign_default	phylum	F1 score	CAMI_MED_S001	0.9090909090909091
+metalign_default	phylum	False negatives	CAMI_MED_S001	1.0
+metalign_default	phylum	False positives	CAMI_MED_S001	0.0
+metalign_default	phylum	Jaccard index	CAMI_MED_S001	0.8333333333333334
+metalign_default	phylum	Taxon counts	CAMI_MED_S001	5.0
+metalign_default	phylum	Purity (precision)	CAMI_MED_S001	1.0
+metalign_default	phylum	Completeness (recall)	CAMI_MED_S001	0.8333333333333334
+metalign_default	phylum	True positives	CAMI_MED_S001	5.0
+metalign_default	class	F1 score	CAMI_MED_S001	0.8571428571428571
+metalign_default	class	False negatives	CAMI_MED_S001	3.0
+metalign_default	class	False positives	CAMI_MED_S001	1.0
+metalign_default	class	Jaccard index	CAMI_MED_S001	0.75
+metalign_default	class	Taxon counts	CAMI_MED_S001	13.0
+metalign_default	class	Purity (precision)	CAMI_MED_S001	0.9230769230769231
+metalign_default	class	Completeness (recall)	CAMI_MED_S001	0.8
+metalign_default	class	True positives	CAMI_MED_S001	12.0
+metalign_default	strain	F1 score	CAMI_MED_S001	0.044354838709677415
+metalign_default	strain	False negatives	CAMI_MED_S001	221.0
+metalign_default	strain	False positives	CAMI_MED_S001	253.0
+metalign_default	strain	Jaccard index	CAMI_MED_S001	0.02268041237113402
+metalign_default	strain	Taxon counts	CAMI_MED_S001	264.0
+metalign_default	strain	Purity (precision)	CAMI_MED_S001	0.041666666666666664
+metalign_default	strain	Completeness (recall)	CAMI_MED_S001	0.04741379310344827
+metalign_default	strain	True positives	CAMI_MED_S001	11.0
+metalign_default	superkingdom	F1 score	CAMI_MED_S001	1.0
+metalign_default	superkingdom	False negatives	CAMI_MED_S001	0.0
+metalign_default	superkingdom	False positives	CAMI_MED_S001	0.0
+metalign_default	superkingdom	Jaccard index	CAMI_MED_S001	1.0
+metalign_default	superkingdom	Taxon counts	CAMI_MED_S001	3.0
+metalign_default	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+metalign_default	superkingdom	Completeness (recall)	CAMI_MED_S001	1.0
+metalign_default	superkingdom	True positives	CAMI_MED_S001	3.0
+metalign_default	family	F1 score	CAMI_MED_S001	0.8043478260869565
+metalign_default	family	False negatives	CAMI_MED_S001	16.0
+metalign_default	family	False positives	CAMI_MED_S001	2.0
+metalign_default	family	Jaccard index	CAMI_MED_S001	0.6727272727272727
+metalign_default	family	Taxon counts	CAMI_MED_S001	39.0
+metalign_default	family	Purity (precision)	CAMI_MED_S001	0.9487179487179487
+metalign_default	family	Completeness (recall)	CAMI_MED_S001	0.6981132075471698
+metalign_default	family	True positives	CAMI_MED_S001	37.0
+metalign_default	order	F1 score	CAMI_MED_S001	0.7169811320754716
+metalign_default	order	False negatives	CAMI_MED_S001	10.0
+metalign_default	order	False positives	CAMI_MED_S001	5.0
+metalign_default	order	Jaccard index	CAMI_MED_S001	0.5588235294117647
+metalign_default	order	Taxon counts	CAMI_MED_S001	24.0
+metalign_default	order	Purity (precision)	CAMI_MED_S001	0.7916666666666666
+metalign_default	order	Completeness (recall)	CAMI_MED_S001	0.6551724137931034
+metalign_default	order	True positives	CAMI_MED_S001	19.0
+metalign_default	class	L1 norm error	CAMI_MED_S001	0.21038361761896027
+metalign_default	family	L1 norm error	CAMI_MED_S001	0.48443166602301174
+metalign_default	genus	L1 norm error	CAMI_MED_S001	0.903850512914812
+metalign_default	order	L1 norm error	CAMI_MED_S001	0.6412940046871667
+metalign_default	phylum	L1 norm error	CAMI_MED_S001	0.12250140773594408
+metalign_default	species	L1 norm error	CAMI_MED_S001	1.6714477837262323
+metalign_default	strain	L1 norm error	CAMI_MED_S001	1.9666680666638667
+metalign_default	superkingdom	L1 norm error	CAMI_MED_S001	0.7132254594662775
+metalign_default	na	Weighted UniFrac error	CAMI_MED_S001	9.768873093197554
+metalign_default	na	Unweighted UniFrac error	CAMI_MED_S001	2762.3207487077802
+metalign_precise	class	Bray-Curtis distance	CAMI_MED_S001	0.10549107379814267
+metalign_precise	family	Bray-Curtis distance	CAMI_MED_S001	0.24333017796605003
+metalign_precise	genus	Bray-Curtis distance	CAMI_MED_S001	0.45378297162407905
+metalign_precise	order	Bray-Curtis distance	CAMI_MED_S001	0.3214954347649474
+metalign_precise	phylum	Bray-Curtis distance	CAMI_MED_S001	0.061827453470126484
+metalign_precise	species	Bray-Curtis distance	CAMI_MED_S001	0.8377500307269623
+metalign_precise	strain	Bray-Curtis distance	CAMI_MED_S001	0.9846100307799385
+metalign_precise	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.3580493291493446
+metalign_precise	superkingdom	Shannon diversity	CAMI_MED_S001	0.0
+metalign_precise	superkingdom	Shannon equitability	CAMI_MED_S001	0.0
+metalign_precise	phylum	Shannon diversity	CAMI_MED_S001	0.9149741262053428
+metalign_precise	phylum	Shannon equitability	CAMI_MED_S001	0.6600143172090803
+metalign_precise	class	Shannon diversity	CAMI_MED_S001	1.5185206586327897
+metalign_precise	class	Shannon equitability	CAMI_MED_S001	0.6332723016967539
+metalign_precise	order	Shannon diversity	CAMI_MED_S001	2.156001895995462
+metalign_precise	order	Shannon equitability	CAMI_MED_S001	0.697499930372369
+metalign_precise	family	Shannon diversity	CAMI_MED_S001	2.816417194061458
+metalign_precise	family	Shannon equitability	CAMI_MED_S001	0.7986753408793958
+metalign_precise	genus	Shannon diversity	CAMI_MED_S001	3.082300574875025
+metalign_precise	genus	Shannon equitability	CAMI_MED_S001	0.7919945780568025
+metalign_precise	species	Shannon diversity	CAMI_MED_S001	3.370848889488612
+metalign_precise	species	Shannon equitability	CAMI_MED_S001	0.8016873513995102
+metalign_precise	strain	Shannon diversity	CAMI_MED_S001	3.3708488894886104
+metalign_precise	strain	Shannon equitability	CAMI_MED_S001	0.8016873513995098
+metalign_precise	species	F1 score	CAMI_MED_S001	0.41726618705035967
+metalign_precise	species	False negatives	CAMI_MED_S001	43.0
+metalign_precise	species	False positives	CAMI_MED_S001	38.0
+metalign_precise	species	Jaccard index	CAMI_MED_S001	0.2636363636363636
+metalign_precise	species	Taxon counts	CAMI_MED_S001	67.0
+metalign_precise	species	Purity (precision)	CAMI_MED_S001	0.43283582089552236
+metalign_precise	species	Completeness (recall)	CAMI_MED_S001	0.4027777777777778
+metalign_precise	species	True positives	CAMI_MED_S001	29.0
+metalign_precise	genus	F1 score	CAMI_MED_S001	0.6833333333333335
+metalign_precise	genus	False negatives	CAMI_MED_S001	30.0
+metalign_precise	genus	False positives	CAMI_MED_S001	8.0
+metalign_precise	genus	Jaccard index	CAMI_MED_S001	0.5189873417721519
+metalign_precise	genus	Taxon counts	CAMI_MED_S001	49.0
+metalign_precise	genus	Purity (precision)	CAMI_MED_S001	0.8367346938775511
+metalign_precise	genus	Completeness (recall)	CAMI_MED_S001	0.5774647887323944
+metalign_precise	genus	True positives	CAMI_MED_S001	41.0
+metalign_precise	phylum	F1 score	CAMI_MED_S001	0.8
+metalign_precise	phylum	False negatives	CAMI_MED_S001	2.0
+metalign_precise	phylum	False positives	CAMI_MED_S001	0.0
+metalign_precise	phylum	Jaccard index	CAMI_MED_S001	0.6666666666666666
+metalign_precise	phylum	Taxon counts	CAMI_MED_S001	4.0
+metalign_precise	phylum	Purity (precision)	CAMI_MED_S001	1.0
+metalign_precise	phylum	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+metalign_precise	phylum	True positives	CAMI_MED_S001	4.0
+metalign_precise	class	F1 score	CAMI_MED_S001	0.7692307692307692
+metalign_precise	class	False negatives	CAMI_MED_S001	5.0
+metalign_precise	class	False positives	CAMI_MED_S001	1.0
+metalign_precise	class	Jaccard index	CAMI_MED_S001	0.625
+metalign_precise	class	Taxon counts	CAMI_MED_S001	11.0
+metalign_precise	class	Purity (precision)	CAMI_MED_S001	0.9090909090909091
+metalign_precise	class	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+metalign_precise	class	True positives	CAMI_MED_S001	10.0
+metalign_precise	strain	F1 score	CAMI_MED_S001	0.046822742474916385
+metalign_precise	strain	False negatives	CAMI_MED_S001	225.0
+metalign_precise	strain	False positives	CAMI_MED_S001	60.0
+metalign_precise	strain	Jaccard index	CAMI_MED_S001	0.023972602739726026
+metalign_precise	strain	Taxon counts	CAMI_MED_S001	67.0
+metalign_precise	strain	Purity (precision)	CAMI_MED_S001	0.1044776119402985
+metalign_precise	strain	Completeness (recall)	CAMI_MED_S001	0.03017241379310345
+metalign_precise	strain	True positives	CAMI_MED_S001	7.0
+metalign_precise	superkingdom	F1 score	CAMI_MED_S001	0.5
+metalign_precise	superkingdom	False negatives	CAMI_MED_S001	2.0
+metalign_precise	superkingdom	False positives	CAMI_MED_S001	0.0
+metalign_precise	superkingdom	Jaccard index	CAMI_MED_S001	0.3333333333333333
+metalign_precise	superkingdom	Taxon counts	CAMI_MED_S001	1.0
+metalign_precise	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+metalign_precise	superkingdom	Completeness (recall)	CAMI_MED_S001	0.3333333333333333
+metalign_precise	superkingdom	True positives	CAMI_MED_S001	1.0
+metalign_precise	family	F1 score	CAMI_MED_S001	0.7586206896551724
+metalign_precise	family	False negatives	CAMI_MED_S001	20.0
+metalign_precise	family	False positives	CAMI_MED_S001	1.0
+metalign_precise	family	Jaccard index	CAMI_MED_S001	0.6111111111111112
+metalign_precise	family	Taxon counts	CAMI_MED_S001	34.0
+metalign_precise	family	Purity (precision)	CAMI_MED_S001	0.9705882352941176
+metalign_precise	family	Completeness (recall)	CAMI_MED_S001	0.6226415094339622
+metalign_precise	family	True positives	CAMI_MED_S001	33.0
+metalign_precise	order	F1 score	CAMI_MED_S001	0.6666666666666667
+metalign_precise	order	False negatives	CAMI_MED_S001	12.0
+metalign_precise	order	False positives	CAMI_MED_S001	5.0
+metalign_precise	order	Jaccard index	CAMI_MED_S001	0.5
+metalign_precise	order	Taxon counts	CAMI_MED_S001	22.0
+metalign_precise	order	Purity (precision)	CAMI_MED_S001	0.7727272727272727
+metalign_precise	order	Completeness (recall)	CAMI_MED_S001	0.5862068965517241
+metalign_precise	order	True positives	CAMI_MED_S001	17.0
+metalign_precise	class	L1 norm error	CAMI_MED_S001	0.21098214759628525
+metalign_precise	family	L1 norm error	CAMI_MED_S001	0.4866603559321
+metalign_precise	genus	L1 norm error	CAMI_MED_S001	0.9075659432481575
+metalign_precise	order	L1 norm error	CAMI_MED_S001	0.6429908695298948
+metalign_precise	phylum	L1 norm error	CAMI_MED_S001	0.12365490694025297
+metalign_precise	species	L1 norm error	CAMI_MED_S001	1.6755000614539244
+metalign_precise	strain	L1 norm error	CAMI_MED_S001	1.9692200615598765
+metalign_precise	superkingdom	L1 norm error	CAMI_MED_S001	0.7160986582986892
+metalign_precise	na	Weighted UniFrac error	CAMI_MED_S001	9.788096202506068
+metalign_precise	na	Unweighted UniFrac error	CAMI_MED_S001	2298.0952956231317
+metalign_sensitve	class	Bray-Curtis distance	CAMI_MED_S001	0.13208914159863203
+metalign_sensitve	family	Bray-Curtis distance	CAMI_MED_S001	0.27174361729708607
+metalign_sensitve	genus	Bray-Curtis distance	CAMI_MED_S001	0.4820943285634035
+metalign_sensitve	order	Bray-Curtis distance	CAMI_MED_S001	0.33233007821853744
+metalign_sensitve	phylum	Bray-Curtis distance	CAMI_MED_S001	0.09262959030527519
+metalign_sensitve	species	Bray-Curtis distance	CAMI_MED_S001	0.8458819771507515
+metalign_sensitve	strain	Bray-Curtis distance	CAMI_MED_S001	0.9831771241325205
+metalign_sensitve	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.3568784435006991
+metalign_sensitve	superkingdom	Shannon diversity	CAMI_MED_S001	0.012107361119536628
+metalign_sensitve	superkingdom	Shannon equitability	CAMI_MED_S001	0.008733614922703671
+metalign_sensitve	phylum	Shannon diversity	CAMI_MED_S001	0.8950367497112268
+metalign_sensitve	phylum	Shannon equitability	CAMI_MED_S001	0.3096614638812772
+metalign_sensitve	class	Shannon diversity	CAMI_MED_S001	1.4748816937029607
+metalign_sensitve	class	Shannon equitability	CAMI_MED_S001	0.4084506292813856
+metalign_sensitve	order	Shannon diversity	CAMI_MED_S001	2.1727093143155143
+metalign_sensitve	order	Shannon equitability	CAMI_MED_S001	0.5032345792692688
+metalign_sensitve	family	Shannon diversity	CAMI_MED_S001	2.8989156540835985
+metalign_sensitve	family	Shannon equitability	CAMI_MED_S001	0.5824936201376185
+metalign_sensitve	genus	Shannon diversity	CAMI_MED_S001	3.4814536853313034
+metalign_sensitve	genus	Shannon equitability	CAMI_MED_S001	0.5728296510281061
+metalign_sensitve	species	Shannon diversity	CAMI_MED_S001	4.840036414879281
+metalign_sensitve	species	Shannon equitability	CAMI_MED_S001	0.6291833075693922
+metalign_sensitve	strain	Shannon diversity	CAMI_MED_S001	4.840036414879275
+metalign_sensitve	strain	Shannon equitability	CAMI_MED_S001	0.6291833075693916
+metalign_sensitve	species	F1 score	CAMI_MED_S001	0.04593639575971731
+metalign_sensitve	species	False negatives	CAMI_MED_S001	20.0
+metalign_sensitve	species	False positives	CAMI_MED_S001	2140.0
+metalign_sensitve	species	Jaccard index	CAMI_MED_S001	0.023508137432188065
+metalign_sensitve	species	Taxon counts	CAMI_MED_S001	2192.0
+metalign_sensitve	species	Purity (precision)	CAMI_MED_S001	0.023722627737226276
+metalign_sensitve	species	Completeness (recall)	CAMI_MED_S001	0.7222222222222222
+metalign_sensitve	species	True positives	CAMI_MED_S001	52.0
+metalign_sensitve	genus	F1 score	CAMI_MED_S001	0.252465483234714
+metalign_sensitve	genus	False negatives	CAMI_MED_S001	7.0
+metalign_sensitve	genus	False positives	CAMI_MED_S001	372.0
+metalign_sensitve	genus	Jaccard index	CAMI_MED_S001	0.14446952595936793
+metalign_sensitve	genus	Taxon counts	CAMI_MED_S001	436.0
+metalign_sensitve	genus	Purity (precision)	CAMI_MED_S001	0.14678899082568808
+metalign_sensitve	genus	Completeness (recall)	CAMI_MED_S001	0.9014084507042254
+metalign_sensitve	genus	True positives	CAMI_MED_S001	64.0
+metalign_sensitve	phylum	F1 score	CAMI_MED_S001	0.5
+metalign_sensitve	phylum	False negatives	CAMI_MED_S001	0.0
+metalign_sensitve	phylum	False positives	CAMI_MED_S001	12.0
+metalign_sensitve	phylum	Jaccard index	CAMI_MED_S001	0.3333333333333333
+metalign_sensitve	phylum	Taxon counts	CAMI_MED_S001	18.0
+metalign_sensitve	phylum	Purity (precision)	CAMI_MED_S001	0.3333333333333333
+metalign_sensitve	phylum	Completeness (recall)	CAMI_MED_S001	1.0
+metalign_sensitve	phylum	True positives	CAMI_MED_S001	6.0
+metalign_sensitve	class	F1 score	CAMI_MED_S001	0.5769230769230769
+metalign_sensitve	class	False negatives	CAMI_MED_S001	0.0
+metalign_sensitve	class	False positives	CAMI_MED_S001	22.0
+metalign_sensitve	class	Jaccard index	CAMI_MED_S001	0.40540540540540543
+metalign_sensitve	class	Taxon counts	CAMI_MED_S001	37.0
+metalign_sensitve	class	Purity (precision)	CAMI_MED_S001	0.40540540540540543
+metalign_sensitve	class	Completeness (recall)	CAMI_MED_S001	1.0
+metalign_sensitve	class	True positives	CAMI_MED_S001	15.0
+metalign_sensitve	strain	F1 score	CAMI_MED_S001	0.011551155115511552
+metalign_sensitve	strain	False negatives	CAMI_MED_S001	218.0
+metalign_sensitve	strain	False positives	CAMI_MED_S001	2178.0
+metalign_sensitve	strain	Jaccard index	CAMI_MED_S001	0.005809128630705394
+metalign_sensitve	strain	Taxon counts	CAMI_MED_S001	2192.0
+metalign_sensitve	strain	Purity (precision)	CAMI_MED_S001	0.006386861313868613
+metalign_sensitve	strain	Completeness (recall)	CAMI_MED_S001	0.0603448275862069
+metalign_sensitve	strain	True positives	CAMI_MED_S001	14.0
+metalign_sensitve	superkingdom	F1 score	CAMI_MED_S001	0.8571428571428571
+metalign_sensitve	superkingdom	False negatives	CAMI_MED_S001	0.0
+metalign_sensitve	superkingdom	False positives	CAMI_MED_S001	1.0
+metalign_sensitve	superkingdom	Jaccard index	CAMI_MED_S001	0.75
+metalign_sensitve	superkingdom	Taxon counts	CAMI_MED_S001	4.0
+metalign_sensitve	superkingdom	Purity (precision)	CAMI_MED_S001	0.75
+metalign_sensitve	superkingdom	Completeness (recall)	CAMI_MED_S001	1.0
+metalign_sensitve	superkingdom	True positives	CAMI_MED_S001	3.0
+metalign_sensitve	family	F1 score	CAMI_MED_S001	0.5252525252525252
+metalign_sensitve	family	False negatives	CAMI_MED_S001	1.0
+metalign_sensitve	family	False positives	CAMI_MED_S001	93.0
+metalign_sensitve	family	Jaccard index	CAMI_MED_S001	0.3561643835616438
+metalign_sensitve	family	Taxon counts	CAMI_MED_S001	145.0
+metalign_sensitve	family	Purity (precision)	CAMI_MED_S001	0.3586206896551724
+metalign_sensitve	family	Completeness (recall)	CAMI_MED_S001	0.9811320754716981
+metalign_sensitve	family	True positives	CAMI_MED_S001	52.0
+metalign_sensitve	order	F1 score	CAMI_MED_S001	0.5384615384615384
+metalign_sensitve	order	False negatives	CAMI_MED_S001	1.0
+metalign_sensitve	order	False positives	CAMI_MED_S001	47.0
+metalign_sensitve	order	Jaccard index	CAMI_MED_S001	0.3684210526315789
+metalign_sensitve	order	Taxon counts	CAMI_MED_S001	75.0
+metalign_sensitve	order	Purity (precision)	CAMI_MED_S001	0.37333333333333335
+metalign_sensitve	order	Completeness (recall)	CAMI_MED_S001	0.9655172413793104
+metalign_sensitve	order	True positives	CAMI_MED_S001	28.0
+metalign_sensitve	class	L1 norm error	CAMI_MED_S001	0.264178283197264
+metalign_sensitve	family	L1 norm error	CAMI_MED_S001	0.5434872345941721
+metalign_sensitve	genus	L1 norm error	CAMI_MED_S001	0.9641886571268059
+metalign_sensitve	order	L1 norm error	CAMI_MED_S001	0.6646601564370742
+metalign_sensitve	phylum	L1 norm error	CAMI_MED_S001	0.1852591806105504
+metalign_sensitve	species	L1 norm error	CAMI_MED_S001	1.6917639543014962
+metalign_sensitve	strain	L1 norm error	CAMI_MED_S001	1.9663542482650354
+metalign_sensitve	superkingdom	L1 norm error	CAMI_MED_S001	0.7137568870013982
+metalign_sensitve	na	Weighted UniFrac error	CAMI_MED_S001	9.788241815597239
+metalign_sensitve	na	Unweighted UniFrac error	CAMI_MED_S001	20370.91517974993
+CLARK	class	Bray-Curtis distance	CAMI_MED_S001	0.24515311454594052
+CLARK	family	Bray-Curtis distance	CAMI_MED_S001	0.5492966142074335
+CLARK	genus	Bray-Curtis distance	CAMI_MED_S001	0.6231663764665817
+CLARK	order	Bray-Curtis distance	CAMI_MED_S001	0.3645106868097138
+CLARK	phylum	Bray-Curtis distance	CAMI_MED_S001	0.16076342448225683
+CLARK	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.35606424772102385
+CLARK	superkingdom	Shannon diversity	CAMI_MED_S001	0.08285667158046857
+CLARK	superkingdom	Shannon equitability	CAMI_MED_S001	0.07541939266027956
+CLARK	phylum	Shannon diversity	CAMI_MED_S001	1.141699725107198
+CLARK	phylum	Shannon equitability	CAMI_MED_S001	0.30354665797851854
+CLARK	class	Shannon diversity	CAMI_MED_S001	1.7330684267838568
+CLARK	class	Shannon equitability	CAMI_MED_S001	0.4250282065156993
+CLARK	order	Shannon diversity	CAMI_MED_S001	2.2499360398823125
+CLARK	order	Shannon equitability	CAMI_MED_S001	0.45596269640334974
+CLARK	family	Shannon diversity	CAMI_MED_S001	2.7019815825074747
+CLARK	family	Shannon equitability	CAMI_MED_S001	0.4656888066906909
+CLARK	genus	Shannon diversity	CAMI_MED_S001	3.0456768303493327
+CLARK	genus	Shannon equitability	CAMI_MED_S001	0.42130707605881984
+CLARK	species	False negatives	CAMI_MED_S001	72.0
+CLARK	species	False positives	CAMI_MED_S001	0.0
+CLARK	species	Jaccard index	CAMI_MED_S001	0.0
+CLARK	species	Taxon counts	CAMI_MED_S001	0.0
+CLARK	species	Purity (precision)	CAMI_MED_S001	0.0
+CLARK	species	Completeness (recall)	CAMI_MED_S001	0.0
+CLARK	species	True positives	CAMI_MED_S001	0.0
+CLARK	genus	F1 score	CAMI_MED_S001	0.07172413793103448
+CLARK	genus	False negatives	CAMI_MED_S001	19.0
+CLARK	genus	False positives	CAMI_MED_S001	1327.0
+CLARK	genus	Jaccard index	CAMI_MED_S001	0.03719599427753934
+CLARK	genus	Taxon counts	CAMI_MED_S001	1379.0
+CLARK	genus	Purity (precision)	CAMI_MED_S001	0.03770848440899202
+CLARK	genus	Completeness (recall)	CAMI_MED_S001	0.7323943661971831
+CLARK	genus	True positives	CAMI_MED_S001	52.0
+CLARK	phylum	F1 score	CAMI_MED_S001	0.24489795918367346
+CLARK	phylum	False negatives	CAMI_MED_S001	0.0
+CLARK	phylum	False positives	CAMI_MED_S001	37.0
+CLARK	phylum	Jaccard index	CAMI_MED_S001	0.13953488372093023
+CLARK	phylum	Taxon counts	CAMI_MED_S001	43.0
+CLARK	phylum	Purity (precision)	CAMI_MED_S001	0.13953488372093023
+CLARK	phylum	Completeness (recall)	CAMI_MED_S001	1.0
+CLARK	phylum	True positives	CAMI_MED_S001	6.0
+CLARK	class	F1 score	CAMI_MED_S001	0.4054054054054054
+CLARK	class	False negatives	CAMI_MED_S001	0.0
+CLARK	class	False positives	CAMI_MED_S001	44.0
+CLARK	class	Jaccard index	CAMI_MED_S001	0.2542372881355932
+CLARK	class	Taxon counts	CAMI_MED_S001	59.0
+CLARK	class	Purity (precision)	CAMI_MED_S001	0.2542372881355932
+CLARK	class	Completeness (recall)	CAMI_MED_S001	1.0
+CLARK	class	True positives	CAMI_MED_S001	15.0
+CLARK	strain	False negatives	CAMI_MED_S001	232.0
+CLARK	strain	False positives	CAMI_MED_S001	0.0
+CLARK	strain	Jaccard index	CAMI_MED_S001	0.0
+CLARK	strain	Taxon counts	CAMI_MED_S001	0.0
+CLARK	strain	Purity (precision)	CAMI_MED_S001	0.0
+CLARK	strain	Completeness (recall)	CAMI_MED_S001	0.0
+CLARK	strain	True positives	CAMI_MED_S001	0.0
+CLARK	superkingdom	F1 score	CAMI_MED_S001	1.0
+CLARK	superkingdom	False negatives	CAMI_MED_S001	0.0
+CLARK	superkingdom	False positives	CAMI_MED_S001	0.0
+CLARK	superkingdom	Jaccard index	CAMI_MED_S001	1.0
+CLARK	superkingdom	Taxon counts	CAMI_MED_S001	3.0
+CLARK	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+CLARK	superkingdom	Completeness (recall)	CAMI_MED_S001	1.0
+CLARK	superkingdom	True positives	CAMI_MED_S001	3.0
+CLARK	family	F1 score	CAMI_MED_S001	0.26041666666666663
+CLARK	family	False negatives	CAMI_MED_S001	3.0
+CLARK	family	False positives	CAMI_MED_S001	281.0
+CLARK	family	Jaccard index	CAMI_MED_S001	0.1497005988023952
+CLARK	family	Taxon counts	CAMI_MED_S001	331.0
+CLARK	family	Purity (precision)	CAMI_MED_S001	0.1510574018126888
+CLARK	family	Completeness (recall)	CAMI_MED_S001	0.9433962264150944
+CLARK	family	True positives	CAMI_MED_S001	50.0
+CLARK	order	F1 score	CAMI_MED_S001	0.34523809523809523
+CLARK	order	False negatives	CAMI_MED_S001	0.0
+CLARK	order	False positives	CAMI_MED_S001	110.0
+CLARK	order	Jaccard index	CAMI_MED_S001	0.20863309352517986
+CLARK	order	Taxon counts	CAMI_MED_S001	139.0
+CLARK	order	Purity (precision)	CAMI_MED_S001	0.20863309352517986
+CLARK	order	Completeness (recall)	CAMI_MED_S001	1.0
+CLARK	order	True positives	CAMI_MED_S001	29.0
+CLARK	class	L1 norm error	CAMI_MED_S001	0.490306229091881
+CLARK	family	L1 norm error	CAMI_MED_S001	1.0985932284148667
+CLARK	genus	L1 norm error	CAMI_MED_S001	1.2463327529331591
+CLARK	order	L1 norm error	CAMI_MED_S001	0.7290213736194278
+CLARK	phylum	L1 norm error	CAMI_MED_S001	0.32152684896451367
+CLARK	superkingdom	L1 norm error	CAMI_MED_S001	0.7121284954420477
+CLARK	na	Weighted UniFrac error	CAMI_MED_S001	8.867268896388975
+CLARK	na	Unweighted UniFrac error	CAMI_MED_S001	9514.883619059729
+CommonKmers	class	Bray-Curtis distance	CAMI_MED_S001	0.09836973854991644
+CommonKmers	family	Bray-Curtis distance	CAMI_MED_S001	0.5843187049466727
+CommonKmers	genus	Bray-Curtis distance	CAMI_MED_S001	0.6352115280579361
+CommonKmers	order	Bray-Curtis distance	CAMI_MED_S001	0.23562576560164752
+CommonKmers	phylum	Bray-Curtis distance	CAMI_MED_S001	0.05101888154261408
+CommonKmers	species	Bray-Curtis distance	CAMI_MED_S001	0.8850516313502171
+CommonKmers	strain	Bray-Curtis distance	CAMI_MED_S001	1.0
+CommonKmers	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.35683757817237344
+CommonKmers	superkingdom	Shannon diversity	CAMI_MED_S001	0.009348759067761149
+CommonKmers	superkingdom	Shannon equitability	CAMI_MED_S001	0.013487408345524738
+CommonKmers	phylum	Shannon diversity	CAMI_MED_S001	0.8956053916242923
+CommonKmers	phylum	Shannon equitability	CAMI_MED_S001	0.6460427285448923
+CommonKmers	class	Shannon diversity	CAMI_MED_S001	1.4154647414990191
+CommonKmers	class	Shannon equitability	CAMI_MED_S001	0.7274049843391737
+CommonKmers	order	Shannon diversity	CAMI_MED_S001	1.754737502433363
+CommonKmers	order	Shannon equitability	CAMI_MED_S001	0.7061583188982444
+CommonKmers	family	Shannon diversity	CAMI_MED_S001	1.9918597602593116
+CommonKmers	family	Shannon equitability	CAMI_MED_S001	0.6443974129488973
+CommonKmers	genus	Shannon diversity	CAMI_MED_S001	2.5234408758352345
+CommonKmers	genus	Shannon equitability	CAMI_MED_S001	0.709759166245487
+CommonKmers	species	Shannon diversity	CAMI_MED_S001	2.847290466090579
+CommonKmers	species	Shannon equitability	CAMI_MED_S001	0.7012265555002619
+CommonKmers	strain	Shannon diversity	CAMI_MED_S001	2.1102401010817324
+CommonKmers	strain	Shannon equitability	CAMI_MED_S001	0.6402744392018584
+CommonKmers	species	F1 score	CAMI_MED_S001	0.24615384615384614
+CommonKmers	species	False negatives	CAMI_MED_S001	56.0
+CommonKmers	species	False positives	CAMI_MED_S001	42.0
+CommonKmers	species	Jaccard index	CAMI_MED_S001	0.14035087719298245
+CommonKmers	species	Taxon counts	CAMI_MED_S001	58.0
+CommonKmers	species	Purity (precision)	CAMI_MED_S001	0.27586206896551724
+CommonKmers	species	Completeness (recall)	CAMI_MED_S001	0.2222222222222222
+CommonKmers	species	True positives	CAMI_MED_S001	16.0
+CommonKmers	genus	F1 score	CAMI_MED_S001	0.4339622641509434
+CommonKmers	genus	False negatives	CAMI_MED_S001	48.0
+CommonKmers	genus	False positives	CAMI_MED_S001	12.0
+CommonKmers	genus	Jaccard index	CAMI_MED_S001	0.27710843373493976
+CommonKmers	genus	Taxon counts	CAMI_MED_S001	35.0
+CommonKmers	genus	Purity (precision)	CAMI_MED_S001	0.6571428571428571
+CommonKmers	genus	Completeness (recall)	CAMI_MED_S001	0.323943661971831
+CommonKmers	genus	True positives	CAMI_MED_S001	23.0
+CommonKmers	phylum	F1 score	CAMI_MED_S001	0.8
+CommonKmers	phylum	False negatives	CAMI_MED_S001	2.0
+CommonKmers	phylum	False positives	CAMI_MED_S001	0.0
+CommonKmers	phylum	Jaccard index	CAMI_MED_S001	0.6666666666666666
+CommonKmers	phylum	Taxon counts	CAMI_MED_S001	4.0
+CommonKmers	phylum	Purity (precision)	CAMI_MED_S001	1.0
+CommonKmers	phylum	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+CommonKmers	phylum	True positives	CAMI_MED_S001	4.0
+CommonKmers	class	F1 score	CAMI_MED_S001	0.6363636363636364
+CommonKmers	class	False negatives	CAMI_MED_S001	8.0
+CommonKmers	class	False positives	CAMI_MED_S001	0.0
+CommonKmers	class	Jaccard index	CAMI_MED_S001	0.4666666666666667
+CommonKmers	class	Taxon counts	CAMI_MED_S001	7.0
+CommonKmers	class	Purity (precision)	CAMI_MED_S001	1.0
+CommonKmers	class	Completeness (recall)	CAMI_MED_S001	0.4666666666666667
+CommonKmers	class	True positives	CAMI_MED_S001	7.0
+CommonKmers	strain	False negatives	CAMI_MED_S001	232.0
+CommonKmers	strain	False positives	CAMI_MED_S001	27.0
+CommonKmers	strain	Jaccard index	CAMI_MED_S001	0.0
+CommonKmers	strain	Taxon counts	CAMI_MED_S001	27.0
+CommonKmers	strain	Purity (precision)	CAMI_MED_S001	0.0
+CommonKmers	strain	Completeness (recall)	CAMI_MED_S001	0.0
+CommonKmers	strain	True positives	CAMI_MED_S001	0.0
+CommonKmers	superkingdom	F1 score	CAMI_MED_S001	0.8
+CommonKmers	superkingdom	False negatives	CAMI_MED_S001	1.0
+CommonKmers	superkingdom	False positives	CAMI_MED_S001	0.0
+CommonKmers	superkingdom	Jaccard index	CAMI_MED_S001	0.6666666666666666
+CommonKmers	superkingdom	Taxon counts	CAMI_MED_S001	2.0
+CommonKmers	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+CommonKmers	superkingdom	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+CommonKmers	superkingdom	True positives	CAMI_MED_S001	2.0
+CommonKmers	family	F1 score	CAMI_MED_S001	0.5333333333333334
+CommonKmers	family	False negatives	CAMI_MED_S001	33.0
+CommonKmers	family	False positives	CAMI_MED_S001	2.0
+CommonKmers	family	Jaccard index	CAMI_MED_S001	0.36363636363636365
+CommonKmers	family	Taxon counts	CAMI_MED_S001	22.0
+CommonKmers	family	Purity (precision)	CAMI_MED_S001	0.9090909090909091
+CommonKmers	family	Completeness (recall)	CAMI_MED_S001	0.37735849056603776
+CommonKmers	family	True positives	CAMI_MED_S001	20.0
+CommonKmers	order	F1 score	CAMI_MED_S001	0.5853658536585366
+CommonKmers	order	False negatives	CAMI_MED_S001	17.0
+CommonKmers	order	False positives	CAMI_MED_S001	0.0
+CommonKmers	order	Jaccard index	CAMI_MED_S001	0.41379310344827586
+CommonKmers	order	Taxon counts	CAMI_MED_S001	12.0
+CommonKmers	order	Purity (precision)	CAMI_MED_S001	1.0
+CommonKmers	order	Completeness (recall)	CAMI_MED_S001	0.41379310344827586
+CommonKmers	order	True positives	CAMI_MED_S001	12.0
+CommonKmers	class	L1 norm error	CAMI_MED_S001	0.1967394770998329
+CommonKmers	family	L1 norm error	CAMI_MED_S001	1.1686374098933452
+CommonKmers	genus	L1 norm error	CAMI_MED_S001	1.2704230561158725
+CommonKmers	order	L1 norm error	CAMI_MED_S001	0.47125153120329505
+CommonKmers	phylum	L1 norm error	CAMI_MED_S001	0.10203776308522818
+CommonKmers	species	L1 norm error	CAMI_MED_S001	1.7701032627004338
+CommonKmers	strain	L1 norm error	CAMI_MED_S001	2.0000000000000004
+CommonKmers	superkingdom	L1 norm error	CAMI_MED_S001	0.7136751563447469
+CommonKmers	na	Weighted UniFrac error	CAMI_MED_S001	10.923179320832848
+CommonKmers	na	Unweighted UniFrac error	CAMI_MED_S001	2616.5665556069816
+FOCUS	class	Bray-Curtis distance	CAMI_MED_S001	0.12755303980496405
+FOCUS	family	Bray-Curtis distance	CAMI_MED_S001	0.4789293377797533
+FOCUS	genus	Bray-Curtis distance	CAMI_MED_S001	0.7381020630846836
+FOCUS	order	Bray-Curtis distance	CAMI_MED_S001	0.19855298213212977
+FOCUS	phylum	Bray-Curtis distance	CAMI_MED_S001	0.11663787924807786
+FOCUS	species	Bray-Curtis distance	CAMI_MED_S001	0.9229771827824951
+FOCUS	strain	Bray-Curtis distance	CAMI_MED_S001	1.0
+FOCUS	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.35672930282692633
+FOCUS	superkingdom	Shannon diversity	CAMI_MED_S001	0.09811012192408088
+FOCUS	superkingdom	Shannon equitability	CAMI_MED_S001	0.14154298636088306
+FOCUS	phylum	Shannon diversity	CAMI_MED_S001	1.2276145049146978
+FOCUS	phylum	Shannon equitability	CAMI_MED_S001	0.41692645478502355
+FOCUS	class	Shannon diversity	CAMI_MED_S001	1.6702572605484882
+FOCUS	class	Shannon equitability	CAMI_MED_S001	0.5188945928403057
+FOCUS	order	Shannon diversity	CAMI_MED_S001	2.4873213047069367
+FOCUS	order	Shannon equitability	CAMI_MED_S001	0.6460327140710613
+FOCUS	family	Shannon diversity	CAMI_MED_S001	3.6464391647210452
+FOCUS	family	Shannon equitability	CAMI_MED_S001	0.8123712558472735
+FOCUS	genus	Shannon diversity	CAMI_MED_S001	4.018395848155604
+FOCUS	genus	Shannon equitability	CAMI_MED_S001	0.8255505716614904
+FOCUS	species	Shannon diversity	CAMI_MED_S001	4.468604021771672
+FOCUS	species	Shannon equitability	CAMI_MED_S001	0.8474501035211208
+FOCUS	strain	Shannon diversity	CAMI_MED_S001	4.3397255380145054
+FOCUS	strain	Shannon equitability	CAMI_MED_S001	0.8582900644237086
+FOCUS	species	F1 score	CAMI_MED_S001	0.0449438202247191
+FOCUS	species	False negatives	CAMI_MED_S001	66.0
+FOCUS	species	False positives	CAMI_MED_S001	189.0
+FOCUS	species	Jaccard index	CAMI_MED_S001	0.022988505747126436
+FOCUS	species	Taxon counts	CAMI_MED_S001	195.0
+FOCUS	species	Purity (precision)	CAMI_MED_S001	0.03076923076923077
+FOCUS	species	Completeness (recall)	CAMI_MED_S001	0.08333333333333333
+FOCUS	species	True positives	CAMI_MED_S001	6.0
+FOCUS	genus	F1 score	CAMI_MED_S001	0.2288557213930348
+FOCUS	genus	False negatives	CAMI_MED_S001	48.0
+FOCUS	genus	False positives	CAMI_MED_S001	107.0
+FOCUS	genus	Jaccard index	CAMI_MED_S001	0.12921348314606743
+FOCUS	genus	Taxon counts	CAMI_MED_S001	130.0
+FOCUS	genus	Purity (precision)	CAMI_MED_S001	0.17692307692307693
+FOCUS	genus	Completeness (recall)	CAMI_MED_S001	0.323943661971831
+FOCUS	genus	True positives	CAMI_MED_S001	23.0
+FOCUS	phylum	F1 score	CAMI_MED_S001	0.4799999999999999
+FOCUS	phylum	False negatives	CAMI_MED_S001	0.0
+FOCUS	phylum	False positives	CAMI_MED_S001	13.0
+FOCUS	phylum	Jaccard index	CAMI_MED_S001	0.3157894736842105
+FOCUS	phylum	Taxon counts	CAMI_MED_S001	19.0
+FOCUS	phylum	Purity (precision)	CAMI_MED_S001	0.3157894736842105
+FOCUS	phylum	Completeness (recall)	CAMI_MED_S001	1.0
+FOCUS	phylum	True positives	CAMI_MED_S001	6.0
+FOCUS	class	F1 score	CAMI_MED_S001	0.7499999999999999
+FOCUS	class	False negatives	CAMI_MED_S001	0.0
+FOCUS	class	False positives	CAMI_MED_S001	10.0
+FOCUS	class	Jaccard index	CAMI_MED_S001	0.6
+FOCUS	class	Taxon counts	CAMI_MED_S001	25.0
+FOCUS	class	Purity (precision)	CAMI_MED_S001	0.6
+FOCUS	class	Completeness (recall)	CAMI_MED_S001	1.0
+FOCUS	class	True positives	CAMI_MED_S001	15.0
+FOCUS	strain	False negatives	CAMI_MED_S001	232.0
+FOCUS	strain	False positives	CAMI_MED_S001	157.0
+FOCUS	strain	Jaccard index	CAMI_MED_S001	0.0
+FOCUS	strain	Taxon counts	CAMI_MED_S001	157.0
+FOCUS	strain	Purity (precision)	CAMI_MED_S001	0.0
+FOCUS	strain	Completeness (recall)	CAMI_MED_S001	0.0
+FOCUS	strain	True positives	CAMI_MED_S001	0.0
+FOCUS	superkingdom	F1 score	CAMI_MED_S001	0.8
+FOCUS	superkingdom	False negatives	CAMI_MED_S001	1.0
+FOCUS	superkingdom	False positives	CAMI_MED_S001	0.0
+FOCUS	superkingdom	Jaccard index	CAMI_MED_S001	0.6666666666666666
+FOCUS	superkingdom	Taxon counts	CAMI_MED_S001	2.0
+FOCUS	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+FOCUS	superkingdom	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+FOCUS	superkingdom	True positives	CAMI_MED_S001	2.0
+FOCUS	family	F1 score	CAMI_MED_S001	0.4929577464788733
+FOCUS	family	False negatives	CAMI_MED_S001	18.0
+FOCUS	family	False positives	CAMI_MED_S001	54.0
+FOCUS	family	Jaccard index	CAMI_MED_S001	0.32710280373831774
+FOCUS	family	Taxon counts	CAMI_MED_S001	89.0
+FOCUS	family	Purity (precision)	CAMI_MED_S001	0.39325842696629215
+FOCUS	family	Completeness (recall)	CAMI_MED_S001	0.660377358490566
+FOCUS	family	True positives	CAMI_MED_S001	35.0
+FOCUS	order	F1 score	CAMI_MED_S001	0.5263157894736842
+FOCUS	order	False negatives	CAMI_MED_S001	9.0
+FOCUS	order	False positives	CAMI_MED_S001	27.0
+FOCUS	order	Jaccard index	CAMI_MED_S001	0.35714285714285715
+FOCUS	order	Taxon counts	CAMI_MED_S001	47.0
+FOCUS	order	Purity (precision)	CAMI_MED_S001	0.425531914893617
+FOCUS	order	Completeness (recall)	CAMI_MED_S001	0.6896551724137931
+FOCUS	order	True positives	CAMI_MED_S001	20.0
+FOCUS	class	L1 norm error	CAMI_MED_S001	0.2551060796099281
+FOCUS	family	L1 norm error	CAMI_MED_S001	0.9578586755595064
+FOCUS	genus	L1 norm error	CAMI_MED_S001	1.4762041261693684
+FOCUS	order	L1 norm error	CAMI_MED_S001	0.39710596426425954
+FOCUS	phylum	L1 norm error	CAMI_MED_S001	0.23327575849615573
+FOCUS	species	L1 norm error	CAMI_MED_S001	1.8459543655649893
+FOCUS	strain	L1 norm error	CAMI_MED_S001	2.0000000000000013
+FOCUS	superkingdom	L1 norm error	CAMI_MED_S001	0.7134586056538527
+FOCUS	na	Weighted UniFrac error	CAMI_MED_S001	10.609550336970344
+FOCUS	na	Unweighted UniFrac error	CAMI_MED_S001	3092.474433407531
+Metaphlan2	class	Bray-Curtis distance	CAMI_MED_S001	0.23952883710934855
+Metaphlan2	family	Bray-Curtis distance	CAMI_MED_S001	0.6168284329319074
+Metaphlan2	genus	Bray-Curtis distance	CAMI_MED_S001	0.6476680802953503
+Metaphlan2	order	Bray-Curtis distance	CAMI_MED_S001	0.33228156565682804
+Metaphlan2	phylum	Bray-Curtis distance	CAMI_MED_S001	0.1610242043781463
+Metaphlan2	species	Bray-Curtis distance	CAMI_MED_S001	0.8867115318909097
+Metaphlan2	strain	Bray-Curtis distance	CAMI_MED_S001	1.0
+Metaphlan2	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.2918306833573404
+Metaphlan2	superkingdom	Shannon diversity	CAMI_MED_S001	0.2769181886229228
+Metaphlan2	superkingdom	Shannon equitability	CAMI_MED_S001	0.2520617978510339
+Metaphlan2	phylum	Shannon diversity	CAMI_MED_S001	0.8093914074618451
+Metaphlan2	phylum	Shannon equitability	CAMI_MED_S001	0.5029031571884177
+Metaphlan2	class	Shannon diversity	CAMI_MED_S001	1.4818696834691503
+Metaphlan2	class	Shannon equitability	CAMI_MED_S001	0.6179876578762307
+Metaphlan2	order	Shannon diversity	CAMI_MED_S001	2.12576916801253
+Metaphlan2	order	Shannon equitability	CAMI_MED_S001	0.70959918106788
+Metaphlan2	family	Shannon diversity	CAMI_MED_S001	2.2421066508839473
+Metaphlan2	family	Shannon equitability	CAMI_MED_S001	0.6658478387665017
+Metaphlan2	genus	Shannon diversity	CAMI_MED_S001	2.4866361679208864
+Metaphlan2	genus	Shannon equitability	CAMI_MED_S001	0.6939090348416592
+Metaphlan2	species	Shannon diversity	CAMI_MED_S001	2.4378745674729148
+Metaphlan2	species	Shannon equitability	CAMI_MED_S001	0.6803018511528297
+Metaphlan2	strain	Shannon diversity	CAMI_MED_S001	2.019217756576863
+Metaphlan2	strain	Shannon equitability	CAMI_MED_S001	0.6197538142326062
+Metaphlan2	species	F1 score	CAMI_MED_S001	0.38888888888888895
+Metaphlan2	species	False negatives	CAMI_MED_S001	51.0
+Metaphlan2	species	False positives	CAMI_MED_S001	15.0
+Metaphlan2	species	Jaccard index	CAMI_MED_S001	0.2413793103448276
+Metaphlan2	species	Taxon counts	CAMI_MED_S001	36.0
+Metaphlan2	species	Purity (precision)	CAMI_MED_S001	0.5833333333333334
+Metaphlan2	species	Completeness (recall)	CAMI_MED_S001	0.2916666666666667
+Metaphlan2	species	True positives	CAMI_MED_S001	21.0
+Metaphlan2	genus	F1 score	CAMI_MED_S001	0.5233644859813084
+Metaphlan2	genus	False negatives	CAMI_MED_S001	43.0
+Metaphlan2	genus	False positives	CAMI_MED_S001	8.0
+Metaphlan2	genus	Jaccard index	CAMI_MED_S001	0.35443037974683544
+Metaphlan2	genus	Taxon counts	CAMI_MED_S001	36.0
+Metaphlan2	genus	Purity (precision)	CAMI_MED_S001	0.7777777777777778
+Metaphlan2	genus	Completeness (recall)	CAMI_MED_S001	0.39436619718309857
+Metaphlan2	genus	True positives	CAMI_MED_S001	28.0
+Metaphlan2	phylum	F1 score	CAMI_MED_S001	0.9090909090909091
+Metaphlan2	phylum	False negatives	CAMI_MED_S001	1.0
+Metaphlan2	phylum	False positives	CAMI_MED_S001	0.0
+Metaphlan2	phylum	Jaccard index	CAMI_MED_S001	0.8333333333333334
+Metaphlan2	phylum	Taxon counts	CAMI_MED_S001	5.0
+Metaphlan2	phylum	Purity (precision)	CAMI_MED_S001	1.0
+Metaphlan2	phylum	Completeness (recall)	CAMI_MED_S001	0.8333333333333334
+Metaphlan2	phylum	True positives	CAMI_MED_S001	5.0
+Metaphlan2	class	F1 score	CAMI_MED_S001	0.846153846153846
+Metaphlan2	class	False negatives	CAMI_MED_S001	4.0
+Metaphlan2	class	False positives	CAMI_MED_S001	0.0
+Metaphlan2	class	Jaccard index	CAMI_MED_S001	0.7333333333333333
+Metaphlan2	class	Taxon counts	CAMI_MED_S001	11.0
+Metaphlan2	class	Purity (precision)	CAMI_MED_S001	1.0
+Metaphlan2	class	Completeness (recall)	CAMI_MED_S001	0.7333333333333333
+Metaphlan2	class	True positives	CAMI_MED_S001	11.0
+Metaphlan2	strain	False negatives	CAMI_MED_S001	232.0
+Metaphlan2	strain	False positives	CAMI_MED_S001	26.0
+Metaphlan2	strain	Jaccard index	CAMI_MED_S001	0.0
+Metaphlan2	strain	Taxon counts	CAMI_MED_S001	26.0
+Metaphlan2	strain	Purity (precision)	CAMI_MED_S001	0.0
+Metaphlan2	strain	Completeness (recall)	CAMI_MED_S001	0.0
+Metaphlan2	strain	True positives	CAMI_MED_S001	0.0
+Metaphlan2	superkingdom	F1 score	CAMI_MED_S001	1.0
+Metaphlan2	superkingdom	False negatives	CAMI_MED_S001	0.0
+Metaphlan2	superkingdom	False positives	CAMI_MED_S001	0.0
+Metaphlan2	superkingdom	Jaccard index	CAMI_MED_S001	1.0
+Metaphlan2	superkingdom	Taxon counts	CAMI_MED_S001	3.0
+Metaphlan2	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+Metaphlan2	superkingdom	Completeness (recall)	CAMI_MED_S001	1.0
+Metaphlan2	superkingdom	True positives	CAMI_MED_S001	3.0
+Metaphlan2	family	F1 score	CAMI_MED_S001	0.6585365853658537
+Metaphlan2	family	False negatives	CAMI_MED_S001	26.0
+Metaphlan2	family	False positives	CAMI_MED_S001	2.0
+Metaphlan2	family	Jaccard index	CAMI_MED_S001	0.4909090909090909
+Metaphlan2	family	Taxon counts	CAMI_MED_S001	29.0
+Metaphlan2	family	Purity (precision)	CAMI_MED_S001	0.9310344827586207
+Metaphlan2	family	Completeness (recall)	CAMI_MED_S001	0.5094339622641509
+Metaphlan2	family	True positives	CAMI_MED_S001	27.0
+Metaphlan2	order	F1 score	CAMI_MED_S001	0.6938775510204082
+Metaphlan2	order	False negatives	CAMI_MED_S001	12.0
+Metaphlan2	order	False positives	CAMI_MED_S001	3.0
+Metaphlan2	order	Jaccard index	CAMI_MED_S001	0.53125
+Metaphlan2	order	Taxon counts	CAMI_MED_S001	20.0
+Metaphlan2	order	Purity (precision)	CAMI_MED_S001	0.85
+Metaphlan2	order	Completeness (recall)	CAMI_MED_S001	0.5862068965517241
+Metaphlan2	order	True positives	CAMI_MED_S001	17.0
+Metaphlan2	class	L1 norm error	CAMI_MED_S001	0.4790576742186971
+Metaphlan2	family	L1 norm error	CAMI_MED_S001	1.2336568658638145
+Metaphlan2	genus	L1 norm error	CAMI_MED_S001	1.2953361605907003
+Metaphlan2	order	L1 norm error	CAMI_MED_S001	0.6645631313136559
+Metaphlan2	phylum	L1 norm error	CAMI_MED_S001	0.3220484087562926
+Metaphlan2	species	L1 norm error	CAMI_MED_S001	1.7734230637818187
+Metaphlan2	strain	L1 norm error	CAMI_MED_S001	2.0000000000000004
+Metaphlan2	superkingdom	L1 norm error	CAMI_MED_S001	0.5836613667146807
+Metaphlan2	na	Weighted UniFrac error	CAMI_MED_S001	11.125596816721272
+Metaphlan2	na	Unweighted UniFrac error	CAMI_MED_S001	2545.2369392803416
+Metaphyler	class	Bray-Curtis distance	CAMI_MED_S001	0.06905263961148714
+Metaphyler	family	Bray-Curtis distance	CAMI_MED_S001	0.2525319355854579
+Metaphyler	genus	Bray-Curtis distance	CAMI_MED_S001	0.6901854333122764
+Metaphyler	order	Bray-Curtis distance	CAMI_MED_S001	0.09344625769481654
+Metaphyler	phylum	Bray-Curtis distance	CAMI_MED_S001	0.06478872829102743
+Metaphyler	species	Bray-Curtis distance	CAMI_MED_S001	0.9366513321422791
+Metaphyler	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.3567293028269262
+Metaphyler	superkingdom	Shannon diversity	CAMI_MED_S001	0.013970468203907028
+Metaphyler	superkingdom	Shannon equitability	CAMI_MED_S001	0.020155125196673614
+Metaphyler	phylum	Shannon diversity	CAMI_MED_S001	0.9166270684872081
+Metaphyler	phylum	Shannon equitability	CAMI_MED_S001	0.30107417082221494
+Metaphyler	class	Shannon diversity	CAMI_MED_S001	1.4854186158670677
+Metaphyler	class	Shannon equitability	CAMI_MED_S001	0.39493208821013703
+Metaphyler	order	Shannon diversity	CAMI_MED_S001	2.2081550626562
+Metaphyler	order	Shannon equitability	CAMI_MED_S001	0.48489564281569864
+Metaphyler	family	Shannon diversity	CAMI_MED_S001	3.340935587332228
+Metaphyler	family	Shannon equitability	CAMI_MED_S001	0.6264976116031955
+Metaphyler	genus	Shannon diversity	CAMI_MED_S001	4.103821293519035
+Metaphyler	genus	Shannon equitability	CAMI_MED_S001	0.6530448250041424
+Metaphyler	species	Shannon diversity	CAMI_MED_S001	4.691351324363912
+Metaphyler	species	Shannon equitability	CAMI_MED_S001	0.6623033250871172
+Metaphyler	species	F1 score	CAMI_MED_S001	0.01740506329113924
+Metaphyler	species	False negatives	CAMI_MED_S001	61.0
+Metaphyler	species	False positives	CAMI_MED_S001	1181.0
+Metaphyler	species	Jaccard index	CAMI_MED_S001	0.008778930566640064
+Metaphyler	species	Taxon counts	CAMI_MED_S001	1192.0
+Metaphyler	species	Purity (precision)	CAMI_MED_S001	0.009228187919463088
+Metaphyler	species	Completeness (recall)	CAMI_MED_S001	0.1527777777777778
+Metaphyler	species	True positives	CAMI_MED_S001	11.0
+Metaphyler	genus	F1 score	CAMI_MED_S001	0.11861614497528832
+Metaphyler	genus	False negatives	CAMI_MED_S001	35.0
+Metaphyler	genus	False positives	CAMI_MED_S001	500.0
+Metaphyler	genus	Jaccard index	CAMI_MED_S001	0.06304728546409807
+Metaphyler	genus	Taxon counts	CAMI_MED_S001	536.0
+Metaphyler	genus	Purity (precision)	CAMI_MED_S001	0.06716417910447761
+Metaphyler	genus	Completeness (recall)	CAMI_MED_S001	0.5070422535211268
+Metaphyler	genus	True positives	CAMI_MED_S001	36.0
+Metaphyler	phylum	F1 score	CAMI_MED_S001	0.4444444444444445
+Metaphyler	phylum	False negatives	CAMI_MED_S001	0.0
+Metaphyler	phylum	False positives	CAMI_MED_S001	15.0
+Metaphyler	phylum	Jaccard index	CAMI_MED_S001	0.2857142857142857
+Metaphyler	phylum	Taxon counts	CAMI_MED_S001	21.0
+Metaphyler	phylum	Purity (precision)	CAMI_MED_S001	0.2857142857142857
+Metaphyler	phylum	Completeness (recall)	CAMI_MED_S001	1.0
+Metaphyler	phylum	True positives	CAMI_MED_S001	6.0
+Metaphyler	class	F1 score	CAMI_MED_S001	0.5172413793103449
+Metaphyler	class	False negatives	CAMI_MED_S001	0.0
+Metaphyler	class	False positives	CAMI_MED_S001	28.0
+Metaphyler	class	Jaccard index	CAMI_MED_S001	0.3488372093023256
+Metaphyler	class	Taxon counts	CAMI_MED_S001	43.0
+Metaphyler	class	Purity (precision)	CAMI_MED_S001	0.3488372093023256
+Metaphyler	class	Completeness (recall)	CAMI_MED_S001	1.0
+Metaphyler	class	True positives	CAMI_MED_S001	15.0
+Metaphyler	strain	False negatives	CAMI_MED_S001	232.0
+Metaphyler	strain	False positives	CAMI_MED_S001	0.0
+Metaphyler	strain	Jaccard index	CAMI_MED_S001	0.0
+Metaphyler	strain	Taxon counts	CAMI_MED_S001	0.0
+Metaphyler	strain	Purity (precision)	CAMI_MED_S001	0.0
+Metaphyler	strain	Completeness (recall)	CAMI_MED_S001	0.0
+Metaphyler	strain	True positives	CAMI_MED_S001	0.0
+Metaphyler	superkingdom	F1 score	CAMI_MED_S001	0.8
+Metaphyler	superkingdom	False negatives	CAMI_MED_S001	1.0
+Metaphyler	superkingdom	False positives	CAMI_MED_S001	0.0
+Metaphyler	superkingdom	Jaccard index	CAMI_MED_S001	0.6666666666666666
+Metaphyler	superkingdom	Taxon counts	CAMI_MED_S001	2.0
+Metaphyler	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+Metaphyler	superkingdom	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+Metaphyler	superkingdom	True positives	CAMI_MED_S001	2.0
+Metaphyler	family	F1 score	CAMI_MED_S001	0.3846153846153846
+Metaphyler	family	False negatives	CAMI_MED_S001	3.0
+Metaphyler	family	False positives	CAMI_MED_S001	157.0
+Metaphyler	family	Jaccard index	CAMI_MED_S001	0.23809523809523808
+Metaphyler	family	Taxon counts	CAMI_MED_S001	207.0
+Metaphyler	family	Purity (precision)	CAMI_MED_S001	0.24154589371980675
+Metaphyler	family	Completeness (recall)	CAMI_MED_S001	0.9433962264150944
+Metaphyler	family	True positives	CAMI_MED_S001	50.0
+Metaphyler	order	F1 score	CAMI_MED_S001	0.46774193548387094
+Metaphyler	order	False negatives	CAMI_MED_S001	0.0
+Metaphyler	order	False positives	CAMI_MED_S001	66.0
+Metaphyler	order	Jaccard index	CAMI_MED_S001	0.30526315789473685
+Metaphyler	order	Taxon counts	CAMI_MED_S001	95.0
+Metaphyler	order	Purity (precision)	CAMI_MED_S001	0.30526315789473685
+Metaphyler	order	Completeness (recall)	CAMI_MED_S001	1.0
+Metaphyler	order	True positives	CAMI_MED_S001	29.0
+Metaphyler	class	L1 norm error	CAMI_MED_S001	0.13810527922297425
+Metaphyler	family	L1 norm error	CAMI_MED_S001	0.5050638711709157
+Metaphyler	genus	L1 norm error	CAMI_MED_S001	1.3803708666245555
+Metaphyler	order	L1 norm error	CAMI_MED_S001	0.18689251538963306
+Metaphyler	phylum	L1 norm error	CAMI_MED_S001	0.12957745658205488
+Metaphyler	species	L1 norm error	CAMI_MED_S001	1.8733026642845614
+Metaphyler	superkingdom	L1 norm error	CAMI_MED_S001	0.7134586056538523
+Metaphyler	na	Weighted UniFrac error	CAMI_MED_S001	10.103722118759865
+Metaphyler	na	Unweighted UniFrac error	CAMI_MED_S001	12374.702531092058
+mOTU	class	Bray-Curtis distance	CAMI_MED_S001	0.16206692368110165
+mOTU	family	Bray-Curtis distance	CAMI_MED_S001	0.6508899640869706
+mOTU	genus	Bray-Curtis distance	CAMI_MED_S001	0.7223555633262853
+mOTU	order	Bray-Curtis distance	CAMI_MED_S001	0.2932961533581001
+mOTU	phylum	Bray-Curtis distance	CAMI_MED_S001	0.12287001734221281
+mOTU	species	Bray-Curtis distance	CAMI_MED_S001	0.9149799100198206
+mOTU	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.3567293028269263
+mOTU	superkingdom	Shannon diversity	CAMI_MED_S001	0.04925864076630262
+mOTU	superkingdom	Shannon equitability	CAMI_MED_S001	0.07106519675447572
+mOTU	phylum	Shannon diversity	CAMI_MED_S001	0.934839275437084
+mOTU	phylum	Shannon equitability	CAMI_MED_S001	0.5808483000274556
+mOTU	class	Shannon diversity	CAMI_MED_S001	1.2553291680791763
+mOTU	class	Shannon equitability	CAMI_MED_S001	0.5451825306689859
+mOTU	order	Shannon diversity	CAMI_MED_S001	1.8084759620839217
+mOTU	order	Shannon equitability	CAMI_MED_S001	0.5850699203820614
+mOTU	family	Shannon diversity	CAMI_MED_S001	2.0069676469244317
+mOTU	family	Shannon equitability	CAMI_MED_S001	0.4963992573854646
+mOTU	genus	Shannon diversity	CAMI_MED_S001	2.2803663182322094
+mOTU	genus	Shannon equitability	CAMI_MED_S001	0.4814760916543143
+mOTU	species	Shannon diversity	CAMI_MED_S001	2.4751962106138246
+mOTU	species	Shannon equitability	CAMI_MED_S001	0.4680543165175122
+mOTU	species	F1 score	CAMI_MED_S001	0.10370370370370371
+mOTU	species	False negatives	CAMI_MED_S001	58.0
+mOTU	species	False positives	CAMI_MED_S001	184.0
+mOTU	species	Jaccard index	CAMI_MED_S001	0.0546875
+mOTU	species	Taxon counts	CAMI_MED_S001	198.0
+mOTU	species	Purity (precision)	CAMI_MED_S001	0.0707070707070707
+mOTU	species	Completeness (recall)	CAMI_MED_S001	0.19444444444444445
+mOTU	species	True positives	CAMI_MED_S001	14.0
+mOTU	genus	F1 score	CAMI_MED_S001	0.3243243243243243
+mOTU	genus	False negatives	CAMI_MED_S001	41.0
+mOTU	genus	False positives	CAMI_MED_S001	84.0
+mOTU	genus	Jaccard index	CAMI_MED_S001	0.1935483870967742
+mOTU	genus	Taxon counts	CAMI_MED_S001	114.0
+mOTU	genus	Purity (precision)	CAMI_MED_S001	0.2631578947368421
+mOTU	genus	Completeness (recall)	CAMI_MED_S001	0.4225352112676056
+mOTU	genus	True positives	CAMI_MED_S001	30.0
+mOTU	phylum	F1 score	CAMI_MED_S001	0.9090909090909091
+mOTU	phylum	False negatives	CAMI_MED_S001	1.0
+mOTU	phylum	False positives	CAMI_MED_S001	0.0
+mOTU	phylum	Jaccard index	CAMI_MED_S001	0.8333333333333334
+mOTU	phylum	Taxon counts	CAMI_MED_S001	5.0
+mOTU	phylum	Purity (precision)	CAMI_MED_S001	1.0
+mOTU	phylum	Completeness (recall)	CAMI_MED_S001	0.8333333333333334
+mOTU	phylum	True positives	CAMI_MED_S001	5.0
+mOTU	class	F1 score	CAMI_MED_S001	0.8
+mOTU	class	False negatives	CAMI_MED_S001	5.0
+mOTU	class	False positives	CAMI_MED_S001	0.0
+mOTU	class	Jaccard index	CAMI_MED_S001	0.6666666666666666
+mOTU	class	Taxon counts	CAMI_MED_S001	10.0
+mOTU	class	Purity (precision)	CAMI_MED_S001	1.0
+mOTU	class	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+mOTU	class	True positives	CAMI_MED_S001	10.0
+mOTU	strain	False negatives	CAMI_MED_S001	232.0
+mOTU	strain	False positives	CAMI_MED_S001	0.0
+mOTU	strain	Jaccard index	CAMI_MED_S001	0.0
+mOTU	strain	Taxon counts	CAMI_MED_S001	0.0
+mOTU	strain	Purity (precision)	CAMI_MED_S001	0.0
+mOTU	strain	Completeness (recall)	CAMI_MED_S001	0.0
+mOTU	strain	True positives	CAMI_MED_S001	0.0
+mOTU	superkingdom	F1 score	CAMI_MED_S001	0.8
+mOTU	superkingdom	False negatives	CAMI_MED_S001	1.0
+mOTU	superkingdom	False positives	CAMI_MED_S001	0.0
+mOTU	superkingdom	Jaccard index	CAMI_MED_S001	0.6666666666666666
+mOTU	superkingdom	Taxon counts	CAMI_MED_S001	2.0
+mOTU	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+mOTU	superkingdom	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+mOTU	superkingdom	True positives	CAMI_MED_S001	2.0
+mOTU	family	F1 score	CAMI_MED_S001	0.6545454545454544
+mOTU	family	False negatives	CAMI_MED_S001	17.0
+mOTU	family	False positives	CAMI_MED_S001	21.0
+mOTU	family	Jaccard index	CAMI_MED_S001	0.4864864864864865
+mOTU	family	Taxon counts	CAMI_MED_S001	57.0
+mOTU	family	Purity (precision)	CAMI_MED_S001	0.631578947368421
+mOTU	family	Completeness (recall)	CAMI_MED_S001	0.6792452830188679
+mOTU	family	True positives	CAMI_MED_S001	36.0
+mOTU	order	F1 score	CAMI_MED_S001	0.7843137254901961
+mOTU	order	False negatives	CAMI_MED_S001	9.0
+mOTU	order	False positives	CAMI_MED_S001	2.0
+mOTU	order	Jaccard index	CAMI_MED_S001	0.6451612903225806
+mOTU	order	Taxon counts	CAMI_MED_S001	22.0
+mOTU	order	Purity (precision)	CAMI_MED_S001	0.9090909090909091
+mOTU	order	Completeness (recall)	CAMI_MED_S001	0.6896551724137931
+mOTU	order	True positives	CAMI_MED_S001	20.0
+mOTU	class	L1 norm error	CAMI_MED_S001	0.3241338473622033
+mOTU	family	L1 norm error	CAMI_MED_S001	1.3017799281739406
+mOTU	genus	L1 norm error	CAMI_MED_S001	1.4447111266525703
+mOTU	order	L1 norm error	CAMI_MED_S001	0.5865923067162002
+mOTU	phylum	L1 norm error	CAMI_MED_S001	0.24574003468442562
+mOTU	species	L1 norm error	CAMI_MED_S001	1.8299598200396414
+mOTU	superkingdom	L1 norm error	CAMI_MED_S001	0.7134586056538526
+mOTU	na	Weighted UniFrac error	CAMI_MED_S001	11.113832141066585
+mOTU	na	Unweighted UniFrac error	CAMI_MED_S001	3287.5803456119447
+Quickr	class	Bray-Curtis distance	CAMI_MED_S001	0.23275196729023953
+Quickr	family	Bray-Curtis distance	CAMI_MED_S001	0.5458464648198925
+Quickr	genus	Bray-Curtis distance	CAMI_MED_S001	0.8251782851768982
+Quickr	order	Bray-Curtis distance	CAMI_MED_S001	0.31727915712549454
+Quickr	phylum	Bray-Curtis distance	CAMI_MED_S001	0.1513641314824938
+Quickr	species	Bray-Curtis distance	CAMI_MED_S001	0.963554984903658
+Quickr	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.35672930282692616
+Quickr	superkingdom	Shannon diversity	CAMI_MED_S001	0.19955049630883018
+Quickr	superkingdom	Shannon equitability	CAMI_MED_S001	0.18163868943315115
+Quickr	phylum	Shannon diversity	CAMI_MED_S001	1.6748292224784282
+Quickr	phylum	Shannon equitability	CAMI_MED_S001	0.471073209573975
+Quickr	class	Shannon diversity	CAMI_MED_S001	2.294436716713471
+Quickr	class	Shannon equitability	CAMI_MED_S001	0.589553612695673
+Quickr	order	Shannon diversity	CAMI_MED_S001	3.2622301041706474
+Quickr	order	Shannon equitability	CAMI_MED_S001	0.70685696988113
+Quickr	family	Shannon diversity	CAMI_MED_S001	4.410267822497985
+Quickr	family	Shannon equitability	CAMI_MED_S001	0.8331785091797604
+Quickr	genus	Shannon diversity	CAMI_MED_S001	5.4377447479019505
+Quickr	genus	Shannon equitability	CAMI_MED_S001	0.8655704966027868
+Quickr	species	Shannon diversity	CAMI_MED_S001	6.061580942788785
+Quickr	species	Shannon equitability	CAMI_MED_S001	0.8948007985085942
+Quickr	species	F1 score	CAMI_MED_S001	0.0337909186906019
+Quickr	species	False negatives	CAMI_MED_S001	56.0
+Quickr	species	False positives	CAMI_MED_S001	859.0
+Quickr	species	Jaccard index	CAMI_MED_S001	0.017185821697099892
+Quickr	species	Taxon counts	CAMI_MED_S001	875.0
+Quickr	species	Purity (precision)	CAMI_MED_S001	0.018285714285714287
+Quickr	species	Completeness (recall)	CAMI_MED_S001	0.2222222222222222
+Quickr	species	True positives	CAMI_MED_S001	16.0
+Quickr	genus	F1 score	CAMI_MED_S001	0.13861386138613863
+Quickr	genus	False negatives	CAMI_MED_S001	29.0
+Quickr	genus	False positives	CAMI_MED_S001	493.0
+Quickr	genus	Jaccard index	CAMI_MED_S001	0.07446808510638298
+Quickr	genus	Taxon counts	CAMI_MED_S001	535.0
+Quickr	genus	Purity (precision)	CAMI_MED_S001	0.07850467289719626
+Quickr	genus	Completeness (recall)	CAMI_MED_S001	0.5915492957746479
+Quickr	genus	True positives	CAMI_MED_S001	42.0
+Quickr	phylum	F1 score	CAMI_MED_S001	0.2926829268292683
+Quickr	phylum	False negatives	CAMI_MED_S001	0.0
+Quickr	phylum	False positives	CAMI_MED_S001	29.0
+Quickr	phylum	Jaccard index	CAMI_MED_S001	0.17142857142857143
+Quickr	phylum	Taxon counts	CAMI_MED_S001	35.0
+Quickr	phylum	Purity (precision)	CAMI_MED_S001	0.17142857142857143
+Quickr	phylum	Completeness (recall)	CAMI_MED_S001	1.0
+Quickr	phylum	True positives	CAMI_MED_S001	6.0
+Quickr	class	F1 score	CAMI_MED_S001	0.43749999999999994
+Quickr	class	False negatives	CAMI_MED_S001	1.0
+Quickr	class	False positives	CAMI_MED_S001	35.0
+Quickr	class	Jaccard index	CAMI_MED_S001	0.28
+Quickr	class	Taxon counts	CAMI_MED_S001	49.0
+Quickr	class	Purity (precision)	CAMI_MED_S001	0.2857142857142857
+Quickr	class	Completeness (recall)	CAMI_MED_S001	0.9333333333333333
+Quickr	class	True positives	CAMI_MED_S001	14.0
+Quickr	strain	False negatives	CAMI_MED_S001	232.0
+Quickr	strain	False positives	CAMI_MED_S001	0.0
+Quickr	strain	Jaccard index	CAMI_MED_S001	0.0
+Quickr	strain	Taxon counts	CAMI_MED_S001	0.0
+Quickr	strain	Purity (precision)	CAMI_MED_S001	0.0
+Quickr	strain	Completeness (recall)	CAMI_MED_S001	0.0
+Quickr	strain	True positives	CAMI_MED_S001	0.0
+Quickr	superkingdom	F1 score	CAMI_MED_S001	0.6666666666666666
+Quickr	superkingdom	False negatives	CAMI_MED_S001	1.0
+Quickr	superkingdom	False positives	CAMI_MED_S001	1.0
+Quickr	superkingdom	Jaccard index	CAMI_MED_S001	0.5
+Quickr	superkingdom	Taxon counts	CAMI_MED_S001	3.0
+Quickr	superkingdom	Purity (precision)	CAMI_MED_S001	0.6666666666666666
+Quickr	superkingdom	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+Quickr	superkingdom	True positives	CAMI_MED_S001	2.0
+Quickr	family	F1 score	CAMI_MED_S001	0.38095238095238093
+Quickr	family	False negatives	CAMI_MED_S001	5.0
+Quickr	family	False positives	CAMI_MED_S001	151.0
+Quickr	family	Jaccard index	CAMI_MED_S001	0.23529411764705882
+Quickr	family	Taxon counts	CAMI_MED_S001	199.0
+Quickr	family	Purity (precision)	CAMI_MED_S001	0.24120603015075376
+Quickr	family	Completeness (recall)	CAMI_MED_S001	0.9056603773584906
+Quickr	family	True positives	CAMI_MED_S001	48.0
+Quickr	order	F1 score	CAMI_MED_S001	0.41538461538461535
+Quickr	order	False negatives	CAMI_MED_S001	2.0
+Quickr	order	False positives	CAMI_MED_S001	74.0
+Quickr	order	Jaccard index	CAMI_MED_S001	0.2621359223300971
+Quickr	order	Taxon counts	CAMI_MED_S001	101.0
+Quickr	order	Purity (precision)	CAMI_MED_S001	0.26732673267326734
+Quickr	order	Completeness (recall)	CAMI_MED_S001	0.9310344827586207
+Quickr	order	True positives	CAMI_MED_S001	27.0
+Quickr	class	L1 norm error	CAMI_MED_S001	0.46550393458047906
+Quickr	family	L1 norm error	CAMI_MED_S001	1.0916929296397848
+Quickr	genus	L1 norm error	CAMI_MED_S001	1.6503565703537975
+Quickr	order	L1 norm error	CAMI_MED_S001	0.634558314250989
+Quickr	phylum	L1 norm error	CAMI_MED_S001	0.30272826296498767
+Quickr	species	L1 norm error	CAMI_MED_S001	1.9271099698073155
+Quickr	superkingdom	L1 norm error	CAMI_MED_S001	0.7134586056538523
+Quickr	na	Weighted UniFrac error	CAMI_MED_S001	9.997834570310141
+Quickr	na	Unweighted UniFrac error	CAMI_MED_S001	10315.758267393294
+Taxy-Pro1	class	Bray-Curtis distance	CAMI_MED_S001	0.10227587812260662
+Taxy-Pro1	family	Bray-Curtis distance	CAMI_MED_S001	0.512335365123622
+Taxy-Pro1	genus	Bray-Curtis distance	CAMI_MED_S001	0.7639784489206928
+Taxy-Pro1	order	Bray-Curtis distance	CAMI_MED_S001	0.21722133170471106
+Taxy-Pro1	phylum	Bray-Curtis distance	CAMI_MED_S001	0.09550042544200617
+Taxy-Pro1	species	Bray-Curtis distance	CAMI_MED_S001	0.9233873873675985
+Taxy-Pro1	strain	Bray-Curtis distance	CAMI_MED_S001	1.0
+Taxy-Pro1	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.3572057089677155
+Taxy-Pro1	superkingdom	Shannon diversity	CAMI_MED_S001	0.006814246061783516
+Taxy-Pro1	superkingdom	Shannon equitability	CAMI_MED_S001	0.009830879000732227
+Taxy-Pro1	phylum	Shannon diversity	CAMI_MED_S001	1.0005167335313734
+Taxy-Pro1	phylum	Shannon equitability	CAMI_MED_S001	0.3190937902064946
+Taxy-Pro1	class	Shannon diversity	CAMI_MED_S001	1.62158085582996
+Taxy-Pro1	class	Shannon equitability	CAMI_MED_S001	0.45251075372538335
+Taxy-Pro1	order	Shannon diversity	CAMI_MED_S001	2.432243246434052
+Taxy-Pro1	order	Shannon equitability	CAMI_MED_S001	0.5566477341206373
+Taxy-Pro1	family	Shannon diversity	CAMI_MED_S001	3.4573324901054425
+Taxy-Pro1	family	Shannon equitability	CAMI_MED_S001	0.6747378599855197
+Taxy-Pro1	genus	Shannon diversity	CAMI_MED_S001	4.081788409851383
+Taxy-Pro1	genus	Shannon equitability	CAMI_MED_S001	0.7042352898075215
+Taxy-Pro1	species	Shannon diversity	CAMI_MED_S001	4.15826468873645
+Taxy-Pro1	species	Shannon equitability	CAMI_MED_S001	0.6884253872560692
+Taxy-Pro1	strain	Shannon diversity	CAMI_MED_S001	4.625949111057913
+Taxy-Pro1	strain	Shannon equitability	CAMI_MED_S001	0.7256362511201412
+Taxy-Pro1	species	F1 score	CAMI_MED_S001	0.028455284552845527
+Taxy-Pro1	species	False negatives	CAMI_MED_S001	65.0
+Taxy-Pro1	species	False positives	CAMI_MED_S001	413.0
+Taxy-Pro1	species	Jaccard index	CAMI_MED_S001	0.01443298969072165
+Taxy-Pro1	species	Taxon counts	CAMI_MED_S001	420.0
+Taxy-Pro1	species	Purity (precision)	CAMI_MED_S001	0.016666666666666666
+Taxy-Pro1	species	Completeness (recall)	CAMI_MED_S001	0.09722222222222222
+Taxy-Pro1	species	True positives	CAMI_MED_S001	7.0
+Taxy-Pro1	genus	F1 score	CAMI_MED_S001	0.125
+Taxy-Pro1	genus	False negatives	CAMI_MED_S001	46.0
+Taxy-Pro1	genus	False positives	CAMI_MED_S001	304.0
+Taxy-Pro1	genus	Jaccard index	CAMI_MED_S001	0.06666666666666667
+Taxy-Pro1	genus	Taxon counts	CAMI_MED_S001	329.0
+Taxy-Pro1	genus	Purity (precision)	CAMI_MED_S001	0.07598784194528875
+Taxy-Pro1	genus	Completeness (recall)	CAMI_MED_S001	0.352112676056338
+Taxy-Pro1	genus	True positives	CAMI_MED_S001	25.0
+Taxy-Pro1	phylum	F1 score	CAMI_MED_S001	0.41379310344827586
+Taxy-Pro1	phylum	False negatives	CAMI_MED_S001	0.0
+Taxy-Pro1	phylum	False positives	CAMI_MED_S001	17.0
+Taxy-Pro1	phylum	Jaccard index	CAMI_MED_S001	0.2608695652173913
+Taxy-Pro1	phylum	Taxon counts	CAMI_MED_S001	23.0
+Taxy-Pro1	phylum	Purity (precision)	CAMI_MED_S001	0.2608695652173913
+Taxy-Pro1	phylum	Completeness (recall)	CAMI_MED_S001	1.0
+Taxy-Pro1	phylum	True positives	CAMI_MED_S001	6.0
+Taxy-Pro1	class	F1 score	CAMI_MED_S001	0.5882352941176471
+Taxy-Pro1	class	False negatives	CAMI_MED_S001	0.0
+Taxy-Pro1	class	False positives	CAMI_MED_S001	21.0
+Taxy-Pro1	class	Jaccard index	CAMI_MED_S001	0.4166666666666667
+Taxy-Pro1	class	Taxon counts	CAMI_MED_S001	36.0
+Taxy-Pro1	class	Purity (precision)	CAMI_MED_S001	0.4166666666666667
+Taxy-Pro1	class	Completeness (recall)	CAMI_MED_S001	1.0
+Taxy-Pro1	class	True positives	CAMI_MED_S001	15.0
+Taxy-Pro1	strain	False negatives	CAMI_MED_S001	232.0
+Taxy-Pro1	strain	False positives	CAMI_MED_S001	587.0
+Taxy-Pro1	strain	Jaccard index	CAMI_MED_S001	0.0
+Taxy-Pro1	strain	Taxon counts	CAMI_MED_S001	587.0
+Taxy-Pro1	strain	Purity (precision)	CAMI_MED_S001	0.0
+Taxy-Pro1	strain	Completeness (recall)	CAMI_MED_S001	0.0
+Taxy-Pro1	strain	True positives	CAMI_MED_S001	0.0
+Taxy-Pro1	superkingdom	F1 score	CAMI_MED_S001	0.8
+Taxy-Pro1	superkingdom	False negatives	CAMI_MED_S001	1.0
+Taxy-Pro1	superkingdom	False positives	CAMI_MED_S001	0.0
+Taxy-Pro1	superkingdom	Jaccard index	CAMI_MED_S001	0.6666666666666666
+Taxy-Pro1	superkingdom	Taxon counts	CAMI_MED_S001	2.0
+Taxy-Pro1	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+Taxy-Pro1	superkingdom	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+Taxy-Pro1	superkingdom	True positives	CAMI_MED_S001	2.0
+Taxy-Pro1	family	F1 score	CAMI_MED_S001	0.42533936651583715
+Taxy-Pro1	family	False negatives	CAMI_MED_S001	6.0
+Taxy-Pro1	family	False positives	CAMI_MED_S001	121.0
+Taxy-Pro1	family	Jaccard index	CAMI_MED_S001	0.27011494252873564
+Taxy-Pro1	family	Taxon counts	CAMI_MED_S001	168.0
+Taxy-Pro1	family	Purity (precision)	CAMI_MED_S001	0.27976190476190477
+Taxy-Pro1	family	Completeness (recall)	CAMI_MED_S001	0.8867924528301887
+Taxy-Pro1	family	True positives	CAMI_MED_S001	47.0
+Taxy-Pro1	order	F1 score	CAMI_MED_S001	0.5185185185185186
+Taxy-Pro1	order	False negatives	CAMI_MED_S001	1.0
+Taxy-Pro1	order	False positives	CAMI_MED_S001	51.0
+Taxy-Pro1	order	Jaccard index	CAMI_MED_S001	0.35
+Taxy-Pro1	order	Taxon counts	CAMI_MED_S001	79.0
+Taxy-Pro1	order	Purity (precision)	CAMI_MED_S001	0.35443037974683544
+Taxy-Pro1	order	Completeness (recall)	CAMI_MED_S001	0.9655172413793104
+Taxy-Pro1	order	True positives	CAMI_MED_S001	28.0
+Taxy-Pro1	class	L1 norm error	CAMI_MED_S001	0.20455175624521324
+Taxy-Pro1	family	L1 norm error	CAMI_MED_S001	1.0246707302472442
+Taxy-Pro1	genus	L1 norm error	CAMI_MED_S001	1.5279568978413847
+Taxy-Pro1	order	L1 norm error	CAMI_MED_S001	0.4344426634094221
+Taxy-Pro1	phylum	L1 norm error	CAMI_MED_S001	0.19100085088401234
+Taxy-Pro1	species	L1 norm error	CAMI_MED_S001	1.846774774735199
+Taxy-Pro1	strain	L1 norm error	CAMI_MED_S001	1.9999999999999987
+Taxy-Pro1	superkingdom	L1 norm error	CAMI_MED_S001	0.7144114179354308
+Taxy-Pro1	na	Weighted UniFrac error	CAMI_MED_S001	11.06161394423546
+Taxy-Pro1	na	Unweighted UniFrac error	CAMI_MED_S001	8640.994830083566
+Taxy-Pro2	class	Bray-Curtis distance	CAMI_MED_S001	0.10222794995451763
+Taxy-Pro2	family	Bray-Curtis distance	CAMI_MED_S001	0.521556296353968
+Taxy-Pro2	genus	Bray-Curtis distance	CAMI_MED_S001	0.7693658453036281
+Taxy-Pro2	order	Bray-Curtis distance	CAMI_MED_S001	0.21812966257958416
+Taxy-Pro2	phylum	Bray-Curtis distance	CAMI_MED_S001	0.09507662109304611
+Taxy-Pro2	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.35722391926284486
+Taxy-Pro2	superkingdom	Shannon diversity	CAMI_MED_S001	0.006685174316558374
+Taxy-Pro2	superkingdom	Shannon equitability	CAMI_MED_S001	0.00964466783397703
+Taxy-Pro2	phylum	Shannon diversity	CAMI_MED_S001	1.006647860653959
+Taxy-Pro2	phylum	Shannon equitability	CAMI_MED_S001	0.2904571752973902
+Taxy-Pro2	class	Shannon diversity	CAMI_MED_S001	1.6306919461183869
+Taxy-Pro2	class	Shannon equitability	CAMI_MED_S001	0.4212367018719986
+Taxy-Pro2	order	Shannon diversity	CAMI_MED_S001	2.4613911411223013
+Taxy-Pro2	order	Shannon equitability	CAMI_MED_S001	0.5299707097387838
+Taxy-Pro2	family	Shannon diversity	CAMI_MED_S001	3.5143513647115174
+Taxy-Pro2	family	Shannon equitability	CAMI_MED_S001	0.6578306783067729
+Taxy-Pro2	genus	Shannon diversity	CAMI_MED_S001	4.230278968389603
+Taxy-Pro2	genus	Shannon equitability	CAMI_MED_S001	0.6826946037348153
+Taxy-Pro2	species	False negatives	CAMI_MED_S001	72.0
+Taxy-Pro2	species	False positives	CAMI_MED_S001	0.0
+Taxy-Pro2	species	Jaccard index	CAMI_MED_S001	0.0
+Taxy-Pro2	species	Taxon counts	CAMI_MED_S001	0.0
+Taxy-Pro2	species	Purity (precision)	CAMI_MED_S001	0.0
+Taxy-Pro2	species	Completeness (recall)	CAMI_MED_S001	0.0
+Taxy-Pro2	species	True positives	CAMI_MED_S001	0.0
+Taxy-Pro2	genus	F1 score	CAMI_MED_S001	0.10320284697508897
+Taxy-Pro2	genus	False negatives	CAMI_MED_S001	42.0
+Taxy-Pro2	genus	False positives	CAMI_MED_S001	462.0
+Taxy-Pro2	genus	Jaccard index	CAMI_MED_S001	0.054409005628517824
+Taxy-Pro2	genus	Taxon counts	CAMI_MED_S001	491.0
+Taxy-Pro2	genus	Purity (precision)	CAMI_MED_S001	0.059063136456211814
+Taxy-Pro2	genus	Completeness (recall)	CAMI_MED_S001	0.4084507042253521
+Taxy-Pro2	genus	True positives	CAMI_MED_S001	29.0
+Taxy-Pro2	phylum	F1 score	CAMI_MED_S001	0.3157894736842105
+Taxy-Pro2	phylum	False negatives	CAMI_MED_S001	0.0
+Taxy-Pro2	phylum	False positives	CAMI_MED_S001	26.0
+Taxy-Pro2	phylum	Jaccard index	CAMI_MED_S001	0.1875
+Taxy-Pro2	phylum	Taxon counts	CAMI_MED_S001	32.0
+Taxy-Pro2	phylum	Purity (precision)	CAMI_MED_S001	0.1875
+Taxy-Pro2	phylum	Completeness (recall)	CAMI_MED_S001	1.0
+Taxy-Pro2	phylum	True positives	CAMI_MED_S001	6.0
+Taxy-Pro2	class	F1 score	CAMI_MED_S001	0.47619047619047616
+Taxy-Pro2	class	False negatives	CAMI_MED_S001	0.0
+Taxy-Pro2	class	False positives	CAMI_MED_S001	33.0
+Taxy-Pro2	class	Jaccard index	CAMI_MED_S001	0.3125
+Taxy-Pro2	class	Taxon counts	CAMI_MED_S001	48.0
+Taxy-Pro2	class	Purity (precision)	CAMI_MED_S001	0.3125
+Taxy-Pro2	class	Completeness (recall)	CAMI_MED_S001	1.0
+Taxy-Pro2	class	True positives	CAMI_MED_S001	15.0
+Taxy-Pro2	strain	False negatives	CAMI_MED_S001	232.0
+Taxy-Pro2	strain	False positives	CAMI_MED_S001	0.0
+Taxy-Pro2	strain	Jaccard index	CAMI_MED_S001	0.0
+Taxy-Pro2	strain	Taxon counts	CAMI_MED_S001	0.0
+Taxy-Pro2	strain	Purity (precision)	CAMI_MED_S001	0.0
+Taxy-Pro2	strain	Completeness (recall)	CAMI_MED_S001	0.0
+Taxy-Pro2	strain	True positives	CAMI_MED_S001	0.0
+Taxy-Pro2	superkingdom	F1 score	CAMI_MED_S001	0.8
+Taxy-Pro2	superkingdom	False negatives	CAMI_MED_S001	1.0
+Taxy-Pro2	superkingdom	False positives	CAMI_MED_S001	0.0
+Taxy-Pro2	superkingdom	Jaccard index	CAMI_MED_S001	0.6666666666666666
+Taxy-Pro2	superkingdom	Taxon counts	CAMI_MED_S001	2.0
+Taxy-Pro2	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+Taxy-Pro2	superkingdom	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+Taxy-Pro2	superkingdom	True positives	CAMI_MED_S001	2.0
+Taxy-Pro2	family	F1 score	CAMI_MED_S001	0.366412213740458
+Taxy-Pro2	family	False negatives	CAMI_MED_S001	5.0
+Taxy-Pro2	family	False positives	CAMI_MED_S001	161.0
+Taxy-Pro2	family	Jaccard index	CAMI_MED_S001	0.22429906542056074
+Taxy-Pro2	family	Taxon counts	CAMI_MED_S001	209.0
+Taxy-Pro2	family	Purity (precision)	CAMI_MED_S001	0.22966507177033493
+Taxy-Pro2	family	Completeness (recall)	CAMI_MED_S001	0.9056603773584906
+Taxy-Pro2	family	True positives	CAMI_MED_S001	48.0
+Taxy-Pro2	order	F1 score	CAMI_MED_S001	0.4360902255639098
+Taxy-Pro2	order	False negatives	CAMI_MED_S001	0.0
+Taxy-Pro2	order	False positives	CAMI_MED_S001	75.0
+Taxy-Pro2	order	Jaccard index	CAMI_MED_S001	0.27884615384615385
+Taxy-Pro2	order	Taxon counts	CAMI_MED_S001	104.0
+Taxy-Pro2	order	Purity (precision)	CAMI_MED_S001	0.27884615384615385
+Taxy-Pro2	order	Completeness (recall)	CAMI_MED_S001	1.0
+Taxy-Pro2	order	True positives	CAMI_MED_S001	29.0
+Taxy-Pro2	class	L1 norm error	CAMI_MED_S001	0.20445589990903518
+Taxy-Pro2	family	L1 norm error	CAMI_MED_S001	1.0431125927079359
+Taxy-Pro2	genus	L1 norm error	CAMI_MED_S001	1.5387316906072572
+Taxy-Pro2	order	L1 norm error	CAMI_MED_S001	0.4362593251591684
+Taxy-Pro2	phylum	L1 norm error	CAMI_MED_S001	0.1901532421860922
+Taxy-Pro2	superkingdom	L1 norm error	CAMI_MED_S001	0.7144478385256897
+Taxy-Pro2	na	Weighted UniFrac error	CAMI_MED_S001	8.970007695423522
+Taxy-Pro2	na	Unweighted UniFrac error	CAMI_MED_S001	4175.601586848087
+TIPP	class	Bray-Curtis distance	CAMI_MED_S001	0.1011861595831713
+TIPP	family	Bray-Curtis distance	CAMI_MED_S001	0.27243362294313256
+TIPP	genus	Bray-Curtis distance	CAMI_MED_S001	0.6507966192263875
+TIPP	order	Bray-Curtis distance	CAMI_MED_S001	0.1584673137823196
+TIPP	phylum	Bray-Curtis distance	CAMI_MED_S001	0.1006841001612083
+TIPP	species	Bray-Curtis distance	CAMI_MED_S001	0.9359380220067205
+TIPP	superkingdom	Bray-Curtis distance	CAMI_MED_S001	0.35672930282692633
+TIPP	superkingdom	Shannon diversity	CAMI_MED_S001	0.022861805055988584
+TIPP	superkingdom	Shannon equitability	CAMI_MED_S001	0.03298261278004496
+TIPP	phylum	Shannon diversity	CAMI_MED_S001	0.8939382039810069
+TIPP	phylum	Shannon equitability	CAMI_MED_S001	0.2712325398146186
+TIPP	class	Shannon diversity	CAMI_MED_S001	1.4371155650610796
+TIPP	class	Shannon equitability	CAMI_MED_S001	0.3712324834106305
+TIPP	order	Shannon diversity	CAMI_MED_S001	2.1272426324419187
+TIPP	order	Shannon equitability	CAMI_MED_S001	0.45802402912192225
+TIPP	family	Shannon diversity	CAMI_MED_S001	3.1564646893335437
+TIPP	family	Shannon equitability	CAMI_MED_S001	0.5842408247296976
+TIPP	genus	Shannon diversity	CAMI_MED_S001	3.910790022707859
+TIPP	genus	Shannon equitability	CAMI_MED_S001	0.6176717807913968
+TIPP	species	Shannon diversity	CAMI_MED_S001	4.281445984349531
+TIPP	species	Shannon equitability	CAMI_MED_S001	0.6081892835118694
+TIPP	species	F1 score	CAMI_MED_S001	0.03492063492063492
+TIPP	species	False negatives	CAMI_MED_S001	61.0
+TIPP	species	False positives	CAMI_MED_S001	547.0
+TIPP	species	Jaccard index	CAMI_MED_S001	0.017770597738287562
+TIPP	species	Taxon counts	CAMI_MED_S001	558.0
+TIPP	species	Purity (precision)	CAMI_MED_S001	0.01971326164874552
+TIPP	species	Completeness (recall)	CAMI_MED_S001	0.1527777777777778
+TIPP	species	True positives	CAMI_MED_S001	11.0
+TIPP	genus	F1 score	CAMI_MED_S001	0.15789473684210528
+TIPP	genus	False negatives	CAMI_MED_S001	38.0
+TIPP	genus	False positives	CAMI_MED_S001	314.0
+TIPP	genus	Jaccard index	CAMI_MED_S001	0.08571428571428572
+TIPP	genus	Taxon counts	CAMI_MED_S001	347.0
+TIPP	genus	Purity (precision)	CAMI_MED_S001	0.09510086455331412
+TIPP	genus	Completeness (recall)	CAMI_MED_S001	0.4647887323943662
+TIPP	genus	True positives	CAMI_MED_S001	33.0
+TIPP	phylum	F1 score	CAMI_MED_S001	0.4615384615384615
+TIPP	phylum	False negatives	CAMI_MED_S001	0.0
+TIPP	phylum	False positives	CAMI_MED_S001	14.0
+TIPP	phylum	Jaccard index	CAMI_MED_S001	0.3
+TIPP	phylum	Taxon counts	CAMI_MED_S001	20.0
+TIPP	phylum	Purity (precision)	CAMI_MED_S001	0.3
+TIPP	phylum	Completeness (recall)	CAMI_MED_S001	1.0
+TIPP	phylum	True positives	CAMI_MED_S001	6.0
+TIPP	class	F1 score	CAMI_MED_S001	0.5714285714285713
+TIPP	class	False negatives	CAMI_MED_S001	1.0
+TIPP	class	False positives	CAMI_MED_S001	20.0
+TIPP	class	Jaccard index	CAMI_MED_S001	0.4
+TIPP	class	Taxon counts	CAMI_MED_S001	34.0
+TIPP	class	Purity (precision)	CAMI_MED_S001	0.4117647058823529
+TIPP	class	Completeness (recall)	CAMI_MED_S001	0.9333333333333333
+TIPP	class	True positives	CAMI_MED_S001	14.0
+TIPP	strain	False negatives	CAMI_MED_S001	232.0
+TIPP	strain	False positives	CAMI_MED_S001	0.0
+TIPP	strain	Jaccard index	CAMI_MED_S001	0.0
+TIPP	strain	Taxon counts	CAMI_MED_S001	0.0
+TIPP	strain	Purity (precision)	CAMI_MED_S001	0.0
+TIPP	strain	Completeness (recall)	CAMI_MED_S001	0.0
+TIPP	strain	True positives	CAMI_MED_S001	0.0
+TIPP	superkingdom	F1 score	CAMI_MED_S001	0.8
+TIPP	superkingdom	False negatives	CAMI_MED_S001	1.0
+TIPP	superkingdom	False positives	CAMI_MED_S001	0.0
+TIPP	superkingdom	Jaccard index	CAMI_MED_S001	0.6666666666666666
+TIPP	superkingdom	Taxon counts	CAMI_MED_S001	2.0
+TIPP	superkingdom	Purity (precision)	CAMI_MED_S001	1.0
+TIPP	superkingdom	Completeness (recall)	CAMI_MED_S001	0.6666666666666666
+TIPP	superkingdom	True positives	CAMI_MED_S001	2.0
+TIPP	family	F1 score	CAMI_MED_S001	0.42342342342342343
+TIPP	family	False negatives	CAMI_MED_S001	6.0
+TIPP	family	False positives	CAMI_MED_S001	122.0
+TIPP	family	Jaccard index	CAMI_MED_S001	0.26857142857142857
+TIPP	family	Taxon counts	CAMI_MED_S001	169.0
+TIPP	family	Purity (precision)	CAMI_MED_S001	0.2781065088757396
+TIPP	family	Completeness (recall)	CAMI_MED_S001	0.8867924528301887
+TIPP	family	True positives	CAMI_MED_S001	47.0
+TIPP	order	F1 score	CAMI_MED_S001	0.5185185185185186
+TIPP	order	False negatives	CAMI_MED_S001	1.0
+TIPP	order	False positives	CAMI_MED_S001	51.0
+TIPP	order	Jaccard index	CAMI_MED_S001	0.35
+TIPP	order	Taxon counts	CAMI_MED_S001	79.0
+TIPP	order	Purity (precision)	CAMI_MED_S001	0.35443037974683544
+TIPP	order	Completeness (recall)	CAMI_MED_S001	0.9655172413793104
+TIPP	order	True positives	CAMI_MED_S001	28.0
+TIPP	class	L1 norm error	CAMI_MED_S001	0.20237231916634257
+TIPP	family	L1 norm error	CAMI_MED_S001	0.5448672458862659
+TIPP	genus	L1 norm error	CAMI_MED_S001	1.3015932384527757
+TIPP	order	L1 norm error	CAMI_MED_S001	0.31693462756463897
+TIPP	phylum	L1 norm error	CAMI_MED_S001	0.2013682003224166
+TIPP	species	L1 norm error	CAMI_MED_S001	1.8718760440134539
+TIPP	superkingdom	L1 norm error	CAMI_MED_S001	0.7134586056538527
+TIPP	na	Weighted UniFrac error	CAMI_MED_S001	10.286082617575106
+TIPP	na	Unweighted UniFrac error	CAMI_MED_S001	6674.658167168188
