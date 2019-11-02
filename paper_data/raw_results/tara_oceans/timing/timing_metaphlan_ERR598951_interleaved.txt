@@ -1,0 +1,5 @@
+Help message for read_fastx.py
+
+real	54m37.347s
+user	138m15.848s
+sys	89m54.808s

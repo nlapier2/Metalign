@@ -1,0 +1,15 @@
+# git tag version 2.5.1 |  motus version 2.5.1 | map_tax 2.5.1 | gene database: nr2.5.1 | calc_mgc 2.5.1 -y insert.scaled_counts -l 75 | calc_motu 2.5.1 -k mOTU -C no_CAMI -g 3 | taxonomy: ref_mOTU_2.5.1 meta_mOTU_2.5.1
+# call: python /home/nlapier2/miniconda3/bin/../share/motus-2.5.1//motus profile -s mock_communities/peabody2015/fastq_version.fq -o mock_communities/peabody2015/results/motus2_default.txt -n peabody2015_in_vitro
+#consensus_taxonomy	peabody2015_in_vitro
+Proteobacteria sp. [ref_mOTU_v25_00095]	0.0504942131
+Pseudomonas sp. [ref_mOTU_v25_00137]	0.0961253052
+Pseudomonas sp. [ref_mOTU_v25_00187]	0.0831475506
+Pseudomonas sp. [ref_mOTU_v25_00201]	0.1347557945
+Bacillales sp. [ref_mOTU_v25_00281]	0.1048286230
+Bacilli sp. [ref_mOTU_v25_00329]	0.0492024975
+Streptomycetaceae sp. [ref_mOTU_v25_00611]	0.0467004905
+Burkholderia sp. [ref_mOTU_v25_00870]	0.0481086061
+Bacteria sp. [ref_mOTU_v25_00964]	0.1687487460
+Rhodobacter capsulatus [ref_mOTU_v25_01512]	0.1141653888
+Frankia casuarinae [ref_mOTU_v25_01514]	0.0904540558
+Paraburkholderia fungorum [ref_mOTU_v25_02852]	0.0132687291

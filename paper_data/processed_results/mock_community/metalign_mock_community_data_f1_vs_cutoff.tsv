@@ -1,0 +1,5 @@
+	No cutoff	0.1% cutoff	1% cutoff	5% cutoff	8% cutoff
+Metalign	0.889	0.933	1	1	0.769
+Kraken2 + Bracken	0.033	0.64	0.889	1	0.545
+mOTUs2	0.615	0.615	0.615	0.545	0.545
+MetaPhlAn2	0.875	0.875	0.875	0.933	0.769

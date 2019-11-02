@@ -1,0 +1,17 @@
+[main]  MAP_TAX -----------
+[main] Number of detected lanes: 1
+[main] Run bwa on lane 1
+ [map_db](map single reads) 1989.78 sec
+[main] Total time map_tax: 1989.82 sec
+[main]  CALC_MGC -----------
+[main] Minimum alignment length: 75 (average read length: 100)
+ [calc_mgc](parse 1 sam/bam file) 17.78 sec
+ [calc_mgc](get mgc abundances) 0.17 sec
+[main] Total time calc_mgc: 20.79 sec
+[main]  CALC_MOTU -----------
+ [calc_motu] (Create taxonomy profile) 4.11 sec
+[main]  TOTAL TIME (map_tax+calc_mgc+calc_motu): 2014.72 sec
+
+real	33m35.445s
+user	127m22.372s
+sys	7m11.404s
