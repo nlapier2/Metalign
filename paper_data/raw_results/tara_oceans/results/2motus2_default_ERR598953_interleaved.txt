@@ -1,0 +1,173 @@
+# Taxonomic Profiling Output
+# git tag version 2.5.1 |  motus version 2.5.1 | map_tax 2.5.1 | gene database: nr2.5.1 | calc_mgc 2.5.1 -y insert.scaled_counts -l 75 | calc_motu 2.5.1 -k mOTU -C precision -g 3 | taxonomy: ref_mOTU_2.5.1 meta_mOTU_2.5.1
+# call: python /home/nlapier2/miniconda3/bin/../share/motus-2.5.1//motus profile -C precision -s prokaryotes_PRJEB1787/ERR598953_interleaved.fastq -o prokaryotes_PRJEB1787/results/2motus2_default_ERR598953_interleaved.txt -t 4
+
+@SampleID: unnamed sample
+@Version:0.9.3
+@Ranks:superkingdom|phylum|class|order|family|genus|species|strain
+@TaxonomyID: Jan 08 2019
+@@TAXID	RANK	TAXPATH	TAXPATHSN	PERCENTAGE
+2	superkingdom	2	Bacteria	90.59471882782789
+2157	superkingdom	2157	Archaea	9.405281172172106
+1224	phylum	2|1224	Bacteria|Proteobacteria	45.806261343694224
+1239	phylum	2|1239	Bacteria|Firmicutes	11.740966595107343
+1117	phylum	2|1117	Bacteria|Cyanobacteria	0.1764238609525051
+651137	phylum	2157|651137	Archaea|Thaumarchaeota	11.430338131247613
+1293497	phylum	2|1293497	Bacteria|Nitrospinae	6.202898628230446
+203682	phylum	2|203682	Bacteria|Planctomycetes	1.2000297323254603
+976	phylum	2|976	Bacteria|Bacteroidetes	4.153373397160854
+201174	phylum	2|201174	Bacteria|Actinobacteria	6.624667725948541
+200795	phylum	2|200795	Bacteria|Chloroflexi	7.025725100171316
+142182	phylum	2|142182	Bacteria|Gemmatimonadetes	0.8707526369175347
+57723	phylum	2|57723	Bacteria|Acidobacteria	0.24916614773867934
+74201	phylum	2|74201	Bacteria|Verrucomicrobia	4.119308443354659
+28890	phylum	2157|28890	Archaea|Euryarchaeota	0.3634417930317507
+256845	phylum	2|256845	Bacteria|Lentisphaerae	0.03664646411908885
+91061	class	2|1239|91061	Bacteria|Firmicutes|Bacilli	0.010933140077175557
+1236	class	2|1224|1236	Bacteria|Proteobacteria|Gammaproteobacteria	48.87002867154656
+28211	class	2|1224|28211	Bacteria|Proteobacteria|Alphaproteobacteria	18.96763976172534
+1293498	class	2|1293497|1293498	Bacteria|Nitrospinae|Nitrospinia	9.792863139713463
+28221	class	2|1224|28221	Bacteria|Proteobacteria|Deltaproteobacteria	0.8341190074988878
+117743	class	2|976|117743	Bacteria|Bacteroidetes|Flavobacteriia	2.9537990232772424
+1760	class	2|201174|1760	Bacteria|Actinobacteria|Actinobacteria	8.096947144174983
+2517206	class	2|203682|2517206	Bacteria|Planctomycetes|Candidatus Brocadiae	0.02238638554303149
+301297	class	2|200795|301297	Bacteria|Chloroflexi|Dehalococcoidia	6.65401773359931
+219685	class	2|142182|219685	Bacteria|Gemmatimonadetes|Gemmatimonadetes	1.3747059097611984
+203494	class	2|74201|203494	Bacteria|Verrucomicrobia|Verrucomicrobiae	1.3446547891003275
+768503	class	2|976|768503	Bacteria|Bacteroidetes|Cytophagia	0.10303187992643503
+203683	class	2|203682|203683	Bacteria|Planctomycetes|Planctomycetia	0.9748734140560418
+1385	order	2|1239|91061|1385	Bacteria|Firmicutes|Bacilli|Bacillales	0.020910400543951397
+135622	order	2|1224|1236|135622	Bacteria|Proteobacteria|Gammaproteobacteria|Alteromonadales	8.878274845688768
+1890424	order	2|1117||1890424	Bacteria|Cyanobacteria|Cyanobacteria class incertae sedis|Synechococcales	0.5327086674685615
+72274	order	2|1224|1236|72274	Bacteria|Proteobacteria|Gammaproteobacteria|Pseudomonadales	9.054061468368031
+54526	order	2|1224|28211|54526	Bacteria|Proteobacteria|Alphaproteobacteria|Pelagibacterales	14.516856660632763
+204441	order	2|1224|28211|204441	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodospirillales	0.19070733198243178
+1293499	order	2|1293497|1293498|1293499	Bacteria|Nitrospinae|Nitrospinia|Nitrospinales	18.72954057828247
+135619	order	2|1224|1236|135619	Bacteria|Proteobacteria|Gammaproteobacteria|Oceanospirillales	1.0746156790592674
+204457	order	2|1224|28211|204457	Bacteria|Proteobacteria|Alphaproteobacteria|Sphingomonadales	1.822124310373685
+204455	order	2|1224|28211|204455	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales	0.9697646155301224
+200644	order	2|976|117743|200644	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales	5.6493487019344775
+1706369	order	2|1224|1236|1706369	Bacteria|Proteobacteria|Gammaproteobacteria|Cellvibrionales	0.577226478162955
+1127829	order	2|203682|2517206|1127829	Bacteria|Planctomycetes|Candidatus Brocadiae|Candidatus Brocadiales	0.042815539280737114
+213118	order	2|1224|28221|213118	Bacteria|Proteobacteria|Deltaproteobacteria|Desulfobacterales	0.10986913721580244
+1202465	order	2|200795|301297|1202465	Bacteria|Chloroflexi|Dehalococcoidia|Dehalococcoidales	12.726277634234965
+219686	order	2|142182|219685|219686	Bacteria|Gemmatimonadetes|Gemmatimonadetes|Gemmatimonadales	2.629221888710114
+31932	order	2157|651137||31932	Archaea|Thaumarchaeota|Thaumarchaeota class incertae sedis|Nitrosopumilales	15.565174086019923
+48461	order	2|74201|203494|48461	Bacteria|Verrucomicrobia|Verrucomicrobiae|Verrucomicrobiales	2.571747003601374
+135613	order	2|1224|1236|135613	Bacteria|Proteobacteria|Gammaproteobacteria|Chromatiales	2.2380845416857214
+85006	order	2|201174|1760|85006	Bacteria|Actinobacteria|Actinobacteria|Micrococcales	0.03910062725937154
+768507	order	2|976|768503|768507	Bacteria|Bacteroidetes|Cytophagia|Cytophagales	0.19705572807539062
+112	order	2|203682|203683|112	Bacteria|Planctomycetes|Planctomycetia|Planctomycetales	1.8645140758891128
+90964	family	2|1239|91061|1385|90964	Bacteria|Firmicutes|Bacilli|Bacillales|Staphylococcaceae	0.025287875311098926
+72275	family	2|1224|1236|135622|72275	Bacteria|Proteobacteria|Gammaproteobacteria|Alteromonadales|Alteromonadaceae	10.685989009880299
+1213	family	2|1117||1890424|1213	Bacteria|Cyanobacteria|Cyanobacteria class incertae sedis|Synechococcales|Prochloraceae	0.596026444572534
+468	family	2|1224|1236|72274|468	Bacteria|Proteobacteria|Gammaproteobacteria|Pseudomonadales|Moraxellaceae	0.04785993017338682
+1655514	family	2|1224|28211|54526|1655514	Bacteria|Proteobacteria|Alphaproteobacteria|Pelagibacterales|Pelagibacteraceae	17.555878969012184
+267888	family	2|1224|1236|135622|267888	Bacteria|Proteobacteria|Gammaproteobacteria|Alteromonadales|Pseudoalteromonadaceae	0.05090274900984137
+41295	family	2|1224|28211|204441|41295	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodospirillales|Rhodospirillaceae	0.23063083951680102
+407032	family	2|1293497|1293498|1293499|407032	Bacteria|Nitrospinae|Nitrospinia|Nitrospinales|Nitrospinaceae	22.65046457537986
+28256	family	2|1224|1236|135619|28256	Bacteria|Proteobacteria|Gammaproteobacteria|Oceanospirillales|Halomonadaceae	0.10645846638373588
+41297	family	2|1224|28211|204457|41297	Bacteria|Proteobacteria|Alphaproteobacteria|Sphingomonadales|Sphingomonadaceae	0.13780511171820942
+31989	family	2|1224|28211|204455|31989	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae	0.8708397811322719
+69657	family	2|1224|28211|204455|69657	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Hyphomonadaceae	0.3019396033226665
+335929	family	2|1224|28211|204457|335929	Bacteria|Proteobacteria|Alphaproteobacteria|Sphingomonadales|Erythrobacteraceae	2.065770676569616
+135621	family	2|1224|1236|72274|135621	Bacteria|Proteobacteria|Gammaproteobacteria|Pseudomonadales|Pseudomonadaceae	10.9016183923423
+49546	family	2|976|117743|200644|49546	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae	6.832008084357893
+1706375	family	2|1224|1236|1706369|1706375	Bacteria|Proteobacteria|Gammaproteobacteria|Cellvibrionales|Spongiibacteraceae	0.6980655954135654
+1127830	family	2|203682|2517206|1127829|1127830	Bacteria|Planctomycetes|Candidatus Brocadiae|Candidatus Brocadiales|Candidatus Brocadiaceae	0.051778731661930186
+213119	family	2|1224|28221|213118|213119	Bacteria|Proteobacteria|Deltaproteobacteria|Desulfobacterales|Desulfobacteraceae	0.13286962325812102
+219687	family	2|142182|219685|219686|219687	Bacteria|Gemmatimonadetes|Gemmatimonadetes|Gemmatimonadales|Gemmatimonadaceae	3.1796347060480263
+338190	family	2157|651137||31932|338190	Archaea|Thaumarchaeota|Thaumarchaeota class incertae sedis|Nitrosopumilales|Nitrosopumilaceae	18.823655752336933
+224372	family	2|1224|1236|135619|224372	Bacteria|Proteobacteria|Gammaproteobacteria|Oceanospirillales|Alcanivoracaceae	1.1252516301216815
+85023	family	2|201174|1760|85006|85023	Bacteria|Actinobacteria|Actinobacteria|Micrococcales|Microbacteriaceae	0.04728612369918271
+1890426	family	2|1117||1890424|1890426	Bacteria|Cyanobacteria|Cyanobacteria class incertae sedis|Synechococcales|Synechococcaceae	0.04820178681748243
+200667	family	2|976|768503|768507|200667	Bacteria|Bacteroidetes|Cytophagia|Cytophagales|Flammeovirgaceae	0.2383082366324985
+1738654	family	2|1224|1236|135613|1738654	Bacteria|Proteobacteria|Gammaproteobacteria|Chromatiales|Woeseiaceae	2.5954673053278725
+1279	genus	2|1239|91061|1385|90964|1279	Bacteria|Firmicutes|Bacilli|Bacillales|Staphylococcaceae|Staphylococcus	0.04617602233640058
+226	genus	2|1224|1236|135622|72275|226	Bacteria|Proteobacteria|Gammaproteobacteria|Alteromonadales|Alteromonadaceae|Alteromonas	14.045382400830256
+2742	genus	2|1224|1236|135622|72275|2742	Bacteria|Proteobacteria|Gammaproteobacteria|Alteromonadales|Alteromonadaceae|Marinobacter	0.6310593919459347
+1218	genus	2|1117||1890424|1213|1218	Bacteria|Cyanobacteria|Cyanobacteria class incertae sedis|Synechococcales|Prochloraceae|Prochlorococcus	1.0883528204359343
+497	genus	2|1224|1236|72274|468|497	Bacteria|Proteobacteria|Gammaproteobacteria|Pseudomonadales|Moraxellaceae|Psychrobacter	0.08739291765389694
+198251	genus	2|1224|28211|54526|1655514|198251	Bacteria|Proteobacteria|Alphaproteobacteria|Pelagibacterales|Pelagibacteraceae|Candidatus Pelagibacter	0.6263834932229594
+53246	genus	2|1224|1236|135622|267888|53246	Bacteria|Proteobacteria|Gammaproteobacteria|Alteromonadales|Pseudoalteromonadaceae|Pseudoalteromonas	0.0929491484099098
+168934	genus	2|1224|28211|204441|41295|168934	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodospirillales|Rhodospirillaceae|Thalassospira	0.4211352146424288
+35800	genus	2|1293497|1293498|1293499|407032|35800	Bacteria|Nitrospinae|Nitrospinia|Nitrospinales|Nitrospinaceae|Nitrospina	41.36007257610679
+2745	genus	2|1224|1236|135619|28256|2745	Bacteria|Proteobacteria|Gammaproteobacteria|Oceanospirillales|Halomonadaceae|Halomonas	0.19439468366394413
+165695	genus	2|1224|28211|204457|41297|165695	Bacteria|Proteobacteria|Alphaproteobacteria|Sphingomonadales|Sphingomonadaceae|Sphingobium	0.059242314371151295
+13687	genus	2|1224|28211|204457|41297|13687	Bacteria|Proteobacteria|Alphaproteobacteria|Sphingomonadales|Sphingomonadaceae|Sphingomonas	0.11751608954277423
+263377	genus	2|1224|28211|204455|31989|263377	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae|Salipiger	0.20129943926346852
+1649279	genus	2|1224|28211|204455|31989|1649279	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae|Epibacterium	0.08374447546057892
+478070	genus	2|1224|28211|204455|31989|478070	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae|Labrenzia	0.10100329007540548
+60136	genus	2|1224|28211|204455|31989|60136	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae|Sulfitobacter	1.0974396614993762
+74317	genus	2|1224|28211|204455|69657|74317	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Hyphomonadaceae|Maricaulis	0.12929657609925363
+1041	genus	2|1224|28211|204457|335929|1041	Bacteria|Proteobacteria|Alphaproteobacteria|Sphingomonadales|Erythrobacteraceae|Erythrobacter	3.772126828753121
+286	genus	2|1224|1236|72274|135621|286	Bacteria|Proteobacteria|Gammaproteobacteria|Pseudomonadales|Pseudomonadaceae|Pseudomonas	19.90651125074049
+292691	genus	2|976|117743|200644|49546|292691	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Gramella	0.10171793599575035
+232115	genus	2|976|117743|200644|49546|232115	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Mesonia	0.2096272727599999
+165697	genus	2|1224|28211|204457|41297|165697	Bacteria|Proteobacteria|Alphaproteobacteria|Sphingomonadales|Sphingomonadaceae|Sphingopyxis	0.07487570288576066
+630749	genus	2|1224|1236|1706369|1706375|630749	Bacteria|Proteobacteria|Gammaproteobacteria|Cellvibrionales|Spongiibacteraceae|Spongiibacter	1.2746777706524839
+111500	genus	2|976|117743|200644|49546|111500	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Muricauda	0.10707635643925116
+1593364	genus	2157|651137||||1593364	Archaea|Thaumarchaeota|Thaumarchaeota class incertae sedis|Thaumarchaeota order incertae sedis|Thaumarchaeota fam. incertae sedis|Candidatus Nitrosopelagicus	0.15962533595455305
+216431	genus	2|976|117743|200644|49546|216431	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Croceibacter	0.036364590946204166
+236756	genus	2|203682|2517206|1127829|1127830|236756	Bacteria|Planctomycetes|Candidatus Brocadiae|Candidatus Brocadiales|Candidatus Brocadiaceae|Candidatus Scalindua	0.09454870527309155
+153232	genus	2|1224|28211|204455|69657|153232	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Hyphomonadaceae|Oceanicaulis	0.22004288194999053
+283735	genus	2|976|117743|200644|49546|283735	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Leeuwenhoekiella	0.501496297686063
+417127	genus	2|976|117743|200644|49546|417127	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Zunongwangia	0.07527610771402676
+74030	genus	2|1224|28211|204455|31989|74030	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae|Roseovarius	0.1066790408915169
+173479	genus	2|142182|219685|219686|219687|173479	Bacteria|Gemmatimonadetes|Gemmatimonadetes|Gemmatimonadales|Gemmatimonadaceae|Gemmatimonas	5.80605849253089
+59753	genus	2|1224|1236|135619|224372|59753	Bacteria|Proteobacteria|Gammaproteobacteria|Oceanospirillales|Alcanivoracaceae|Alcanivorax	2.054725585575973
+33882	genus	2|201174|1760|85006|85023|33882	Bacteria|Actinobacteria|Actinobacteria|Micrococcales|Microbacteriaceae|Microbacterium	0.0863451388174523
+453849	genus	2|1224|28211|204455|69657|453849	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Hyphomonadaceae|Henriciella	0.20200658015081097
+1129	genus	2|1117||1890424|1890426|1129	Bacteria|Cyanobacteria|Cyanobacteria class incertae sedis|Synechococcales|Synechococcaceae|Synechococcus	0.0880171527799962
+1738655	genus	2|1224|1236|135613|1738654|1738655	Bacteria|Proteobacteria|Gammaproteobacteria|Chromatiales|Woeseiaceae|Woeseia	4.739360455942119
+1282	species	2|1239|91061|1385|90964|1279|1282	Bacteria|Firmicutes|Bacilli|Bacillales|Staphylococcaceae|Staphylococcus|Staphylococcus epidermidis	0.04350228861909493
+589873	species	2|1224|1236|135622|72275|226|589873	Bacteria|Proteobacteria|Gammaproteobacteria|Alteromonadales|Alteromonadaceae|Alteromonas|Alteromonas australica	5.137838205725831
+314275	species	2|1224|1236|135622|72275|226|314275	Bacteria|Proteobacteria|Gammaproteobacteria|Alteromonadales|Alteromonadaceae|Alteromonas|Alteromonas mediterranea	0.16860886821339702
+1033846	species	2|1224|1236|135622|72275|2742|1033846	Bacteria|Proteobacteria|Gammaproteobacteria|Alteromonadales|Alteromonadaceae|Marinobacter|Marinobacter adhaerens	0.0580877580690964
+1219	species	2|1117||1890424|1213|1218|1219	Bacteria|Cyanobacteria|Cyanobacteria class incertae sedis|Synechococcales|Prochloraceae|Prochlorococcus|Prochlorococcus marinus	0.5870667050930738
+1203261	species	2|1117||1890424|1213|1218|1203261	Bacteria|Cyanobacteria|Cyanobacteria class incertae sedis|Synechococcales|Prochloraceae|Prochlorococcus|Prochlorococcus sp. W2	0.08832855993529273
+198252	species	2|1224|28211|54526|1655514|198251|198252	Bacteria|Proteobacteria|Alphaproteobacteria|Pelagibacterales|Pelagibacteraceae|Candidatus Pelagibacter|Candidatus Pelagibacter ubique	0.5487380585523806
+913333	species	2157|651137|||||913333	Archaea|Thaumarchaeota|Thaumarchaeota class incertae sedis|Thaumarchaeota order incertae sedis|Thaumarchaeota fam. incertae sedis|Thaumarchaeota gen. incertae sedis|Thaumarchaeota archaeon SCGC AAA007-O23	15.736671157383633
+913337	species	2|1293497|1293498|1293499|407032|35800|913337	Bacteria|Nitrospinae|Nitrospinia|Nitrospinales|Nitrospinaceae|Nitrospina|Nitrospina sp. SCGC AAA288-L16	1.3016557547483967
+2743	species	2|1224|1236|135622|72275|2742|2743	Bacteria|Proteobacteria|Gammaproteobacteria|Alteromonadales|Alteromonadaceae|Marinobacter|Marinobacter hydrocarbonoclasticus	0.39302733917406685
+501834	species	2|1224|28211|204441|41295|168934|501834	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodospirillales|Rhodospirillaceae|Thalassospira|Thalassospira sp. MCCC 1A01148	0.06957386570245663
+121428	species	2|1224|28211|204457|41297|165695|121428	Bacteria|Proteobacteria|Alphaproteobacteria|Sphingomonadales|Sphingomonadaceae|Sphingobium|Sphingobium xenophagum	0.05581200215691576
+314266	species	2|1224|28211|204457|41297|13687|314266	Bacteria|Proteobacteria|Alphaproteobacteria|Sphingomonadales|Sphingomonadaceae|Sphingomonas|Sphingomonas sp. SKA58	0.11071154651290098
+1229727	species	2|1224|28211|204455|31989|263377|1229727	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae|Salipiger|Salipiger profundus	0.189643582591527
+379347	species	2|1224|28211|204455|31989|1649279|379347	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae|Epibacterium|Epibacterium mobile	0.07889541275773722
+187304	species	2|1224|28211|204455|31989|478070|187304	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae|Labrenzia|Labrenzia aggregata	0.09515488892326619
+60137	species	2|1224|28211|204455|31989|60136|60137	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae|Sulfitobacter|Sulfitobacter pontiacus	0.9860368882675469
+74318	species	2|1224|28211|204455|69657|74317|74318	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Hyphomonadaceae|Maricaulis|Maricaulis maris	0.12180990666440647
+218673	species	2|1224|28211|204455|31989|60136|218673	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae|Sulfitobacter|Sulfitobacter dubius	0.04785764142548254
+254161	species	2|1224|1236|72274|135621|286|254161	Bacteria|Proteobacteria|Gammaproteobacteria|Pseudomonadales|Pseudomonadaceae|Pseudomonas|Pseudomonas pachastrellae	2.1343302637065436
+326069	species	2|976|117743|200644|49546|292691|326069	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Gramella|Gramella portivictoriae	0.09582815464677988
+369791	species	2|976|117743|200644|49546|232115|369791	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Mesonia|Mesonia mobilis	0.06410506318914827
+279369	species	2|1224|28211|204457|41297|165697|279369	Bacteria|Proteobacteria|Alphaproteobacteria|Sphingomonadales|Sphingomonadaceae|Sphingopyxis|Sphingopyxis baekryungensis	0.07054016939276851
+454602	species	2|1224|1236|1706369|1706375|630749|454602	Bacteria|Proteobacteria|Gammaproteobacteria|Cellvibrionales|Spongiibacteraceae|Spongiibacter|Spongiibacter tropicus	1.2008700071932459
+1250232	species	2|976|117743|200644|49546|111500|1250232	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Muricauda|Muricauda sp. MAR_2010_75	0.10087630606565763
+225971	species	2|1224|28211|204457|335929|1041|225971	Bacteria|Proteobacteria|Alphaproteobacteria|Sphingomonadales|Erythrobacteraceae|Erythrobacter|Erythrobacter citreus	0.31631870432257436
+1410606	species	2157|651137||||1593364|1410606	Archaea|Thaumarchaeota|Thaumarchaeota class incertae sedis|Thaumarchaeota order incertae sedis|Thaumarchaeota fam. incertae sedis|Candidatus Nitrosopelagicus|Candidatus Nitrosopelagicus brevis	0.15038253804163088
+1550401	species	2|201174|1760||||1550401	Bacteria|Actinobacteria|Actinobacteria|Actinobacteria order incertae sedis|Actinobacteria fam. incertae sedis|Actinobacteria gen. incertae sedis|marine actinobacterium MedAcidi-G2B	0.09515488892326619
+1661714	species	2157|651137|||||1661714	Archaea|Thaumarchaeota|Thaumarchaeota class incertae sedis|Thaumarchaeota order incertae sedis|Thaumarchaeota fam. incertae sedis|Thaumarchaeota gen. incertae sedis|Thaumarchaeota archaeon casp-thauma4	0.3383675182383164
+1811643	species	2|1224|1236||||1811643	Bacteria|Proteobacteria|Gammaproteobacteria|Gammaproteobacteria order incertae sedis|Gammaproteobacteria fam. incertae sedis|Gammaproteobacteria gen. incertae sedis|SAR86 cluster bacterium REDSEA-S09_B4	0.16220014998097673
+1977864	species	2|1224|28211|54526|1655514|198251|1977864	Bacteria|Proteobacteria|Alphaproteobacteria|Pelagibacterales|Pelagibacteraceae|Candidatus Pelagibacter|Candidatus Pelagibacter sp. RS39	0.04137590383934284
+313588	species	2|976|117743|200644|49546|216431|313588	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Croceibacter|Croceibacter atlanticus	0.03425896928350309
+237368	species	2|203682|2517206|1127829|1127830|236756|237368	Bacteria|Planctomycetes|Candidatus Brocadiae|Candidatus Brocadiales|Candidatus Brocadiaceae|Candidatus Scalindua|Candidatus Scalindua brodae	0.08907404443343367
+284577	species	2|1224|1236|135619|28256|2745|284577	Bacteria|Proteobacteria|Gammaproteobacteria|Oceanospirillales|Halomonadaceae|Halomonas|Halomonas taeanensis	0.066382491135034
+314254	species	2|1224|28211|204455|69657|153232|314254	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Hyphomonadaceae|Oceanicaulis|Oceanicaulis sp. HTCC2633	0.20730172229711563
+360293	species	2|976|117743|200644|49546|283735|360293	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Leeuwenhoekiella|Leeuwenhoekiella blandensis	0.08599182554547019
+573501	species	2|976|117743|200644|49546|283735|573501	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Leeuwenhoekiella|Leeuwenhoekiella palythoae	0.09171814349940104
+398743	species	2|976|117743|200644|49546|417127|398743	Bacteria|Bacteroidetes|Flavobacteriia|Flavobacteriales|Flavobacteriaceae|Zunongwangia|Zunongwangia profunda	0.07091738954994908
+859653	species	2|1224|28211|54526|1655514||859653	Bacteria|Proteobacteria|Alphaproteobacteria|Pelagibacterales|Pelagibacteraceae|Pelagibacteraceae gen. incertae sedis|alpha proteobacterium HIMB5	0.029831965910598134
+314263	species	2|1224|28211|204455|31989|74030|314263	Bacteria|Proteobacteria|Alphaproteobacteria|Rhodobacterales|Rhodobacteraceae|Roseovarius|Roseovarius nubinhibens	0.10050199631016436
+939306	species	2|1224|28211|54526|1655514||939306	Bacteria|Proteobacteria|Alphaproteobacteria|Pelagibacterales|Pelagibacteraceae|Pelagibacteraceae gen. incertae sedis|alpha proteobacterium SCGC AAA240-E13	1.255456497956689
+939324	species	2|1224|28211|54526|1655514||939324	Bacteria|Proteobacteria|Alphaproteobacteria|Pelagibacterales|Pelagibacteraceae|Pelagibacteraceae gen. incertae sedis|alpha proteobacterium SCGC AAA288-G21	3.031211850477824
+939346	species	2|1224|28211|54526|1655514||939346	Bacteria|Proteobacteria|Alphaproteobacteria|Pelagibacterales|Pelagibacteraceae|Pelagibacteraceae gen. incertae sedis|alpha proteobacterium SCGC AAA288-N07	0.9130592712412283
+1123866	species	2|1224|1236||||1123866	Bacteria|Proteobacteria|Gammaproteobacteria|Gammaproteobacteria order incertae sedis|Gammaproteobacteria fam. incertae sedis|Gammaproteobacteria gen. incertae sedis|SAR86 cluster bacterium SAR86A	0.09767100377460256
+1641811	species	2|201174|1760||||1641811	Bacteria|Actinobacteria|Actinobacteria|Actinobacteria order incertae sedis|Actinobacteria fam. incertae sedis|Actinobacteria gen. incertae sedis|Actinobacteria bacterium IMCC26207	29.373672103570403
+1703356	species	2|142182|219685|219686|219687|173479|1703356	Bacteria|Gemmatimonadetes|Gemmatimonadetes|Gemmatimonadales|Gemmatimonadaceae|Gemmatimonas|Gemmatimonas sp. SG8_23	5.469869848064405
+1550402	species	2|201174|1760||||1550402	Bacteria|Actinobacteria|Actinobacteria|Actinobacteria order incertae sedis|Actinobacteria fam. incertae sedis|Actinobacteria gen. incertae sedis|marine actinobacterium MedAcidi-G3	2.457322495223407
+1802371	species	2157|651137|||||1802371	Archaea|Thaumarchaeota|Thaumarchaeota class incertae sedis|Thaumarchaeota order incertae sedis|Thaumarchaeota fam. incertae sedis|Thaumarchaeota gen. incertae sedis|Thaumarchaeota archaeon RBG_16_49_8	2.7457194438640515
+1895782	species	2|201174|1760|85006|85023|33882|1895782	Bacteria|Actinobacteria|Actinobacteria|Micrococcales|Microbacteriaceae|Microbacterium|Microbacterium sp. 67-17	0.08134548970736277
+35801	species	2|1293497|1293498|1293499|407032|35800|35801	Bacteria|Nitrospinae|Nitrospinia|Nitrospinales|Nitrospinaceae|Nitrospina|Nitrospina gracilis	18.744386441451258
+1548547	species	2|1224|1236|135613|1738654|1738655|1548547	Bacteria|Proteobacteria|Gammaproteobacteria|Chromatiales|Woeseiaceae|Woeseia|Woeseia oceani	4.464936908647351

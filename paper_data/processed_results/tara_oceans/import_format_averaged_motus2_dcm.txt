@@ -1,0 +1,180 @@
+29.23811	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Prochloraceae	Prochlorococcus	Prochlorococcus marinus
+14.92944	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Candidatus Pelagibacter	Candidatus Pelagibacter ubique
+10.80507	Bacteria	Proteobacteria	Gammaproteobacteria	Gammaproteobacteria order incertae sedis	Gammaproteobacteria fam. incertae sedis	Gammaproteobacteria gen. incertae sedis	SAR86 cluster bacterium SAR86A
+4.28185	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Pelagibacteraceae gen. incertae sedis	alpha proteobacterium HIMB59
+3.96421	Bacteria	Actinobacteria	Actinobacteria	Actinobacteria order incertae sedis	Actinobacteria fam. incertae sedis	Actinobacteria gen. incertae sedis	marine actinobacterium MedAcidi-G3
+3.35686	Bacteria	Actinobacteria	Actinobacteria	Actinobacteria order incertae sedis	Actinobacteria fam. incertae sedis	Actinobacteria gen. incertae sedis	marine actinobacterium MedAcidi-G2A
+1.8745	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Prochloraceae	Prochlorococcus	Prochlorococcus sp. MIT 0801
+1.8652	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Halomonadaceae	Cobetia	Cobetia amphilecti
+1.47783	Eukaryota	Chlorophyta	Mamiellophyceae	Mamiellales	Bathycoccaceae	Ostreococcus	Ostreococcus sp. RCC809
+1.43745	Bacteria	Proteobacteria	Gammaproteobacteria	Chromatiales	Woeseiaceae	Woeseia	Woeseia oceani
+1.42059	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Prochloraceae	Prochlorococcus	Prochlorococcus sp. W2
+1.19864	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Prochloraceae	Prochlorococcus	Prochlorococcus sp. scB245a_518O7
+1.19503	Bacteria	Proteobacteria	Gammaproteobacteria	Gammaproteobacteria order incertae sedis	Gammaproteobacteria fam. incertae sedis	Gammaproteobacteria gen. incertae sedis	SAR86 cluster bacterium SAR86E
+1.08919	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Candidatus Pelagibacter	Candidatus Pelagibacter sp. RS39
+1.06182	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Zunongwangia	Zunongwangia profunda
+1.02422	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Alteromonadaceae	Alteromonas	Alteromonas australica
+1.01448	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Pseudoalteromonadaceae	Pseudoalteromonas	Pseudoalteromonas ruthenica
+1.00111	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Prochloraceae	Prochlorococcus	Prochlorococcus sp. HOT208_60m_813O14
+0.97554	Archaea	Euryarchaeota	Euryarchaeota class incertae sedis	Euryarchaeota order incertae sedis	Euryarchaeota fam. incertae sedis	Euryarchaeota gen. incertae sedis	uncultured Candidatus Thalassoarchaea euryarchaeote
+0.97383	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Alteromonadaceae	Alteromonas	Alteromonas mediterranea
+0.95557	Bacteria	Proteobacteria	Gammaproteobacteria	Gammaproteobacteria order incertae sedis	Gammaproteobacteria fam. incertae sedis	Gammaproteobacteria gen. incertae sedis	Gammaproteobacteria bacterium REDSEA-S12_B4
+0.87162	Bacteria	Actinobacteria	Actinobacteria	Actinobacteria order incertae sedis	Actinobacteria fam. incertae sedis	Actinobacteria gen. incertae sedis	marine actinobacterium MedAcidi-G2B
+0.85274	Archaea	Euryarchaeota	Euryarchaeota class incertae sedis	Euryarchaeota order incertae sedis	Euryarchaeota fam. incertae sedis	Euryarchaeota gen. incertae sedis	Marine group II euryarchaeote REDSEA-S11_B3N4
+0.80155	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Prochloraceae	Prochlorococcus	Prochlorococcus sp. scB241_528O2
+0.79808	Bacteria	Actinobacteria	Actinobacteria	Actinobacteria order incertae sedis	Actinobacteria fam. incertae sedis	Actinobacteria gen. incertae sedis	marine actinobacterium MedAcidi-G1
+0.7286	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Pelagibacteraceae gen. incertae sedis	Pelagibacteraceae bacterium GOM-A3
+0.66511	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Pelagibacteraceae gen. incertae sedis	Pelagibacteraceae bacterium GOM-A1
+0.61556	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Idiomarinaceae	Idiomarina	Idiomarina baltica
+0.61363	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Oceanospirillales fam. incertae sedis	Oceanospirillales gen. incertae sedis	Oceanospirillales bacterium SCGC AAA298-N10
+0.58708	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Candidatus Pelagibacter	Candidatus Pelagibacter sp. HTCC7211
+0.50379	Bacteria	Actinobacteria	Actinobacteria	Micrococcales	Microbacteriaceae	Microbacteriaceae gen. incertae sedis	Microbacteriaceae bacterium
+0.45258	Bacteria	Gemmatimonadetes	Gemmatimonadetes	Gemmatimonadales	Gemmatimonadaceae	Gemmatimonas	Gemmatimonas sp. SG8_23
+0.39417	Bacteria	Proteobacteria	Deltaproteobacteria	Deltaproteobacteria order incertae sedis	Deltaproteobacteria fam. incertae sedis	Deltaproteobacteria gen. incertae sedis	SAR324 cluster bacterium lautmerah10
+0.35576	Bacteria	Actinobacteria	Actinobacteria	Micrococcales	Microbacteriaceae	Microbacterium	Microbacterium sp. 67-17
+0.34639	Archaea	Thaumarchaeota	Thaumarchaeota class incertae sedis	Thaumarchaeota order incertae sedis	Thaumarchaeota fam. incertae sedis	Candidatus Nitrosopelagicus	Candidatus Nitrosopelagicus brevis
+0.32126	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Prochloraceae	Prochlorococcus	Prochlorococcus sp. MIT 0604
+0.31414	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Candidatus Pelagibacter	Candidatus Pelagibacter sp. RS40
+0.27087	Bacteria	Proteobacteria	Alphaproteobacteria	Alphaproteobacteria order incertae sedis	Alphaproteobacteria fam. incertae sedis	Alphaproteobacteria gen. incertae sedis	alpha proteobacterium SCGC AAA536-G10
+0.25979	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. MIT S9508
+0.23791	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. CC9605
+0.23601	Bacteria	Proteobacteria	Gammaproteobacteria	Cellvibrionales	Halieaceae	Halieaceae gen. incertae sedis	gamma proteobacterium HIMB55
+0.17503	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Alteromonadaceae	Marinobacter	Marinobacter hydrocarbonoclasticus
+0.16378	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Sphingomonadaceae	Citromicrobium	Citromicrobium sp. JLT1363
+0.15363	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Mesonia	Mesonia mobilis
+0.15265	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. WH 7803
+0.15176	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Hyphomonadaceae	Ponticaulis	Ponticaulis koreensis
+0.1346	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Halomonadaceae	Halomonas	Halomonas sp. S2151
+0.13059	Bacteria	Proteobacteria	Alphaproteobacteria	Alphaproteobacteria order incertae sedis	Alphaproteobacteria fam. incertae sedis	Alphaproteobacteria gen. incertae sedis	alpha proteobacterium SCGC AAA015-N04
+0.12968	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Erythrobacteraceae	Erythrobacter	Erythrobacter citreus
+0.12874	Eukaryota	Chlorophyta	Mamiellophyceae	Mamiellales	Mamiellaceae	Micromonas	Micromonas pusilla
+0.12572	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Halomonadaceae	Salinicola	Salinicola sp. MIT1003
+0.11592	Bacteria	Proteobacteria	Alphaproteobacteria	Alphaproteobacteria order incertae sedis	Alphaproteobacteria fam. incertae sedis	Alphaproteobacteria gen. incertae sedis	alpha proteobacterium SCGC AAA536-K22
+0.11088	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Rhodobacteraceae gen. incertae sedis	Rhodobacteraceae bacterium SB2
+0.11041	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Halomonadaceae	Halomonas	Halomonas taeanensis
+0.10925	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. WH 8020
+0.10877	Bacteria	Proteobacteria	Gammaproteobacteria	Gammaproteobacteria order incertae sedis	Gammaproteobacteria fam. incertae sedis	Gammaproteobacteria gen. incertae sedis	gamma proteobacterium SCGC AAA300-D14
+0.10242	Archaea	Euryarchaeota	Euryarchaeota class incertae sedis	Euryarchaeota order incertae sedis	Euryarchaeota fam. incertae sedis	Euryarchaeota gen. incertae sedis	Marine Group III euryarchaeote CG-Epi1
+0.09745	Bacteria	Actinobacteria	Actinobacteria	Actinobacteria order incertae sedis	Actinobacteria fam. incertae sedis	Actinobacteria gen. incertae sedis	Actinobacteria bacterium casp-actino12
+0.09318	Archaea	Thaumarchaeota	Thaumarchaeota class incertae sedis	Nitrosopumilales	Nitrosopumilaceae	Nitrosopumilus	Nitrosopumilus sp. Nsub
+0.093	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. KORDI-52
+0.09211	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Pelagibacteraceae gen. incertae sedis	alpha proteobacterium HIMB5
+0.08199	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Alteromonadaceae	Alteromonas	Alteromonas sp. Mex14
+0.07555	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. BL107
+0.06901	Bacteria	Proteobacteria	Alphaproteobacteria	Alphaproteobacteria order incertae sedis	Alphaproteobacteria fam. incertae sedis	Candidatus Micropelagos	Candidatus Micropelagos thuwalensis
+0.06804	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Leeuwenhoekiella	Leeuwenhoekiella blandensis
+0.05878	Bacteria	Candidatus Marinimicrobia	Candidatus Marinimicrobia class incertae sedis	Candidatus Marinimicrobia order incertae sedis	Candidatus Marinimicrobia fam. incertae sedis	Candidatus Marinimicrobia gen. incertae sedis	Marinimicrobia bacterium SCGC AAA298-D23
+0.05392	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Rhodobacteraceae gen. incertae sedis	Rhodobacteraceae bacterium REDSEA-S34_B6
+0.05384	Bacteria	Proteobacteria	Gammaproteobacteria	Salinisphaerales	Salinisphaeraceae	Salinisphaera	Salinisphaera shabanensis
+0.05022	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Pelagibacteraceae gen. incertae sedis	alpha proteobacterium HIMB114
+0.05001	Archaea	Thaumarchaeota	Thaumarchaeota class incertae sedis	Thaumarchaeota order incertae sedis	Thaumarchaeota fam. incertae sedis	Thaumarchaeota gen. incertae sedis	Thaumarchaeota archaeon casp-thauma4
+0.04485	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Croceibacter	Croceibacter atlanticus
+0.04419	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Leeuwenhoekiella	Leeuwenhoekiella palythoae
+0.04396	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. CC9616
+0.04394	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Idiomarinaceae	Idiomarina	Idiomarina sp. MD25a
+0.04325	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Hyphomonadaceae	Hyphomonas	Hyphomonas adhaerens
+0.04207	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. RCC307
+0.03732	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Salipiger	Salipiger bermudensis
+0.03705	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Oceanospirillaceae	Oleibacter	Oleibacter marinus
+0.03605	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Pseudoalteromonadaceae	Pseudoalteromonas	Pseudoalteromonas lipolytica
+0.03456	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Halomonadaceae	Halomonas	Halomonas lionensis
+0.03436	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Pelagibacteraceae gen. incertae sedis	alpha proteobacterium SCGC AAA288-G21
+0.03228	Bacteria	Proteobacteria	Gammaproteobacteria	Vibrionales	Vibrionaceae	Vibrio	Vibrio caribbeanicus
+0.03222	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Hyphomonadaceae	Hyphomonas	Hyphomonas atlantica
+0.03139	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Sulfitobacter	Sulfitobacter pontiacus
+0.03085	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Sphingomonadaceae	Citromicrobium	Citromicrobium bathyomarinum
+0.0289	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. KORDI-49
+0.02818	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Sphingomonadaceae	Sphingomonas	Sphingomonas sp. SKA58
+0.02762	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Erythrobacteraceae	Croceicoccus	Croceicoccus marinus
+0.02575	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Alteromonadaceae	Alteromonas	Alteromonas sp. V450
+0.02511	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacterales fam. incertae sedis	Rhodobacterales gen. incertae sedis	Rhodobacterales bacterium HTCC2255
+0.0245	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Zunongwangia	Zunongwangia atlantica
+0.02441	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Idiomarinaceae	Idiomarina	Idiomarina zobellii
+0.02357	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Alteromonadaceae	Marinobacter	Marinobacter lutaoensis
+0.02344	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Hyphomonadaceae	Oceanicaulis	Oceanicaulis alexandrii
+0.02304	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Sphingomonadaceae	Pacificimonas	Pacificimonas flava
+0.02189	Bacteria	Proteobacteria	Gammaproteobacteria	Pseudomonadales	Pseudomonadaceae	Pseudomonas	Pseudomonas oleovorans
+0.02114	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Halomonadaceae	Halomonas	Halomonas zincidurans
+0.02066	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Alteromonadaceae	Aestuariibacter	Aestuariibacter aggregatus
+0.02053	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. RS9917
+0.01829	Bacteria	Verrucomicrobia	Verrucomicrobiae	Verrucomicrobiae order incertae sedis	Verrucomicrobiae fam. incertae sedis	Verrucomicrobiae gen. incertae sedis	Verrucomicrobiae bacterium DG1235
+0.01802	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Hyphomonadaceae	Oceanicaulis	Oceanicaulis sp. HTCC2633
+0.01791	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. CC9902
+0.01774	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Zunongwangia	Zunongwangia mangrovi
+0.01763	Bacteria	Proteobacteria	Gammaproteobacteria	Gammaproteobacteria order incertae sedis	Gammaproteobacteria fam. incertae sedis	Gammaproteobacteria gen. incertae sedis	SAR86 cluster bacterium REDSEA-S09_B4
+0.01755	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Halomonadaceae	Halomonas	Halomonas sp. CSM-2
+0.0173	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Candidatus Pelagibacter	Candidatus Pelagibacter sp. HIMB1321
+0.01729	Archaea	Thaumarchaeota	Thaumarchaeota class incertae sedis	Thaumarchaeota order incertae sedis	Thaumarchaeota fam. incertae sedis	Thaumarchaeota gen. incertae sedis	Thaumarchaeota archaeon SCGC AAA007-O23
+0.0167	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Pseudoalteromonadaceae	Pseudoalteromonas	Pseudoalteromonas arabiensis
+0.01549	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Pseudooceanicola	Pseudooceanicola atlanticus
+0.01468	Bacteria	Proteobacteria	Alphaproteobacteria	Rhizobiales	Rhodobiaceae	Parvibaculum	Parvibaculum lavamentivorans
+0.01434	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Epibacterium	Epibacterium mobile
+0.01405	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodospirillales	Rhodospirillaceae	Thalassospira	Thalassospira sp. MCCC 1A01148
+0.01384	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Salipiger	Salipiger profundus
+0.01357	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Sphingomonadaceae	Sphingopyxis	Sphingopyxis baekryungensis
+0.01356	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodospirillales	Rhodospirillaceae	Thalassospira	Thalassospira sp. MCCC 1A02491
+0.01284	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Joostella	Joostella marina
+0.01279	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Labrenzia	Labrenzia aggregata
+0.01259	Bacteria	Proteobacteria	Gammaproteobacteria	Cellvibrionales	Spongiibacteraceae	Spongiibacter	Spongiibacter tropicus
+0.01248	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Alcanivoracaceae	Alcanivorax	Alcanivorax sp. DG881
+0.01234	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Mesoflavibacter	Mesoflavibacter zeaxanthinifaciens
+0.01234	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Alcanivoracaceae	Alcanivorax	Alcanivorax jadensis
+0.01209	Bacteria	Proteobacteria	Alphaproteobacteria	Rhizobiales	Aurantimonadaceae	Aurantimonas	Aurantimonas sp. 22II-16-19i
+0.01206	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Alteromonadaceae	Marinobacter	Marinobacter adhaerens
+0.01188	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Idiomarinaceae	Idiomarina	Idiomarina loihiensis
+0.01168	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Salipiger	Salipiger marinus
+0.01162	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Synechococcales	Synechococcaceae	Synechococcus	Synechococcus sp. WH 8016
+0.01136	Bacteria	Proteobacteria	Gammaproteobacteria	Pseudomonadales	Pseudomonadaceae	Pseudomonas	Pseudomonas pachastrellae
+0.01121	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Salipiger	Salipiger thiooxidans
+0.01068	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Muricauda	Muricauda lutaonensis
+0.01044	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Thalassobius	Thalassobius mediterraneus
+0.01012	Bacteria	Proteobacteria	Alphaproteobacteria	Rhizobiales	Aurantimonadaceae	Martelella	Martelella mediterranea
+0.00974	Bacteria	Cyanobacteria	Cyanobacteria class incertae sedis	Chroococcales	Aphanothecaceae	Candidatus Atelocyanobacterium	Candidatus Atelocyanobacterium thalassa
+0.00963	Bacteria	Proteobacteria	Alphaproteobacteria	Rhizobiales	Aurantimonadaceae	Fulvimarina	Fulvimarina manganoxydans
+0.00944	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Sulfitobacter	Sulfitobacter dubius
+0.00909	Bacteria	Proteobacteria	Gammaproteobacteria	Pseudomonadales	Pseudomonadaceae	Pseudomonas	Pseudomonas sabulinigri
+0.00895	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Hyphomonadaceae	Hyphomonas	Hyphomonas sp. T16B2
+0.00886	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Maribacter	Maribacter dokdonensis
+0.00881	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Sphingomonadaceae	Sphingobium	Sphingobium xenophagum
+0.00812	Bacteria	Actinobacteria	Actinobacteria	Micrococcales	Micrococcaceae	Kocuria	Kocuria palustris
+0.00766	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Sphingomonadales fam. incertae sedis	Sphingomonadales gen. incertae sedis	Sphingomonadales bacterium RIFCSPHIGHO2_01_FULL_65_20
+0.00753	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Hyphomonadaceae	Hyphomonas	Hyphomonas sp. L-53-1-40
+0.00685	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Erythrobacteraceae	Erythrobacter	Erythrobacter sp. AP23
+0.00684	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Erythrobacteraceae	Erythrobacter	Erythrobacter nanhaisediminis
+0.00646	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Albimonas	Albimonas donghaensis
+0.00624	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodospirillales	Rhodospirillaceae	Thalassospira	Thalassospira sp. TSL5-1
+0.00612	Bacteria	Candidatus Marinimicrobia	Candidatus Marinimicrobia class incertae sedis	Candidatus Marinimicrobia order incertae sedis	Candidatus Marinimicrobia fam. incertae sedis	Candidatus Marinimicrobia gen. incertae sedis	Marinimicrobia bacterium TCS55
+0.00599	Bacteria	Actinobacteria	Actinobacteria	Micrococcales	Demequinaceae	Demequina	Demequina sp. NBRC 110052
+0.00548	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Stappia	Stappia indica
+0.00538	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodospirillales	Rhodospirillaceae	Tistrella	Tistrella mobilis
+0.00518	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Roseovarius	Roseovarius mucosus
+0.00504	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Alteromonadaceae	Marinobacter	Marinobacter algicola
+0.00488	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Erythrobacteraceae	Erythrobacter	Erythrobacter sp. SD-21
+0.00476	Bacteria	Proteobacteria	Betaproteobacteria	Burkholderiales	Burkholderiaceae	Cupriavidus	Cupriavidus pauculus
+0.00467	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Alcanivoracaceae	Alcanivorax	Alcanivorax hongdengensis
+0.00467	Bacteria	Bacteroidetes	Cytophagia	Cytophagales	Flammeovirgaceae	Roseivirga	Roseivirga spongicola
+0.00445	Bacteria	Proteobacteria	Alphaproteobacteria	Rhizobiales	Phyllobacteriaceae	Nitratireductor	Nitratireductor aquibiodomus
+0.00437	Bacteria	Bacteroidetes	Cytophagia	Cytophagales	Flammeovirgaceae	Fabibacter	Fabibacter pacificus
+0.00435	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Sulfitobacter	Sulfitobacter delicatus
+0.00434	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Alteromonadaceae	Marinobacter	Marinobacter salarius
+0.00413	Bacteria	Proteobacteria	Gammaproteobacteria	Pseudomonadales	Moraxellaceae	Psychrobacter	Psychrobacter pacificensis
+0.00376	Bacteria	Proteobacteria	Gammaproteobacteria	Thiotrichales	Piscirickettsiaceae	Methylophaga	Methylophaga aminisulfidivorans
+0.00323	Bacteria	Proteobacteria	Betaproteobacteria	Burkholderiales	Oxalobacteraceae	Herbaspirillum	Herbaspirillum huttiense
+0.00319	Bacteria	Proteobacteria	Alphaproteobacteria	Pelagibacterales	Pelagibacteraceae	Pelagibacteraceae gen. incertae sedis	alpha proteobacterium SCGC AAA288-N07
+0.00317	Bacteria	Proteobacteria	Alphaproteobacteria	Rhizobiales	Aurantimonadaceae	Martelella	Martelella sp. AD-3
+0.00308	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Bergeyella	Bergeyella zoohelcum
+0.00306	Bacteria	Proteobacteria	Alphaproteobacteria	Sphingomonadales	Sphingomonadaceae	Sphingobium	Sphingobium yanoikuyae
+0.00304	Bacteria	Actinobacteria	Actinobacteria	Micrococcales	Dermacoccaceae	Kytococcus	Kytococcus sedentarius
+0.00304	Bacteria	Actinobacteria	Actinobacteria	Micrococcales	Brevibacteriaceae	Brevibacterium	Brevibacterium casei
+0.00303	Bacteria	Bacteroidetes	Bacteroidia	Bacteroidales	Porphyromonadaceae	Porphyromonas	Porphyromonas cangingivalis
+0.00274	Bacteria	Actinobacteria	Actinobacteria	Micrococcales	Dermabacteraceae	Brachybacterium	Brachybacterium paraconglomeratum
+0.00255	Bacteria	Proteobacteria	Gammaproteobacteria	Oceanospirillales	Halomonadaceae	Salinicola	Salinicola socius
+0.00225	Bacteria	Proteobacteria	Alphaproteobacteria	Rhodobacterales	Rhodobacteraceae	Sulfitobacter	Sulfitobacter indolifex
+0.00217	Bacteria	Firmicutes	Bacilli	Bacillales	Staphylococcaceae	Staphylococcus	Staphylococcus epidermidis
+0.00211	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Aequorivita	Vitellibacter aquimaris
+0.00185	Bacteria	Proteobacteria	Gammaproteobacteria	Alteromonadales	Idiomarinaceae	Idiomarina	Idiomarina abyssalis
+0.0018	Bacteria	Actinobacteria	Actinobacteria	Propionibacteriales	Propionibacteriaceae	Cutibacterium	Cutibacterium acnes
+0.00179	Bacteria	Proteobacteria	Gammaproteobacteria	Vibrionales	Vibrionaceae	Vibrio	Vibrio splendidus
+0.00157	Bacteria	Proteobacteria	Gammaproteobacteria	Pseudomonadales	Moraxellaceae	Psychrobacter	Psychrobacter piscatorii
+0.00155	Bacteria	Actinobacteria	Actinobacteria	Micrococcales	Intrasporangiaceae	Ornithinimicrobium	Ornithinimicrobium sp. CNJ-824
+0.00138	Bacteria	Bacteroidetes	Flavobacteriia	Flavobacteriales	Flavobacteriaceae	Aequorivita	Aequorivita vladivostokensis
