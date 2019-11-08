@@ -1,4 +1,4 @@
-import argparse, math, os, subprocess, sys
+import argparse, math, os, subprocess, sys, tempfile
 
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(),
@@ -27,7 +27,7 @@ def select_parseargs():    # handle user arguments
 		help='Keep KMC files instead of deleting after this script finishes.')
 	parser.add_argument('--strain_level', action='store_true',
 		help='Include all strains above cutoff. Default: 1 strain per species.')
-	parser.add_argument('--temp_dir', default = 'TEMP_metalign/',
+	parser.add_argument('--temp_dir', default = 'AUTO/',
 		help='Directory to write temporary files to.')
 	args = parser.parse_args()
 	return args
@@ -139,6 +139,8 @@ def select_main(args = None):
 		args.db_dir = args.data + 'organism_files/'
 	if not args.db_dir.endswith('/'):
 		args.db_dir += '/'
+	if args.temp_dir == 'AUTO/':
+		args.temp_dir = tempfile.mkdtemp(prefix=__location__+'data/')
 	if not args.temp_dir.endswith('/'):
 		args.temp_dir += '/'
 	if not os.path.exists(args.temp_dir):
