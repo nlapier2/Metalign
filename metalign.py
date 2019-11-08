@@ -1,7 +1,11 @@
-import argparse, math, os, subprocess, sys, time
+import argparse, math, os, subprocess, sys, tempfile, time
 # Import metalign modules
 import select_db as select
 import map_and_profile as mapper
+
+
+__location__ = os.path.realpath(os.path.join(os.getcwd(),
+								os.path.dirname(__file__))) + '/'
 
 
 def metalign_parseargs():  # handle user arguments
@@ -44,7 +48,7 @@ def metalign_parseargs():  # handle user arguments
 		help='Run in sensitive mode. Overwrites --cutoff value to 0.0.')
 	parser.add_argument('--strain_level', action='store_true',
 		help='Use this flag to profile strains (off by default).')
-	parser.add_argument('--temp_dir', default = 'TEMP_metalign/',
+	parser.add_argument('--temp_dir', default = 'AUTO/',
 		help='Directory to write temporary files to.')
 	parser.add_argument('--threads', type=int, default=4,
 		help='How many compute threads for Minimap2 to use. Default: 4')
@@ -56,6 +60,8 @@ def metalign_parseargs():  # handle user arguments
 
 def main():
 	args = metalign_parseargs()
+	if args.temp_dir == 'AUTO/':
+		args.temp_dir = tempfile.mkdtemp(prefix=__location__+'data/')
 	if not args.temp_dir.endswith('/'):
 		args.temp_dir += '/'
 	if not args.data.endswith('/'):
@@ -85,6 +91,8 @@ def main():
 	# Run the database selection and map/profile routines
 	select.select_main(args)  # runs select_db routine
 	mapper.map_main(args)  # runs map_and_profile routine
+	if not args.keep_temp_files:  # clean up
+		subprocess.Popen(['rm', '-r', args.temp_dir]).wait()
 
 
 if __name__ == '__main__':
