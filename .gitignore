@@ -1,5 +1,7 @@
 data/cmash_db*
 data/db_info*
+data/organism_files/
+data/*.gz
 minimap2/
 CMash/
 personal_utils/
@@ -7,3 +9,5 @@ bak/
 ideas/
 __pycache__/
 .DS_Store
+env/
+KMC/
