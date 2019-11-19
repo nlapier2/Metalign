@@ -1,6 +1,6 @@
 #!/bin/bash
 cd data/
-wget https://ucla.box.com/shared/static/b0d5jqtopgrenmlqrdobv4y4hp7ununx.gz && tar -zxvf b0d5jqtopgrenmlqrdobv4y4hp7ununx.gz && rm b0d5jqtopgrenmlqrdobv4y4hp7ununx.gz 
+wget https://ucla.box.com/shared/static/27xulklfvo60g7heogvi2y43jti5tqxo.gz && tar -zxvf 27xulklfvo60g7heogvi2y43jti5tqxo.gz && rm 27xulklfvo60g7heogvi2y43jti5tqxo.gz
 mkdir organism_files/ && cd organism_files/
 wget https://ucla.box.com/shared/static/c1g8xjc9glh68oje9e549fjqj0y8nc17.gz && tar -zxvf c1g8xjc9glh68oje9e549fjqj0y8nc17.gz && rm c1g8xjc9glh68oje9e549fjqj0y8nc17.gz
 wget https://ucla.box.com/shared/static/lgj75x6w3ddy9fk0d563m4ohjrlozcle.gz && tar -zxvf lgj75x6w3ddy9fk0d563m4ohjrlozcle.gz && rm lgj75x6w3ddy9fk0d563m4ohjrlozcle.gz 
