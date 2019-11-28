@@ -23,12 +23,17 @@ def select_parseargs():    # handle user arguments
 		help='Specify location of db_info file. Default is data/db_info.txt')
 	parser.add_argument('--dbinfo_out', default='AUTO',
 		help='Where to write subset db_info. Default: data/subset_db_info.txt')
+	parser.add_argument('--input_type', default='AUTO',
+		choices=['fastq', 'fasta', 'AUTO'],
+		help='Type of input file (fastq/fasta). Default: try to auto-determine')
 	parser.add_argument('--keep_temp_files', action = 'store_true',
 		help='Keep KMC files instead of deleting after this script finishes.')
 	parser.add_argument('--strain_level', action='store_true',
 		help='Include all strains above cutoff. Default: 1 strain per species.')
 	parser.add_argument('--temp_dir', default = 'AUTO/',
 		help='Directory to write temporary files to.')
+	parser.add_argument('--threads', type=int, default=4,
+		help='How many compute threads for KMC to use. Default: 4')
 	args = parser.parse_args()
 	return args
 
@@ -52,9 +57,13 @@ def read_dbinfo(args):
 def run_kmc_steps(args):
 	kmc_loc = __location__ + 'KMC/bin/kmc'
 	db_60mers_loc = args.data + 'cmash_db_n1000_k60_dump'
+	if args.input_type == 'fastq':
+		type_arg = '-fq'
+	else:
+		type_arg = '-fa'
 
-	subprocess.Popen([kmc_loc, '-v', '-k60', '-fq', '-ci2',
-		'-cs3', '-t48', '-jlog_sample', args.reads,
+	subprocess.Popen([kmc_loc, '-v', '-k60', type_arg, '-ci2', '-cs3',
+		'-t' + str(args.threads), '-jlog_sample', args.reads,
 		args.temp_dir + 'reads_60mers', args.temp_dir]).wait()
 
 	subprocess.Popen([kmc_loc+'_tools', 'simple', db_60mers_loc,
@@ -149,6 +158,16 @@ def select_main(args = None):
 		args.dbinfo_in = args.data + 'db_info.txt'
 	if args.dbinfo_out == 'AUTO':
 		args.dbinfo_out = args.data + 'subset_db_info.txt'
+	if args.input_type == 'AUTO':
+		splits = args.reads.split('.')
+		if splits[-1] == 'gz':  # gz doesn't help determine file type
+			splits = splits[:-1]
+		if splits[-1] in ['fq', 'fastq']:
+			args.input_type = 'fastq'
+		elif splits[-1] in ['fa', 'fna', 'fasta']:
+			args.input_type = 'fasta'
+		else:
+			sys.exit('Could not auto-determine file type. Use --input_type.')
 
 	taxid2info = read_dbinfo(args)
 	if args.cmash_results == 'NONE':
