@@ -12,7 +12,7 @@ def select_parseargs():    # handle user arguments
 	parser.add_argument('data',
 		help='Path to data/ directory with the files from setup_data.sh')
 	parser.add_argument('--cmash_results', default='NONE',
-		help='Can specfily location of CMash query results if already done.')
+		help='Can specify location of CMash query results if already done.')
 	parser.add_argument('--cutoff', type=float, default=-1.0,
 		help='CMash cutoff value. Default is 1/(log10(reads file bytes)**2).')
 	parser.add_argument('--db', default='cmashed_db.fna',
