@@ -53,7 +53,7 @@ def run_kmc_steps(args):
 	kmc_loc = __location__ + 'KMC/bin/kmc'
 	db_60mers_loc = args.data + 'cmash_db_n1000_k60_dump'
 
-	subprocess.Popen([kmc_loc, '-v', '-k60', '-m200', '-sm', '-fq', '-ci2',
+	subprocess.Popen([kmc_loc, '-v', '-k60', '-fq', '-ci2',
 		'-cs3', '-t48', '-jlog_sample', args.reads,
 		args.temp_dir + 'reads_60mers', args.temp_dir]).wait()
 
