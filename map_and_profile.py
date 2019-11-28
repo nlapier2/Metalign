@@ -30,12 +30,12 @@ def profile_parseargs():  # handle user arguments
 		help='Path to database from select_db.py. Required if read files given')
 	parser.add_argument('--dbinfo', default='AUTO',
 		help='Location of db_info file. Default: data/db_info.txt')
+	parser.add_argument('--length_normalize', action='store_true',
+		help='Normalize abundances by genome length.')
 	parser.add_argument('--low_mem', action='store_true',
 		help='Run in low memory mode, with inexact multimapped processing.')
 	parser.add_argument('--min_abundance', type=float, default=10**-4,
 		help='Minimum abundance for a taxa to be included in the results.')
-	parser.add_argument('--length_normalize', action='store_true',
-		help='Normalize abundances by genome length.')
 	parser.add_argument('--rank_renormalize', action='store_true',
 		help='Renormalize abundances to 100 percent at each rank,\
 				for instance if an organism has a species but not genus label.')
