@@ -30,6 +30,10 @@ def profile_parseargs():  # handle user arguments
 		help='Path to database from select_db.py. Required if read files given')
 	parser.add_argument('--dbinfo', default='AUTO',
 		help='Location of db_info file. Default: data/db_info.txt')
+	parser.add_argument('--input_type', default='AUTO',
+		choices=['fastq', 'fasta', 'sam', 'AUTO'],
+		help='Type of input file (fastq/fasta/sam). \
+			Default: try to automatically determine')
 	parser.add_argument('--length_normalize', action='store_true',
 		help='Normalize abundances by genome length.')
 	parser.add_argument('--low_mem', action='store_true',
@@ -202,7 +206,7 @@ def preprocess_multimapped(args, multimapped, taxids2abs):
 
 # Processes minimap2 output and returns a dict of taxids mapped to number of
 #  	uniquely mapped reads & bases for that taxid, & a list of multimapped reads.
-def map_and_process(args, samfile, instream, acc2info, taxid2info):
+def map_and_process(args, instream, acc2info, taxid2info):
 	taxids2abs, multimapped = {}, []  # taxids to abundances, multimapped reads
 	low_mem_mmap = {}  # tracks multimapped read hits per taxon in low_mem mode
 	taxids2abs['Unmapped'] = ([0.0, 0.0] + taxid2info['Unmapped'])  #placeholder
@@ -211,7 +215,7 @@ def map_and_process(args, samfile, instream, acc2info, taxid2info):
 	tot_rds = 0  # total number of reads in the file
 
 	for line in instream:
-		if not samfile:
+		if not args.input_type == 'sam':
 			line = line.decode('utf-8')
 			if not line:  # process finished
 				break
@@ -417,18 +421,16 @@ def compute_abundances(args, infile, acc2info, tax2info):
 	# run mapping and process to get uniq map abundances & multimapped reads
 	#taxids2abs, multimapped = map_and_process(args, infile, acc2info, tax2info)
 
-	samfile = False  # whether reading from existing sam file
-	if infile.endswith('sam'):  # input stream from sam file
-		samfile = True
+	if args.input_type == 'sam': # input stream from sam file
 		instream = open(infile, 'r')
 	else:  # run minimap2 and stream its output as input
 		mapper = subprocess.Popen([__location__ + 'minimap2/minimap2', '-ax',
 			'sr', '-t', str(args.threads), '-2', '-n' '1', '--secondary=yes',
 			args.db, infile], stdout=subprocess.PIPE, bufsize=1)
 		instream = iter(mapper.stdout.readline, "")
-	taxids2abs, multimapped, low_mem_mmap = map_and_process(args, samfile,
+	taxids2abs, multimapped, low_mem_mmap = map_and_process(args,
 		instream, acc2info, tax2info)
-	if samfile:
+	if args.input_type == 'sam':
 		instream.close()
 	else:
 		mapper.stdout.close()
@@ -517,6 +519,18 @@ def map_main(args = None):
 		args.data += '/'
 	if args.dbinfo == 'AUTO':
 		args.dbinfo = args.data + 'db_info.txt'
+	if args.input_type == 'AUTO':
+		splits = args.reads.split('.')
+		if splits[-1] == 'gz':  # gz doesn't help determine file type
+			splits = splits[:-1]
+		if splits[-1] in ['fq', 'fastq']:
+			args.input_type = 'fastq'
+		elif splits[-1] in ['fa', 'fna', 'fasta']:
+			args.input_type = 'fasta'
+		elif splits[-1] == 'sam':
+			args.input_type = 'sam'
+		else:
+			sys.exit('Could not auto-determine file type. Use --input_type.')
 	open(args.output, 'w').close()  # test to see if writeable
 
 	# maps NCBI accession to length, taxid, name lineage, taxid lineage

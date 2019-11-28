@@ -22,6 +22,9 @@ def metalign_parseargs():  # handle user arguments
 		help = 'Location of db_info file. Default: data/db_info.txt')
 	parser.add_argument('--keep_temp_files', action = 'store_true',
 		help='Keep KMC files instead of deleting after this script finishes.')
+	parser.add_argument('--input_type', default='AUTO',
+		choices=['fastq', 'fasta', 'AUTO'],
+		help='Type of input file (fastq/fasta). Default: try to auto-determine')
 	parser.add_argument('--length_normalize', action='store_true',
 		help='Normalize abundances by genome length.')
 	parser.add_argument('--low_mem', action='store_true',
@@ -51,7 +54,7 @@ def metalign_parseargs():  # handle user arguments
 	parser.add_argument('--temp_dir', default = 'AUTO/',
 		help='Directory to write temporary files to.')
 	parser.add_argument('--threads', type=int, default=4,
-		help='How many compute threads for Minimap2 to use. Default: 4')
+		help='How many compute threads for Minimap2/KMC to use. Default: 4')
 	parser.add_argument('--verbose', action='store_true',
 		help='Print verbose output.')
 	args = parser.parse_args()
@@ -71,6 +74,16 @@ def main():
 		args.data + 'db_info.txt'
 	if args.db_dir == 'AUTO':
 		args.data + 'organism_files/'
+	if args.input_type == 'AUTO':
+		splits = args.reads.split('.')
+		if splits[-1] == 'gz':  # gz doesn't help determine file type
+			splits = splits[:-1]
+		if splits[-1] in ['fq', 'fastq']:
+			args.input_type = 'fastq'
+		elif splits[-1] in ['fa', 'fna', 'fasta']:
+			args.input_type = 'fasta'
+		else:
+			sys.exit('Could not auto-determine file type. Use --input_type.')
 
     # handle precise and sensitive modes
 	if args.sensitive and args.precise:
