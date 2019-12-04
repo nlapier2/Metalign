@@ -520,7 +520,7 @@ def map_main(args = None):
 	if args.dbinfo == 'AUTO':
 		args.dbinfo = args.data + 'db_info.txt'
 	if args.input_type == 'AUTO':
-		splits = args.reads.split('.')
+		splits = args.infiles.split('.')
 		if splits[-1] == 'gz':  # gz doesn't help determine file type
 			splits = splits[:-1]
 		if splits[-1] in ['fq', 'fastq']:
