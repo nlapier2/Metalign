@@ -15,14 +15,14 @@ def select_parseargs():    # handle user arguments
 		help='Can specify location of CMash query results if already done.')
 	parser.add_argument('--cutoff', type=float, default=-1.0,
 		help='CMash cutoff value. Default is 1/(log10(reads file bytes)**2).')
-	parser.add_argument('--db', default='cmashed_db.fna',
-		help='Path to where to write the output database.')
+	parser.add_argument('--db', default='AUTO',
+		help='Where to write subset database. Default: temp_dir/cmashed_db.fna')
 	parser.add_argument('--db_dir', default='AUTO',
 		help='Directory with all organism files in the full database.')
 	parser.add_argument('--dbinfo_in', default='AUTO',
 		help='Specify location of db_info file. Default is data/db_info.txt')
 	parser.add_argument('--dbinfo_out', default='AUTO',
-		help='Where to write subset db_info. Default: data/subset_db_info.txt')
+		help='Where to write subset db_info. Default: temp_dir/subset_db_info.txt')
 	parser.add_argument('--input_type', default='AUTO',
 		choices=['fastq', 'fasta', 'AUTO'],
 		help='Type of input file (fastq/fasta). Default: try to auto-determine')
@@ -157,7 +157,9 @@ def select_main(args = None):
 	if args.dbinfo_in == 'AUTO':
 		args.dbinfo_in = args.data + 'db_info.txt'
 	if args.dbinfo_out == 'AUTO':
-		args.dbinfo_out = args.data + 'subset_db_info.txt'
+		args.dbinfo_out = args.temp_dir + 'subset_db_info.txt'
+	if args.db == 'AUTO':
+		args.db = args.temp_dir + 'cmashed_db.fna'
 	if args.input_type == 'AUTO':
 		splits = args.reads.split('.')
 		if splits[-1] == 'gz':  # gz doesn't help determine file type
