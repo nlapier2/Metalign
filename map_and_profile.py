@@ -155,9 +155,9 @@ def clean_read_hits(args, read_hits, pair1maps, pair2maps):
 			elif read_hits[hit][1][1]:
 				pair2maps -= 1
 
-		if read_hits[hit][10] != '*':  # first hit for a read / paired end
+		if read_hits[hit][9] != '*':  # first hit for a read / paired end
 			readquals += read_hits[hit][10]
-			hitlen += len(read_hits[hit][10])
+			hitlen += len(read_hits[hit][9])
 	read_hits = [read_hits[i] for i in range(len(read_hits))
 					if i not in filtered_hits]
 	return read_hits, [pair1maps, pair2maps, hitlen, readquals]
@@ -260,15 +260,15 @@ def map_and_process(args, instream, acc2info, taxid2info):
 				#	for hit in intersect_hits]
 				if not args.low_mem:  # store set of taxids per multimapped read
 					intersect_hits = [hit[2] for hit in intersect_hits]
-					intersect_hits.append(len(readquals))  # total hit length
+					intersect_hits.append(hitlen)  # total hit length
 					multimapped.append(intersect_hits)
 				else:  # low_mem just stores overall num. of hit bases per taxid
 					for hit in intersect_hits:
 						taxid = hit[2]
 						if taxid in low_mem_mmap:
-							low_mem_mmap[taxid] += len(readquals)
+							low_mem_mmap[taxid] += len(hitlen)
 						else:
-							low_mem_mmap[taxid] = len(readquals)
+							low_mem_mmap[taxid] = len(hitlen)
 		#else:
 		pair1maps += pair1 or not(pair1 or pair2)  # pair1 or single
 		pair2maps += pair2  # unchanged if pair2 false
@@ -520,7 +520,7 @@ def map_main(args = None):
 	if args.dbinfo == 'AUTO':
 		args.dbinfo = args.data + 'db_info.txt'
 	if args.input_type == 'AUTO':
-		splits = args.infiles.split('.')
+		splits = args.infiles[0].split('.')
 		if splits[-1] == 'gz':  # gz doesn't help determine file type
 			splits = splits[:-1]
 		if splits[-1] in ['fq', 'fastq']:
