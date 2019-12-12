@@ -16,7 +16,8 @@ While we utilize Minimap2, you might want to use an alternate aligner. This scri
 ## Map_but_dont_profile.sh
 You may be interested in just the alignment and don't care about the taxonomic profile (or do not know or wish to create the CAMI formatted db_info.txt taxonomy file). This script shows how to run the method and output an alignment SAM file (without requiring the taxonomy information and without returning a taxonomic profile).
 
-
+## Change_kmer_size.sh
+The default analysis uses 60-mers: a reference organism will not be included in the subset database if it shares no 60-mer in common with the input sample data. You may wish to change this depending on the data you use (though our analyses show that k=60 is best for most data). This script demonstrates how to accomplish that.
 
 
 
