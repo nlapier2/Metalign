@@ -13,12 +13,12 @@ This contains a database of 199,807 microbial organisms obtained from NCBI. The 
 
 | Kingdom    | Number of organisms in database |
 |------------|---------------------------------|
-|Bacteria    |                                 |
-|Archaea     |                                 |
-|Eukaryotes  |                                 |
-|Viruses     |                                 |
-|            |                                 |
-|            |                                 |
+|Bacteria    | 169,171                         |
+|Archaea     | 3,197                           |
+|Eukaryotes  | 4,793                           |
+|Viruses     | 21,826                          |
+|Viroids     | 50                              |
+|Unkown      | 770                             |
 
 2. `db_info.txt`
 
