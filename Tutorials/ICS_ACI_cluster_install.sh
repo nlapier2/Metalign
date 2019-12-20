@@ -1,4 +1,8 @@
 #!/bin/bash
+# This script gives an example of how to install Metalign on a computing cluster via conda (i.e. when Docker is not available). You may need to modify it depending on your cluster setup.
+
+# After this install script, you need to be sure to activate the conda environment before running Metalign: source activate MetalignVE
+
 # clone the directory
 git clone https://github.com/nlapier2/Metalign.git
 cd Metalign

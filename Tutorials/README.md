@@ -4,7 +4,7 @@ This directory contains an assortment of bash scripts that demonstrate (on a sma
 ## Local_install.sh
 This shows how to perform a local installation of the tool.
 
-## ICS_ACI_install.sh
+## ICS_ACI_cluster_install.sh
 This script shows how to perform a local installation on the Penn State ACI supercomputing cluster. It may be helpful for others running the code locally on a cluster (that does not allow/have docker).
 
 ## Run_full_pipeline.sh
