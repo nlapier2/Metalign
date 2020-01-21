@@ -55,24 +55,38 @@ def read_dbinfo(args):
 
 
 def run_kmc_steps(args):
+	"""
+	This function uses KMC to find all the 60mers in the input sample that appear in the training database. It then
+	creates a much smaller file that CMash will then process (essentially discarding duplicates and k-mers that don't
+	appear in the training database).
+	:param args: Input arguments from metalign.py
+	:return: None (just writes a fasta file and some intermediate files)
+	"""
 	kmc_loc = __location__ + 'KMC/bin/kmc'
-	db_60mers_loc = args.data + 'cmash_db_n1000_k60_dump'
+	db_60mers_loc = args.data + 'cmash_db_n1000_k60_dump'  # KMC formatted database of all the 60-mers in the default training database
 	if args.input_type == 'fastq':
 		type_arg = '-fq'
 	else:
 		type_arg = '-fa'
 
+	# calculate all the 60-mers in the sample
+	# KMC args: -v verbose, -k60 k-mer size 60, -ci2 exclude k-mers occurring less than 2 times
+	#         : -cs3 max value of a counter is 3 (since I just need presence/absence, not total number)
+	#         :
 	subprocess.Popen([kmc_loc, '-v', '-k60', type_arg, '-ci2', '-cs3',
 		'-t' + str(args.threads), '-jlog_sample', args.reads,
 		args.temp_dir + 'reads_60mers', args.temp_dir]).wait()
 
+	# find the intersection of the input sample 60-mers with the 60-mers that occur in the default training database
 	subprocess.Popen([kmc_loc+'_tools', 'simple', db_60mers_loc,
 		args.temp_dir + 'reads_60mers', 'intersect',
 		args.temp_dir + '60mers_intersection']).wait()
 
+	# dump the 60-mers in the intersection
 	subprocess.Popen([kmc_loc+'_dump', args.temp_dir + '60mers_intersection',
 		args.temp_dir + '60mers_intersection_dump']).wait()
 
+	# convert these to a pseudo fasta file. This will be our new "sample" (and hence will be much smaller to process)
 	with(open(args.temp_dir + '60mers_intersection_dump', 'r')) as infile:
 		with(open(args.temp_dir + '60mers_intersection_dump.fa', 'w')) as fasta:
 			for line in infile:
@@ -81,11 +95,19 @@ def run_kmc_steps(args):
 
 
 def run_cmash_and_cutoff(args, taxid2info):
-	cmash_db_loc = args.data + 'cmash_db_n1000_k60.h5'
-	cmash_filter_loc = args.data + 'cmash_filter_n1000_k60_30-60-10.bf'
+	"""
+	Run Cmash on the reduced/de-duplicated sample and return the relevant training database entries/organisms
+	:param args: input args from metalign.py
+	:param taxid2info: parsed taxonomy dictionary
+	:return: list of organisms/database entries with containment index above the input args.cutoff threshold
+	"""
+	cmash_db_loc = args.data + 'cmash_db_n1000_k60.h5'  # default training database using sketch size of 1000 with 60-mers
+	cmash_filter_loc = args.data + 'cmash_filter_n1000_k60_30-60-10.bf'  # pre-made pre-filter consisting of all the 60-mers in the training database
 	if args.cmash_results == 'NONE':
 		cmash_out = args.temp_dir + 'cmash_query_results.csv'
 		script_loc = __location__ + 'CMash/scripts/StreamingQueryDNADatabase.py'
+		# run Cmash using a cutoff of 0, processing 1M reads in each chunk at a time
+		# use the sensitive setting
 		cmash_proc = subprocess.Popen(['python', script_loc,
 			args.temp_dir + '60mers_intersection_dump.fa', cmash_db_loc,
 			cmash_out, '30-60-10', '-c', '0', '-r', '1000000', '-v',
@@ -93,6 +115,8 @@ def run_cmash_and_cutoff(args, taxid2info):
 	else:
 		cmash_out = args.cmash_results
 
+	# parse the CMash results to get the ones that occur above the input cutoff threshold
+	# TODO: the CMash output was created in a Pandas dataframe, so it may be more elegant to parse it as such
 	organisms_to_include, species_included = [], {}
 	with(open(cmash_out, 'r')) as cmash_results:
 		cmash_results.readline()  # skip header line
