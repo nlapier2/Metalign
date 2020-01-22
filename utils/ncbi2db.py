@@ -1,3 +1,8 @@
+# Assumes NCBI database has been rsynced with a line similar to the one below:
+# rsync --copy-links --recursive --times --exclude '*cds*' --exclude '*rna*' --verbose
+#    rsync://ftp.ncbi.nlm.nih.gov/genomes/all/GC*/*/*/*/*/*{_genomic.fna.gz,assembly_report.txt}
+#    ncbi_rsync_all_genomes_reports/
+
 import argparse, glob, gzip, os, subprocess
 
 
