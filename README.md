@@ -1,5 +1,7 @@
 # Metalign: Efficient alignment-based metagenomic profiling via containment min hash
 
+Version 0.9.1 | December 10, 2019
+
 Metalign is a method for estimating the taxonomic composition and relative abundances of organisms in a metagenomic sample based on whole-genome shotgun sequencing reads. 
 
 For instructions on usage, please see the wiki: https://github.com/nlapier2/Metalign/wiki
