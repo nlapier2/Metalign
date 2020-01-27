@@ -482,7 +482,7 @@ def gather_results(args, acc2info, taxid2info):
     results = {}
     for infile in args.infiles:
         echo('Computing abundances for input file: ' + infile, args.verbose)
-        file_res = compute_abundances(args, infile, acc2info, taxid2info)
+        file_res = compute_abundances(args, infile, acc2info, taxid2info, minimap_bin=args.minimap2_bin)
         for clade in file_res:
             if clade not in results:
                 results[clade] = file_res[clade]
