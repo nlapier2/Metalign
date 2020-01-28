@@ -238,7 +238,7 @@ def select_main(args=None):
     kmc_dump_fasta_path = os.path.join(tmpdir, '60mers_intersection_dump.fa')
     cmash_db = os.path.join(args.data, 'cmash_db_n1000_k60_dump')
     fasta_intersect_path = os.path.join(tmpdir, '60mers_intersection_dump.fa')
-    if args.cmash_results is None or not os.path.exists(args.cmash_results):
+    if args.cmash_results == 'NONE':
         run_kmc_steps(reads=args.reads,
                       cmash_db=cmash_db,
                       input_type=args.input_type,
