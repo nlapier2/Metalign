@@ -15,8 +15,8 @@
 
 1. Data exploration
    - [x] Compare the 2 rep of "Pig_14_Day_14_R1" data
-     - [ ] follow1: align 2 reps to the extra species in merged file (5%)
-   - [ ] Compare the merged R1R2 of the 2 rep of "Pig_14_Day_14" data
+   - [x] Compare the merged R1R2 of the 2 rep of "Pig_14_Day_14" data
+   - [ ] Pick the top extra species in merged_R1R2_combine data, align the 3 reads file to the genome 
 2. Run all data
    - [ ] 
 3. Summarizing results
@@ -74,12 +74,64 @@
    done
    ```
 
-   ```R
-   # Check consistency in R
+   - [results](https://drive.google.com/open?id=1HFTW19Hl5OCHsoXQvd7PmbOOr6fNwFdc)
+
+3. Validate the top novel species (2292357) by alignment
+
+   - Code
+
+   ```bash
+   ### pull the corresponding genome out (code from Dr. David)
+   cd /storage/home/sml6467/shaopeng_Koslicki_group/projects/202002_metalign_application/results/20200215_application1_variation/merged_R1R2_output/combined/temp_combined
+   species=2292357
+   rm pulled_species_${species}.fa 2>/dev/null 
+   for accn in `grep -w $species subset_db_info.txt  | cut -f 1` 
+   do
+   	echo $accn
+   	awk '/^>/ {printf("\n%s\n",$0);next; } { printf("%s",$0);}  END {printf("\n");}' < cmashed_db.fna | tail -n +2 | grep -A1 ${accn} >> pulled_species_${species}.fa
+   	unset accn
+   done
    
+   ### build BWA and align the data
+   original_fq="/gpfs/group/dmk333/default/shaopeng/projects/202002_metalign_application/results/20200215_application1_variation/merged_R1R2_output/original/merged_R12_Tomato_Pig_14_Day_14_S68_L002_original_001_original.fastq"
+   reseq_fq="/gpfs/group/dmk333/default/shaopeng/projects/202002_metalign_application/results/20200215_application1_variation/merged_R1R2_output/reseq/merged_R12_Tomato_Pig_14_Day_14_S85_L001_reseq_001_resequence.fastq"
+   combined_fq="/gpfs/group/dmk333/default/shaopeng/projects/202002_metalign_application/results/20200215_application1_variation/merged_R1R2_output/combined/merged_R12_Tomato_Pig_14_Day_14_combined.fastq"
+   
+   cd /storage/home/sml6467/shaopeng_Koslicki_group/projects/202002_metalign_application/results/20200224_validate_some_species
+   # create index 
+   fasta_file=pulled_species_2292357.fa
+   echo "Creating BWA reference from fasta file"
+   mkdir bwa_ref_${fasta_file}
+   mv ${fasta_file} ./bwa_ref_${fasta_file}
+   cd ./bwa_ref_${fasta_file}
+   ml bwa
+   bwa index ${fasta_file} \
+     && echo "creating index successful!"
+   # align data
+   bwa_index=`find $PWD -maxdepth 2 -mindepth 2 -name "*.fa" ! -type d`
+   time_tag=`date +"%H%M"`
+   mkdir align_result_${time_tag}
+   cd align_result_${time_tag}
+   bwa mem ${bwa_index} ${original_fq} > aln_original.sam
+   bwa mem ${bwa_index} ${reseq_fq} > aln_reseq.sam
+   bwa mem ${bwa_index} ${combined_fq} > aln_combined.sam
+   # collect mapping status
+   for file in `ls *sam`
+   do
+     echo ${file}
+     name=`echo ${file%.bam}`
+     name=`echo ${name#aln_}`
+     samtools flagstat ${file} > mapping_status_${name}.txt
+     unset name file
+   done
    ```
 
-   
+   - results:
+     - /storage/home/sml6467/shaopeng_Koslicki_group/projects/202002_metalign_application/results/20200224_validate_some_species/align_result_1517
+     - mapped ratio in C/O/R is 3.15% / 3.53% / 2.72%
+     - Should be true signal, but only detected at combined data (double the depth)
+
+
 
 ### Run all data: <a name="runall"></a>
 
