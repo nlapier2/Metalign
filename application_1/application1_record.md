@@ -16,10 +16,7 @@
 1. Data exploration
    - [x] Compare the 2 rep of "Pig_14_Day_14_R1" data
    - [x] Compare the merged R1R2 of the 2 rep of "Pig_14_Day_14" data
-   - [ ] Pick the top extra species in merged_R1R2_combine data, align the 3 reads file to the genome 
-2. Run all data
-   - [ ] 
-3. Summarizing results
+   - [x] Pick the top extra species in merged_R1R2_combine data, align the 3 reads file to the genome 
 
 ---
 
