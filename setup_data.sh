@@ -1,6 +1,6 @@
 #!/bin/bash
 cd data/
-wget https://ucla.box.com/shared/static/27xulklfvo60g7heogvi2y43jti5tqxo.gz && tar -zxvf 27xulklfvo60g7heogvi2y43jti5tqxo.gz && rm 27xulklfvo60g7heogvi2y43jti5tqxo.gz
+wget https://ucla.box.com/shared/static/oiry4qgwb7dnpg6lkrievzjymkb6szcl.gz && tar -zxvf oiry4qgwb7dnpg6lkrievzjymkb6szcl.gz && rm oiry4qgwb7dnpg6lkrievzjymkb6szcl.gz
 mkdir organism_files/ && cd organism_files/
 wget https://ucla.box.com/shared/static/c1g8xjc9glh68oje9e549fjqj0y8nc17.gz && tar -zxvf c1g8xjc9glh68oje9e549fjqj0y8nc17.gz && rm c1g8xjc9glh68oje9e549fjqj0y8nc17.gz
 wget https://ucla.box.com/shared/static/lgj75x6w3ddy9fk0d563m4ohjrlozcle.gz && tar -zxvf lgj75x6w3ddy9fk0d563m4ohjrlozcle.gz && rm lgj75x6w3ddy9fk0d563m4ohjrlozcle.gz 
@@ -12,7 +12,7 @@ wget https://ucla.box.com/shared/static/hicbumgx736bejquay6za6t22gprc0xc.gz && t
 wget https://ucla.box.com/shared/static/qi2pc4wp75el5fq7wi7k3ht5512sh7if.gz && tar -zxvf qi2pc4wp75el5fq7wi7k3ht5512sh7if.gz && rm qi2pc4wp75el5fq7wi7k3ht5512sh7if.gz
 wget https://ucla.box.com/shared/static/vfr055tuyl7cmboxjouyk984r8eadzav.gz && tar -zxvf vfr055tuyl7cmboxjouyk984r8eadzav.gz && rm vfr055tuyl7cmboxjouyk984r8eadzav.gz
 wget https://ucla.box.com/shared/static/6dl8eoh84sfl78nsmpi9tckwchnya7eh.gz && tar -zxvf 6dl8eoh84sfl78nsmpi9tckwchnya7eh.gz && rm 6dl8eoh84sfl78nsmpi9tckwchnya7eh.gz
-wget https://ucla.box.com/shared/static/edgfk4ubnktlrbt0a7gjmfzdgovpexmj.gz && tar -zxvf edgfk4ubnktlrbt0a7gjmfzdgovpexmj.gz && rm edgfk4ubnktlrbt0a7gjmfzdgovpexmj.gz
+wget https://ucla.box.com/shared/static/ms3hfz5411yn7eite4j2k7t8afnzsego.gz && tar -zxvf ms3hfz5411yn7eite4j2k7t8afnzsego.gz && rm ms3hfz5411yn7eite4j2k7t8afnzsego.gz
 wget https://ucla.box.com/shared/static/c5iphbjw1snrxtrsc3g1y1x5n2896x3d.gz && tar -zxvf c5iphbjw1snrxtrsc3g1y1x5n2896x3d.gz && rm c5iphbjw1snrxtrsc3g1y1x5n2896x3d.gz
 wget https://ucla.box.com/shared/static/qfgoxhurf92vbrf8k1cfzv8al3acdtfz.gz && tar -zxvf qfgoxhurf92vbrf8k1cfzv8al3acdtfz.gz && rm qfgoxhurf92vbrf8k1cfzv8al3acdtfz.gz
 wget https://ucla.box.com/shared/static/jupbcmmrcvdy4gz6pveceiw649zwn4oy.gz && tar -zxvf jupbcmmrcvdy4gz6pveceiw649zwn4oy.gz && rm jupbcmmrcvdy4gz6pveceiw649zwn4oy.gz

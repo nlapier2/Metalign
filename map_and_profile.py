@@ -4,8 +4,7 @@ import argparse, os, subprocess, sys, time
 start = time.time()  # start a program timer
 RANKS = ['superkingdom', 'phylum', 'class', 'order',
 		'family', 'genus', 'species', 'strain']
-__location__ = os.path.realpath(os.path.join(os.getcwd(),
-								os.path.dirname(__file__))) + '/'
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))) + '/'
 
 
 def echo(msg, verbose):
@@ -424,7 +423,7 @@ def compute_abundances(args, infile, acc2info, tax2info):
 	if args.input_type == 'sam': # input stream from sam file
 		instream = open(infile, 'r')
 	else:  # run minimap2 and stream its output as input
-		mapper = subprocess.Popen([__location__ + 'minimap2/minimap2', '-ax',
+		mapper = subprocess.Popen(['minimap2', '-ax',
 			'sr', '-t', str(args.threads), '-2', '-n' '1', '--secondary=yes',
 			args.db, infile], stdout=subprocess.PIPE, bufsize=1)
 		instream = iter(mapper.stdout.readline, "")

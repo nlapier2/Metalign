@@ -4,8 +4,7 @@ import select_db as select
 import map_and_profile as mapper
 
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(),
-								os.path.dirname(__file__))) + '/'
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))) + '/'
 
 
 def metalign_parseargs():  # handle user arguments
@@ -38,11 +37,9 @@ def metalign_parseargs():  # handle user arguments
 	parser.add_argument('--pct_id', type=float, default=0.5,
 		help='Minimum percent identity from reference to count a hit.')
 	parser.add_argument('--precise', action = 'store_true',
-		help='Run in precise mode. Overwrites --read_cutoff\
-                and --min_abundance to 100 and 0.1.')
+		help='Run in precise mode. Overwrites --read_cutoff and --min_abundance to 100 and 0.1.')
 	parser.add_argument('--rank_renormalize', action='store_true',
-		help='Renormalize abundances to 100 percent at each rank,\
-				for instance if an organism has a species but not genus label.')
+		help='Renormalize abundances to 100 percent at each rank.')
 	parser.add_argument('--read_cutoff', type=int, default=1,
 		help='Number of reads to count an organism as present.')
 	parser.add_argument('--sampleID', default='NONE',
@@ -71,9 +68,9 @@ def main():
 		args.data += '/'
 	# Set arguments that default to AUTO
 	if args.dbinfo_in == 'AUTO':
-		args.data + 'db_info.txt'
+		args.dbinfo_in = args.data + 'db_info.txt'
 	if args.db_dir == 'AUTO':
-		args.data + 'organism_files/'
+		args.db_dir = args.data + 'organism_files/'
 	if args.input_type == 'AUTO':
 		splits = args.reads.split('.')
 		if splits[-1] == 'gz':  # gz doesn't help determine file type
@@ -85,7 +82,7 @@ def main():
 		else:
 			sys.exit('Could not auto-determine file type. Use --input_type.')
 
-    # handle precise and sensitive modes
+	# handle precise and sensitive modes
 	if args.sensitive and args.precise:
 		sys.exit('You cannot use both --sensitive and --precise.')
 	if args.sensitive:
