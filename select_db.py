@@ -1,8 +1,7 @@
 import argparse, math, os, subprocess, sys, tempfile
 
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(),
-								os.path.dirname(__file__))) + '/'
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))) + '/'
 
 
 def select_parseargs():    # handle user arguments
@@ -55,22 +54,21 @@ def read_dbinfo(args):
 
 
 def run_kmc_steps(args):
-	kmc_loc = __location__ + 'KMC/bin/kmc'
 	db_60mers_loc = args.data + 'cmash_db_n1000_k60_dump'
 	if args.input_type == 'fastq':
 		type_arg = '-fq'
 	else:
 		type_arg = '-fa'
 
-	subprocess.Popen([kmc_loc, '-v', '-k60', type_arg, '-ci2', '-cs3',
+	subprocess.Popen(['kmc', '-v', '-k60', type_arg, '-ci2', '-cs3',
 		'-t' + str(args.threads), '-jlog_sample', args.reads,
 		args.temp_dir + 'reads_60mers', args.temp_dir]).wait()
 
-	subprocess.Popen([kmc_loc+'_tools', 'simple', db_60mers_loc,
+	subprocess.Popen(['kmc_tools', 'simple', db_60mers_loc,
 		args.temp_dir + 'reads_60mers', 'intersect',
 		args.temp_dir + '60mers_intersection']).wait()
 
-	subprocess.Popen([kmc_loc+'_dump', args.temp_dir + '60mers_intersection',
+	subprocess.Popen(['kmc_dump', args.temp_dir + '60mers_intersection',
 		args.temp_dir + '60mers_intersection_dump']).wait()
 
 	with(open(args.temp_dir + '60mers_intersection_dump', 'r')) as infile:
@@ -82,11 +80,10 @@ def run_kmc_steps(args):
 
 def run_cmash_and_cutoff(args, taxid2info):
 	cmash_db_loc = args.data + 'cmash_db_n1000_k60.h5'
-	cmash_filter_loc = args.data + 'cmash_filter_n1000_k60_30-60-10.bf'
+	cmash_filter_loc = args.data + 'cmash_db_n1000_k60_30-60-10.bf'
 	if args.cmash_results == 'NONE':
 		cmash_out = args.temp_dir + 'cmash_query_results.csv'
-		script_loc = __location__ + 'CMash/scripts/StreamingQueryDNADatabase.py'
-		cmash_proc = subprocess.Popen(['python', script_loc,
+		cmash_proc = subprocess.Popen(['StreamingQueryDNADatabase.py',
 			args.temp_dir + '60mers_intersection_dump.fa', cmash_db_loc,
 			cmash_out, '30-60-10', '-c', '0', '-r', '1000000', '-v',
 			'-f', cmash_filter_loc, '--sensitive']).wait()
