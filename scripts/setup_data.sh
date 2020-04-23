@@ -1,5 +1,5 @@
 #!/bin/bash
-cd data/
+cd ../data/
 wget https://ucla.box.com/shared/static/oiry4qgwb7dnpg6lkrievzjymkb6szcl.gz && tar -zxvf oiry4qgwb7dnpg6lkrievzjymkb6szcl.gz && rm oiry4qgwb7dnpg6lkrievzjymkb6szcl.gz
 mkdir organism_files/ && cd organism_files/
 wget https://ucla.box.com/shared/static/c1g8xjc9glh68oje9e549fjqj0y8nc17.gz && tar -zxvf c1g8xjc9glh68oje9e549fjqj0y8nc17.gz && rm c1g8xjc9glh68oje9e549fjqj0y8nc17.gz

@@ -4,9 +4,6 @@ import select_db as select
 import map_and_profile as mapper
 
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))) + '/'
-
-
 def metalign_parseargs():  # handle user arguments
 	parser = argparse.ArgumentParser(
 		description='Runs full metalign pipeline on input reads file(s).')
@@ -61,7 +58,8 @@ def metalign_parseargs():  # handle user arguments
 def main():
 	args = metalign_parseargs()
 	if args.temp_dir == 'AUTO/':
-		args.temp_dir = tempfile.mkdtemp(prefix=__location__+'data/')
+		__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))) + '/'
+		args.temp_dir = tempfile.mkdtemp(prefix=__location__+'../data/')
 	if not args.temp_dir.endswith('/'):
 		args.temp_dir += '/'
 	if not args.data.endswith('/'):

@@ -1,9 +1,6 @@
 import argparse, math, os, subprocess, sys, tempfile
 
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))) + '/'
-
-
 def select_parseargs():    # handle user arguments
 	parser = argparse.ArgumentParser(description="Run CMash and" +
 				" select a subset of the whole database to align to.")
@@ -146,7 +143,8 @@ def select_main(args = None):
 	if not args.db_dir.endswith('/'):
 		args.db_dir += '/'
 	if args.temp_dir == 'AUTO/':
-		args.temp_dir = tempfile.mkdtemp(prefix=__location__+'data/')
+		__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))) + '/'
+		args.temp_dir = tempfile.mkdtemp(prefix=__location__+'../data/')
 	if not args.temp_dir.endswith('/'):
 		args.temp_dir += '/'
 	if not os.path.exists(args.temp_dir):

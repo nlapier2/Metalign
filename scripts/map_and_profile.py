@@ -2,9 +2,7 @@ import argparse, os, subprocess, sys, time
 
 
 start = time.time()  # start a program timer
-RANKS = ['superkingdom', 'phylum', 'class', 'order',
-		'family', 'genus', 'species', 'strain']
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))) + '/'
+RANKS = ['superkingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species', 'strain']
 
 
 def echo(msg, verbose):
