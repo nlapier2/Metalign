@@ -12,3 +12,6 @@ __pycache__/
 env/
 KMC/
 *.pyc
+Metalign.egg-info/
+dist/
+build/
