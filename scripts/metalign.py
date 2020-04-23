@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 import argparse, math, os, subprocess, sys, tempfile, time
 # Import metalign modules
 import select_db as select
