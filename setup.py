@@ -16,10 +16,10 @@ setuptools.setup(
     author="Nathan LaPierre",
     author_email="nathanl2012@gmail.com",
     description="Metalign: efficient alignment-based metagenomic profiling via containment min hash",
-    long_description=long_description,
+    long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/nlapier2/Metalign",
-    packages=['Metalign'],
+    #packages=['Metalign'],
     package_data={'Metalign': ['data/cmash*', 'data/db_info*', 'data/organism_files/*']},
     scripts=SCRIPTS,
     classifiers=[
