@@ -271,6 +271,8 @@ def map_and_process(args, instream, acc2info, taxid2info):
 		pair2maps += pair2  # unchanged if pair2 false
 		read_hits.append(splits)
 	if not args.no_quantify_unmapped:
+		if tot_rds == 0:
+			sys.exit('No reads mapped. Aborting...')
 		taxids2abs['Unmapped'][1] = taxids2abs['Unmapped'][0] / float(tot_rds)
 	return taxids2abs, multimapped, low_mem_mmap
 
