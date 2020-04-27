@@ -21,8 +21,7 @@ def profile_parseargs():  # handle user arguments
 		description='Compute abundance estimations for species in a sample.')
 	parser.add_argument('infiles', nargs='+',
 		help='sam or reads file(s) (space-delimited if multiple). Required.')
-	parser.add_argument('data',
-		help='Path to data/ directory with the files from setup_data.sh')
+	parser.add_argument('data', help='Path to data/ directory with the files from setup_data.sh')
 	parser.add_argument('--db', default='NONE',
 		help='Path to database from select_db.py. Required if read files given')
 	parser.add_argument('--dbinfo', default='AUTO',

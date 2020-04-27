@@ -5,8 +5,7 @@ def select_parseargs():    # handle user arguments
 	parser = argparse.ArgumentParser(description="Run CMash and" +
 				" select a subset of the whole database to align to.")
 	parser.add_argument('reads', help='Path to reads file.')
-	parser.add_argument('data',
-		help='Path to data/ directory with the files from setup_data.sh')
+	parser.add_argument('data', help='Path to data/ directory with the files from setup_data.sh')
 	parser.add_argument('--cmash_results', default='NONE',
 		help='Can specify location of CMash query results if already done.')
 	parser.add_argument('--cutoff', type=float, default=-1.0,
@@ -143,8 +142,7 @@ def select_main(args = None):
 	if not args.db_dir.endswith('/'):
 		args.db_dir += '/'
 	if args.temp_dir == 'AUTO/':
-		__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))) + '/'
-		args.temp_dir = tempfile.mkdtemp(prefix=__location__+'../data/')
+		args.temp_dir = tempfile.mkdtemp(prefix=args.data)
 	if not args.temp_dir.endswith('/'):
 		args.temp_dir += '/'
 	if not os.path.exists(args.temp_dir):

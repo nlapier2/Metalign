@@ -8,8 +8,7 @@ def metalign_parseargs():  # handle user arguments
 	parser = argparse.ArgumentParser(
 		description='Runs full metalign pipeline on input reads file(s).')
 	parser.add_argument('reads', help='Path to reads file.')
-	parser.add_argument('data',
-		help='Path to data/ directory with the files from setup_data.sh')
+	parser.add_argument('data', help='Path to data/ directory with the files from setup_data.sh')
 	parser.add_argument('--cutoff', type=float, default=-1.0,
 		help='CMash cutoff value. Default is 1/(log10(reads file bytes)**2).')
 	parser.add_argument('--db_dir', default = 'AUTO',
@@ -57,13 +56,12 @@ def metalign_parseargs():  # handle user arguments
 
 def main():
 	args = metalign_parseargs()
-	if args.temp_dir == 'AUTO/':
-		__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))) + '/'
-		args.temp_dir = tempfile.mkdtemp(prefix=__location__+'../data/')
-	if not args.temp_dir.endswith('/'):
-		args.temp_dir += '/'
 	if not args.data.endswith('/'):
 		args.data += '/'
+	if args.temp_dir == 'AUTO/':
+		args.temp_dir = tempfile.mkdtemp(prefix=args.data)
+	if not args.temp_dir.endswith('/'):
+		args.temp_dir += '/'
 	# Set arguments that default to AUTO
 	if args.dbinfo_in == 'AUTO':
 		args.dbinfo_in = args.data + 'db_info.txt'
