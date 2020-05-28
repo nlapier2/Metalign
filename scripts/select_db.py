@@ -3,33 +3,23 @@ import argparse, math, os, subprocess, sys, tempfile
 
 
 def select_parseargs():    # handle user arguments
-	parser = argparse.ArgumentParser(description="Run CMash and" +
-				" select a subset of the whole database to align to.")
+	parser = argparse.ArgumentParser(description='Run CMash and select a subset of the whole database to align to.')
 	parser.add_argument('reads', help='Path to reads file.')
 	parser.add_argument('data', help='Path to data/ directory with the files from setup_data.sh')
-	parser.add_argument('--cmash_results', default='NONE',
-		help='Can specify location of CMash query results if already done.')
-	parser.add_argument('--cutoff', type=float, default=-1.0,
-		help='CMash cutoff value. Default is 1/(log10(reads file bytes)**2).')
-	parser.add_argument('--db', default='AUTO',
-		help='Where to write subset database. Default: temp_dir/cmashed_db.fna')
-	parser.add_argument('--db_dir', default='AUTO',
-		help='Directory with all organism files in the full database.')
-	parser.add_argument('--dbinfo_in', default='AUTO',
-		help='Specify location of db_info file. Default is data/db_info.txt')
+	parser.add_argument('--cmash_results', default='NONE', help='Give location of CMash query results if already done.')
+	parser.add_argument('--cutoff', type=float, default=0.01, help='CMash cutoff value. Default is 0.01.')
+	parser.add_argument('--db', default='AUTO', help='Where to write subset database. Default: temp_dir/cmashed_db.fna')
+	parser.add_argument('--db_dir', default='AUTO', help='Directory with all organism files in the full database.')
+	parser.add_argument('--dbinfo_in', default='AUTO', help='Specify location of db_info file. Default is data/db_info.txt')
 	parser.add_argument('--dbinfo_out', default='AUTO',
 		help='Where to write subset db_info. Default: temp_dir/subset_db_info.txt')
-	parser.add_argument('--input_type', default='AUTO',
-		choices=['fastq', 'fasta', 'AUTO'],
+	parser.add_argument('--input_type', default='AUTO', choices=['fastq', 'fasta', 'AUTO'],
 		help='Type of input file (fastq/fasta). Default: try to auto-determine')
-	parser.add_argument('--keep_temp_files', action = 'store_true',
-		help='Keep KMC files instead of deleting after this script finishes.')
+	parser.add_argument('--keep_temp_files', action='store_true', help='Retain KMC files after this script finishes.')
 	parser.add_argument('--strain_level', action='store_true',
 		help='Include all strains above cutoff. Default: 1 strain per species.')
-	parser.add_argument('--temp_dir', default = 'AUTO/',
-		help='Directory to write temporary files to.')
-	parser.add_argument('--threads', type=int, default=4,
-		help='How many compute threads for KMC to use. Default: 4')
+	parser.add_argument('--temp_dir', default='AUTO/', help='Directory to write temporary files to.')
+	parser.add_argument('--threads', type=int, default=4, help='How many compute threads for KMC to use. Default: 4')
 	args = parser.parse_args()
 	return args
 
@@ -130,9 +120,6 @@ def make_db_and_dbinfo(args, organisms_to_include, taxid2info):
 def select_main(args = None):
 	if args == None:
 		args = select_parseargs()
-	if args.cutoff == -1.0:  # not set by user
-		fsize_bytes = os.path.getsize(args.reads)
-		args.cutoff = 1.0 / (math.log10(fsize_bytes) ** 2)
 	elif args.cutoff < 0.0 or args.cutoff > 1.0:
 		print('Error: args.cutoff must be between 0 and 1, inclusive.')
 		sys.exit()
