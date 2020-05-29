@@ -12,7 +12,7 @@ with open(os.path.join(HERE, 'README.md'), 'r') as fid:
 
 setuptools.setup(
     name="Metalign",
-    version="0.12.4",
+    version="0.12.5",
     author="Nathan LaPierre",
     author_email="nathanl2012@gmail.com",
     description="Metalign: efficient alignment-based metagenomic profiling via containment min hash",
