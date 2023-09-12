@@ -72,7 +72,8 @@ def run_cmash_and_cutoff(args, taxid2info):
 		cmash_out = args.temp_dir + 'cmash_query_results.csv'
 		cmash_proc = subprocess.Popen(['StreamingQueryDNADatabase.py',
 			args.temp_dir + '60mers_intersection_dump.fa', cmash_db_loc,
-			cmash_out, '30-60-10', '-c', '0', '-r', '1000000', '-v',
+			cmash_out, '30-60-10', '-c', '0', '-r', '1000000', 
+			'-t', str(args.threads), '-v',
 			'-f', cmash_filter_loc, '--sensitive']).wait()
 	else:
 		cmash_out = args.cmash_results
